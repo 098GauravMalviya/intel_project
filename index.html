@@ -1100,92 +1100,779 @@ const PER = {
 };
 
 /* =====================================================================
-   RETAIL INTELLIGENCE & BLACK FRIDAY ENHANCEMENTS (Nov 2026)
-   Derived from BridgeAI Retail Improvement Plan, CI_5_Ecommerce (2,091 rows),
-   Walmart live scraper, Google Shopping Intel Core Ultra pull, and Best Buy reviews
+   INJECTED DASHBOARD DATA FROM data/dashboard_data.json
+   Single Source of Truth - Cleaned and Verified
    ===================================================================== */
-const RETAIL_HEADLINE = {
-  lowestPrice: '$2,499.00',
-  lowestLaptop: 'HP OmniBook X 14" (Walmart)',
-  biggestDeal: 'Save $400.00 (-13.8%)',
-  dealSource: 'Walmart Black Friday Deal (Ends 28 Nov 2026)',
-  globalCoverage: '2,091 listings across 15+ countries (GB/UK merged: 120)',
-  intelAdvantage: '-$300 to -$1,550 lower',
-  intelNote: 'Verified across direct OEM chassis pairs (Lenovo -$365, MSI -$1,300, HP -$600 to -$1,000)'
-};
-
-const BLACK_FRIDAY_DEALS = [
-  {model:'HP OmniBook X 14"', oem:'HP', ret:'Walmart', was:2899.00, now:2499.00, save:400.00, pct:13.8, type:'Verified Price Cut (-$400)', note:'In stock, Delivery by 23 Nov. 32GB RAM, 1TB SSD. Verified Walmart Black Friday Deal.', u:'https://www.walmart.com/ip/Omnibook-X-NVIDIA-N1X-650-32G-1TB/20452003275', verified:true, captured:'22 Nov 2026', ends:'28 Nov 2026'},
-  {model:'Surface Laptop Ultra 15" (24GB)', oem:'Microsoft', ret:'Walmart / antonline', was:2599.99, now:2599.99, save:0.00, pct:0.0, type:'Regular MSRP (No Discount)', note:'In stock, Delivery by 25 Nov. antonline marketplace listing on Walmart (no price drop observed).', u:'https://www.walmart.com/ip/21445367547', verified:false, captured:'22 Nov 2026', ends:'28 Nov 2026'},
-  {model:'Surface Laptop Ultra 15" (32GB)', oem:'Microsoft', ret:'Walmart / antonline', was:3299.99, now:3299.99, save:0.00, pct:0.0, type:'Regular MSRP (No Discount)', note:'In stock, Delivery by 25 Nov. 32GB Unified Memory, 1TB SSD configuration.', u:'https://www.walmart.com/ip/21232856512', verified:false, captured:'22 Nov 2026', ends:'28 Nov 2026'},
-  {model:'Lenovo Pro 9n 15.3" (32GB/1TB)', oem:'Lenovo', ret:'Walmart / antonline', was:2999.99, now:2999.99, save:0.00, pct:0.0, type:'Regular MSRP (No Discount)', note:'In stock, Delivery by 25 Nov. 32GB RAM, 1TB SSD configuration in stock.', u:'https://www.walmart.com/ip/21264858344', verified:false, captured:'22 Nov 2026', ends:'28 Nov 2026'},
-  {model:'Lenovo Pro 9n 15.3" (64GB/2TB)', oem:'Lenovo', ret:'Walmart / antonline', was:4499.99, now:4499.99, save:0.00, pct:0.0, type:'Regular MSRP (No Discount)', note:'In stock, Delivery by 25 Nov. 64GB RAM, 2TB SSD flagship configuration in stock.', u:'https://www.walmart.com/ip/21261771570', verified:false, captured:'22 Nov 2026', ends:'28 Nov 2026'},
-  {model:'MSI Prestige N16 Flip AI+ (32GB)', oem:'MSI', ret:'Walmart / Newegg Inc', was:3299.00, now:3299.00, save:0.00, pct:0.0, type:'Regular MSRP (Warranty Promo)', note:'In stock, Delivery by 28 Nov. 32GB LPDDR5X, 1TB NVMe SSD. Free 1-yr extended warranty promo.', u:'https://www.walmart.com/ip/21081716137', verified:false, captured:'22 Nov 2026', ends:'28 Nov 2026'},
-  {model:'ASUS ProArt P16', oem:'Asus', ret:'Best Buy / ASUS US Store', was:4499.99, now:4499.99, save:0.00, pct:0.0, type:'Flagship Listing', note:'In stock. 6,144-core GPU, 32GB unified, 4K OLED touch.', u:'https://www.google.com/search?q=ASUS%20ProArt%20P16%20Intel%20Core%20Ultra%20X7', verified:false, captured:'22 Nov 2026', ends:'28 Nov 2026'}
-];
-
-const PRICE_LADDER_COMPARE = [
-  {
-    tier: 'Entry AI & Productivity ($800 – $1,500)',
-    rtx: 'None available (RTX Spark ecosystem floor starts at $2,499+)',
-    intel: 'HP OmniBook X 14" (Intel Core Ultra 5/7, 16GB) · $829.00 (Walmart) / $899.99 (HP Store)<br>HP OmniBook Ultra 16 (Core Ultra 5, 16GB, 1TB) · $919.99 – $939.99 (Newegg)<br>Lenovo Yoga Pro 9i 16 (Core Ultra 9 285H outlet) · $849.99 – $1,231.99 (eBay)',
-    mac: 'Apple MacBook Air 13"/15" M3/M4 · $1,099 – $1,299',
-    gap: 'Intel provides volume entry ($829 – $1,499); RTX Spark has no presence below $2,499 (-$1,000 to -$1,670 lower)',
-    edge: 'intel'
+const DASHBOARD_DATA = {
+  "headline": {
+    "lowestPrice": "$2,499.00",
+    "lowestLaptop": "HP OmniBook X 14\" (Walmart)",
+    "biggestDeal": "Save $400.00 (-13.8%)",
+    "dealSource": "Walmart Black Friday Deal (Ends 28 Nov 2026)",
+    "globalCoverage": "2,091 listings across 15+ countries (GB/UK merged: 120)",
+    "intelAdvantage": "-$300 to -$1,300 lower",
+    "intelNote": "Verified across like-for-like OEM chassis pairs with matching 32GB memory: HP OmniBook X 14 (-$299 / -12%), Lenovo Pro 9n / Yoga Pro 9i (-$365 / -12%, chip unverified), and MSI Prestige 16 Flip (-$1,299 / -39%). No like-for-like Intel ProArt sibling found (closest ProArt P16 listed is AMD-based)."
   },
-  {
-    tier: 'Mainstream Creator ($1,500 – $2,500)',
-    rtx: 'HP OmniBook X 14" (N1X 18-core, 32GB, 1TB) · $2,499.00 (Walmart Black Friday sale, was $2,899)',
-    intel: 'ASUS ProArt P16 (Intel Core Ultra 7 258V, 32GB, 1TB) · $1,390.30 (Best Buy)<br>HP OmniBook X 14 (Core Ultra 7 356H, 24GB, 1TB) · $1,899.99 (Abt) / $1,499.99 (Target)<br>MSI Prestige 16 Flip AI+ (Core Ultra 7 355, 32GB, 2.8K OLED) · $1,999.99 (Best Buy)<br>ASUS ROG Zephyrus G16 (Core Ultra 9 285H, OLED) · $2,149.99 (Best Buy, 313 rev, 4.6★)',
-    mac: 'Apple MacBook Pro 14" M4 Pro · $1,999.00',
-    gap: 'Intel matching chassis are $350 to $1,100 lower than RTX Spark entry ($1,390 – $2,150 vs $2,499)',
-    edge: 'intel'
+  "blackFridayDeals": [
+    {
+      "model": "HP OmniBook X 14\"",
+      "oem": "HP",
+      "ret": "Walmart",
+      "was": 2899.0,
+      "now": 2499.0,
+      "save": 400.0,
+      "pct": 13.8,
+      "type": "Verified Price Cut (-$400)",
+      "note": "In stock, Delivery by 23 Nov. 32GB RAM, 1TB SSD. Verified Walmart Black Friday Deal.",
+      "u": "https://www.walmart.com/ip/Omnibook-X-NVIDIA-N1X-650-32G-1TB/20452003275?classType=REGULAR",
+      "verified": true,
+      "captured": "22 Nov 2026",
+      "ends": "28 Nov 2026"
+    },
+    {
+      "model": "Surface Laptop Ultra 15\" (24GB)",
+      "oem": "Microsoft",
+      "ret": "Walmart / antonline",
+      "was": 2599.99,
+      "now": 2599.99,
+      "save": 0.0,
+      "pct": 0.0,
+      "type": "Regular MSRP (No Discount)",
+      "note": "In stock, Delivery by 25 Nov. antonline marketplace listing on Walmart (no price drop observed).",
+      "u": "https://www.walmart.com/ip/Microsoft-Surface-Laptop-Ultra-15-PixelSense-Ultra-Touchscreen-NVIDIA-RTX-Spark-N1X-18-core-2026-NVIDIA-Blackwell-RTX-5120-Core-GPU-24GB-Unified-Memo/21445367547?classType=REGULAR",
+      "verified": false,
+      "captured": "22 Nov 2026",
+      "ends": "28 Nov 2026"
+    },
+    {
+      "model": "Surface Laptop Ultra 15\" (32GB)",
+      "oem": "Microsoft",
+      "ret": "Walmart / antonline",
+      "was": 3299.99,
+      "now": 3299.99,
+      "save": 0.0,
+      "pct": 0.0,
+      "type": "Regular MSRP (No Discount)",
+      "note": "In stock, Delivery by 25 Nov. 32GB Unified Memory, 1TB SSD configuration.",
+      "u": "https://www.walmart.com/ip/Microsoft-Surface-Laptop-Ultra-15-PixelSense-Ultra-Touchscreen-NVIDIA-RTX-Spark-N1X-18-core-2026-NVIDIA-Blackwell-RTX-5120-Core-GPU-32GB-Unified-Memo/21232856512?classType=REGULAR",
+      "verified": false,
+      "captured": "22 Nov 2026",
+      "ends": "28 Nov 2026"
+    },
+    {
+      "model": "Lenovo Pro 9n 15.3\" (32GB/1TB)",
+      "oem": "Lenovo",
+      "ret": "Walmart / antonline",
+      "was": 2999.99,
+      "now": 2999.99,
+      "save": 0.0,
+      "pct": 0.0,
+      "type": "Regular MSRP (No Discount)",
+      "note": "In stock, Delivery by 25 Nov. 32GB RAM, 1TB SSD configuration in stock.",
+      "u": "https://www.walmart.com/ip/Lenovo-Pro-9n-15-3-WQXGA-OLED-Touchscreen-Copilot-PC-NVIDIA-RTX-Spark-N1X-with-5120-core-CPU-and-18-core-GPU-32GB-RAM-1TB-SSD-Thunder-Grey/21264858344?classType=REGULAR",
+      "verified": false,
+      "captured": "22 Nov 2026",
+      "ends": "28 Nov 2026"
+    },
+    {
+      "model": "Lenovo Pro 9n 15.3\" (64GB/2TB)",
+      "oem": "Lenovo",
+      "ret": "Walmart / antonline",
+      "was": 4499.99,
+      "now": 4499.99,
+      "save": 0.0,
+      "pct": 0.0,
+      "type": "Regular MSRP (No Discount)",
+      "note": "In stock, Delivery by 25 Nov. 64GB RAM, 2TB SSD flagship configuration in stock.",
+      "u": "https://www.walmart.com/ip/Lenovo-Pro-9n-15-3-WQXGA-Touchscreen-Notebook-NVIDIA-RTX-Spark-N1X-with-6144-core-GPU-and-20-core-CPU-64GB-RAM-2TB-SSD-Thunder-Grey/21261771570?classType=REGULAR",
+      "verified": false,
+      "captured": "22 Nov 2026",
+      "ends": "28 Nov 2026"
+    },
+    {
+      "model": "MSI Prestige N16 Flip AI+ (32GB)",
+      "oem": "MSI",
+      "ret": "Walmart / Newegg Inc",
+      "was": 3299.0,
+      "now": 3299.0,
+      "save": 0.0,
+      "pct": 0.0,
+      "type": "Regular MSRP (Warranty Promo)",
+      "note": "In stock, Delivery by 28 Nov. 32GB LPDDR5X, 1TB NVMe SSD. Free 1-yr extended warranty promo.",
+      "u": "https://www.walmart.com/ip/MSI-Prestige-16-0-120-Hz-NVIDIA-RTX-Spark-N1X-6144-core-GPU-20-core-CPU-32GB-LPDDR5X-1TB-NVMe-SSD-2-8K-OLED-Touch-Windows-11-Home-Prestige-N16-Flip-A/21081716137?classType=REGULAR",
+      "verified": false,
+      "captured": "22 Nov 2026",
+      "ends": "28 Nov 2026"
+    },
+    {
+      "model": "ASUS ProArt P16",
+      "oem": "Asus",
+      "ret": "Best Buy / ASUS US Store",
+      "was": 4499.99,
+      "now": 4499.99,
+      "save": 0.0,
+      "pct": 0.0,
+      "type": "Flagship Listing",
+      "note": "In stock. 6,144-core GPU, 32GB unified, 4K OLED touch.",
+      "u": "https://www.google.com/search?q=ASUS%20ProArt%20P16%20Intel%20Core%20Ultra%20X7",
+      "verified": false,
+      "captured": "22 Nov 2026",
+      "ends": "28 Nov 2026"
+    }
+  ],
+  "priceLadder": [
+    {
+      "tier": "Entry AI & Productivity ($800 \u2013 $1,500)",
+      "rtx": "None available (RTX Spark ecosystem floor starts at $2,499+)",
+      "intel": "HP OmniBook X 14\" (Intel Core Ultra 5/7, 16GB) \u00b7 $829.00 (Walmart) / $899.99 (HP Store)<br>HP OmniBook Ultra 16 (Core Ultra 5, 16GB, 1TB) \u00b7 $919.99 \u2013 $939.99 (Newegg)<br>Lenovo Yoga Pro 9i 16 (outlet/refurb) \u00b7 $849.99 \u2013 $1,231.99 (eBay)",
+      "mac": "Apple MacBook Air 13\"/15\" M3/M4 \u00b7 $1,099 \u2013 $1,299",
+      "gap": "Intel provides entry access ($829 \u2013 $1,499); RTX Spark has no presence below $2,499",
+      "edge": "intel"
+    },
+    {
+      "tier": "Mainstream Creator ($1,500 \u2013 $2,500)",
+      "rtx": "HP OmniBook X 14\" (N1X 18-core, 32GB, 1TB) \u00b7 $2,499.00 (Walmart sale, was $2,899)",
+      "intel": "HP OmniBook X 14\" (Intel Core Ultra, 32GB, 3K Touch) \u00b7 $2,199.99 (HP Store)<br><span class=\"note\" style=\"font-size:12px;color:var(--muted)\">Secondary references: Abt $1,899.99 (24GB), Target $1,499.99 (memory unstated)</span><br>MSI Prestige 16 Flip AI+ (Intel Core Ultra 7 355, 32GB, 2.8K OLED) \u00b7 $1,999.99 (Best Buy)<br>ASUS 16\" OLED (Intel Core Ultra 7 258V, 32GB, 1TB) \u00b7 $1,390.30 (Best Buy)<br><span class=\"note\" style=\"font-size:12px;color:var(--muted)\">Note: No like-for-like Intel ProArt sibling found; closest ProArt P16 listed is AMD-based ($2,399)</span>",
+      "mac": "Apple MacBook Pro 14\" M4 Pro \u00b7 $1,999.00",
+      "gap": "Like-for-like Intel pairs are $299 to $1,300 lower (HP -$299 / -12%, MSI -$1,299 / -39%)",
+      "edge": "intel"
+    },
+    {
+      "tier": "Premium Flagship ($2,500 \u2013 $4,000)",
+      "rtx": "Microsoft Surface Laptop Ultra 15\" (24GB) \u00b7 $2,599.99 (Walmart)<br>Lenovo Pro 9n 15.3\" (32GB, 1TB) \u00b7 $2,999.99 (Walmart)<br>MSI Prestige N16 Flip AI+ (32GB) \u00b7 $3,299.00 (Walmart)",
+      "intel": "Lenovo 16\" Pro 9i Aura Edition (32GB, Copilot+ PC) \u00b7 $2,634.99 (Lenovo.com, chip unverified)<br>Dell XPS 16 (Current Core Ultra gen, Best Buy SKU) \u00b7 $2,249.99 (Best Buy, no reviews yet)<br>MSI Prestige 16 Flip AI+ (Core Ultra 7 355, 32GB, 4TB) \u00b7 $2,489.00 (Newegg)",
+      "mac": "Apple MacBook Pro 16\" M5 (Apple M5 Pro chip, 24GB unified memory, 512GB SSD) \u00b7 $2,499.00 (Apple Store / B&H, captured Nov 2026)",
+      "gap": "Intel is $365 lower on Lenovo (Pro 9n $2,999 vs Yoga Pro 9i $2,635) and $1,300 lower on MSI ($3,299 vs $1,999); MacBook Pro 16\" M5 matches entry at $2,499",
+      "edge": "intel"
+    },
+    {
+      "tier": "Ultra Workstation ($4,000+)",
+      "rtx": "ASUS ProArt P16 (N1X 20-core, 64GB) \u00b7 $4,499.99 \u2013 $6,999.99 (Best Buy / ASUS US)<br>Lenovo Pro 9n 15.3\" (64GB, 2TB) \u00b7 $4,499.99 (Walmart)",
+      "intel": "Custom OEM Mobile Workstations (Core Ultra 9 + RTX discrete GPUs) \u00b7 $3,499 \u2013 $4,299",
+      "mac": "Apple MacBook Pro 16\" M5 Max (128GB unified memory) \u00b7 $4,499.00",
+      "gap": "RTX Spark delivers 64GB unified memory for LLM execution; Intel mobile workstations provide discrete GPU modularity at lower initial chassis cost",
+      "edge": "rtx"
+    }
+  ],
+  "availabilityHeatmap": [
+    {
+      "model": "Surface Laptop Ultra",
+      "oem": "Microsoft",
+      "us": "In Stock",
+      "us_supported": true,
+      "eu": "In Stock",
+      "eu_supported": true,
+      "jp": "Limited",
+      "jp_supported": true,
+      "cn": "No Data",
+      "cn_supported": false,
+      "tw": "Pre-Order",
+      "tw_supported": true
+    },
+    {
+      "model": "ProArt P14",
+      "oem": "Asus",
+      "us": "In Stock",
+      "us_supported": true,
+      "eu": "In Stock",
+      "eu_supported": true,
+      "jp": "In Stock",
+      "jp_supported": true,
+      "cn": "No Data",
+      "cn_supported": false,
+      "tw": "Pre-Order",
+      "tw_supported": true
+    },
+    {
+      "model": "ProArt P16",
+      "oem": "Asus",
+      "us": "In Stock",
+      "us_supported": true,
+      "eu": "In Stock",
+      "eu_supported": true,
+      "jp": "In Stock",
+      "jp_supported": true,
+      "cn": "No Data",
+      "cn_supported": false,
+      "tw": "Out of Stock",
+      "tw_supported": true
+    },
+    {
+      "model": "XPS 16 Creator Edition",
+      "oem": "Dell",
+      "us": "No Data",
+      "us_supported": false,
+      "eu": "No Data",
+      "eu_supported": false,
+      "jp": "Pre-Order",
+      "jp_supported": true,
+      "cn": "No Data",
+      "cn_supported": false,
+      "tw": "No Data",
+      "tw_supported": false
+    },
+    {
+      "model": "OmniBook Ultra 16",
+      "oem": "HP",
+      "us": "In Stock",
+      "us_supported": true,
+      "eu": "In Stock",
+      "eu_supported": true,
+      "jp": "Pre-Order",
+      "jp_supported": true,
+      "cn": "No Data",
+      "cn_supported": false,
+      "tw": "No Data",
+      "tw_supported": false
+    },
+    {
+      "model": "OmniBook X 14",
+      "oem": "HP",
+      "us": "In Stock",
+      "us_supported": true,
+      "eu": "No Data",
+      "eu_supported": false,
+      "jp": "No Data",
+      "jp_supported": false,
+      "cn": "No Data",
+      "cn_supported": false,
+      "tw": "No Data",
+      "tw_supported": false
+    },
+    {
+      "model": "Yoga 9n 2-in-1",
+      "oem": "Lenovo",
+      "us": "In Stock",
+      "us_supported": true,
+      "eu": "Limited",
+      "eu_supported": true,
+      "jp": "No Data",
+      "jp_supported": false,
+      "cn": "No Data",
+      "cn_supported": false,
+      "tw": "No Data",
+      "tw_supported": false
+    },
+    {
+      "model": "Pro 9n",
+      "oem": "Lenovo",
+      "us": "In Stock",
+      "us_supported": true,
+      "eu": "In Stock",
+      "eu_supported": true,
+      "jp": "No Data",
+      "jp_supported": false,
+      "cn": "No Data",
+      "cn_supported": false,
+      "tw": "Out of Stock",
+      "tw_supported": true
+    },
+    {
+      "model": "Prestige N16 Flip AI+",
+      "oem": "MSI",
+      "us": "In Stock",
+      "us_supported": true,
+      "eu": "In Stock",
+      "eu_supported": true,
+      "jp": "In Stock",
+      "jp_supported": true,
+      "cn": "No Data",
+      "cn_supported": false,
+      "tw": "Pre-Order",
+      "tw_supported": true
+    }
+  ],
+  "heatmapSummary": {
+    "totalCells": 45,
+    "verifiedCells": 26,
+    "unsupportedCells": 19,
+    "note": "26 of 45 regional cells verified from CI_5_Ecommerce; 19 unmonitored cells transparently noted as No Data."
   },
-  {
-    tier: 'Premium Flagship ($2,500 – $4,000)',
-    rtx: 'Microsoft Surface Laptop Ultra 15" (24GB) · $2,599.99 (Walmart)<br>Lenovo Pro 9n 15.3" (32GB, 1TB) · $2,999.99 (Walmart)<br>MSI Prestige N16 Flip AI+ (32GB) · $3,299.00 (Walmart)',
-    intel: 'Lenovo 16" Pro 9i Aura Edition (Core Ultra 9 285H, 32GB) · $2,634.99 (Lenovo.com)<br>Dell XPS 16 (Current Core Ultra gen, Best Buy SKU) · $2,249.99 (Best Buy, no reviews yet)<br>MSI Prestige 16 Flip AI+ (Core Ultra 7 355, 32GB, 4TB) · $2,489.00 (Newegg)',
-    mac: 'Apple MacBook Pro 16" M5 (Apple M5 Pro chip, 24GB unified memory, 512GB SSD) · $2,499.00 (Apple Store / B&H, captured Nov 2026)',
-    gap: 'Intel is $365 lower on Lenovo (Pro 9n $2,999 vs Yoga Pro 9i $2,635) and $1,300 lower on MSI (Prestige N16 $3,299 vs Prestige 16 $1,999); MacBook Pro 16" M5 matches entry at $2,499',
-    edge: 'intel'
+  "rivalsNamed": [
+    {
+      "name": "Intel Core Ultra (Series 1 / 2)",
+      "count": 325,
+      "pct": 41.9,
+      "color": "#0068B5"
+    },
+    {
+      "name": "AMD Ryzen AI (300 / Halo)",
+      "count": 304,
+      "pct": 39.2,
+      "color": "#B4372F"
+    },
+    {
+      "name": "Apple MacBook Pro (M4 / M5)",
+      "count": 146,
+      "pct": 18.8,
+      "color": "var(--accent-strong)"
+    }
+  ],
+  "shopperQAThemes": [
+    {
+      "theme": "Technical Specifications (RAM & Specs)",
+      "raw_tag": "specs",
+      "count": 116,
+      "pct": 53.5,
+      "color": "var(--accent-strong)",
+      "desc": "Questions on RAM expandability (LPDDR5X unified soldered), storage slots, and port I/O."
+    },
+    {
+      "theme": "General Inquiries & Portability",
+      "raw_tag": "other + portability",
+      "count": 44,
+      "pct": 20.3,
+      "color": "var(--muted)",
+      "desc": "Chassis weight, dimensions, travel cases, stylus compatibility, and regional SKU availability."
+    },
+    {
+      "theme": "Operating System & Software Compatibility",
+      "raw_tag": "compatibility",
+      "count": 23,
+      "pct": 10.6,
+      "color": "#2C5E8A",
+      "desc": "ARM64 vs x86 Windows Prism emulation, Adobe Creative Cloud, and developer tooling."
+    },
+    {
+      "theme": "Gaming & Graphics Performance",
+      "raw_tag": "gaming",
+      "count": 14,
+      "pct": 6.5,
+      "color": "#7A57C2",
+      "desc": "RTX Blackwell 5120/6144-core GPU frame rates, DLSS support, and anti-cheat compatibility."
+    },
+    {
+      "theme": "Pricing & Purchase Timing",
+      "raw_tag": "price",
+      "count": 9,
+      "pct": 4.1,
+      "color": "#B4372F",
+      "desc": "Black Friday promotional discounts, holiday trade-in values, and price protection."
+    },
+    {
+      "theme": "Battery Life & Power Delivery",
+      "raw_tag": "battery",
+      "count": 7,
+      "pct": 3.2,
+      "color": "#2F7D4F",
+      "desc": "Watt-hour capacity, USB-C PD 140W charging, and endurance under local LLM loads."
+    },
+    {
+      "theme": "Display Quality & Form Factor",
+      "raw_tag": "display",
+      "count": 4,
+      "pct": 1.8,
+      "color": "#E67E22",
+      "desc": "Mini LED vs OLED ghosting trails, refresh rates (120Hz), and color gamut."
+    }
+  ],
+  "surfaceRating": {
+    "bestBuyRating": 4.38,
+    "displayRating": "4.4\u2605",
+    "reviewCount": 8,
+    "ratingsList": [
+      5.0,
+      4.0,
+      5.0,
+      1.0,
+      5.0,
+      5.0,
+      5.0,
+      5.0
+    ],
+    "amazonMappedCount": 1,
+    "amazonUnmappedGenericCount": 35,
+    "notes": "Best Buy verified score: 4.4\u2605 (35/8 = 4.38\u2605). 1 Amazon review mapped to Surface Laptop Ultra (3\u2605, B0HFQVF89X); 35 unrelated budget/student rows moved to data/excluded/unrelated_amazon_reviews.csv."
   },
-  {
-    tier: 'Ultra Workstation ($4,000+)',
-    rtx: 'ASUS ProArt P16 (N1X 20-core, 64GB) · $4,499.99 – $6,999.99 (Best Buy / ASUS US)<br>Lenovo Pro 9n 15.3" (64GB, 2TB) · $4,499.99 (Walmart)',
-    intel: 'Custom OEM Mobile Workstations (Core Ultra 9 285HX + RTX 5080/5090) · $3,499 – $4,299',
-    mac: 'Apple MacBook Pro 16" M5 Max (128GB unified memory) · $4,499.00',
-    gap: 'RTX Spark delivers 64GB unified memory for LLM execution; Intel mobile workstations provide discrete GPU modularity at lower initial chassis cost',
-    edge: 'rtx'
+  "shareOfShelf": {
+    "totalSearchRows": 897,
+    "brandShare": [
+      {
+        "brand": "Asus",
+        "count": 354,
+        "pct": 39.5
+      },
+      {
+        "brand": "Microsoft",
+        "count": 327,
+        "pct": 36.5
+      },
+      {
+        "brand": "MSI",
+        "count": 122,
+        "pct": 13.6
+      },
+      {
+        "brand": "Lenovo",
+        "count": 35,
+        "pct": 3.9
+      },
+      {
+        "brand": "Dell",
+        "count": 32,
+        "pct": 3.6
+      },
+      {
+        "brand": "HP",
+        "count": 27,
+        "pct": 3.0
+      }
+    ],
+    "sampleListings": [
+      {
+        "query": "MSI Prestige N16 Flip AI+ C1XMT-067USY",
+        "retailer": "NVIDIA Marketplace",
+        "brand": "MSI",
+        "chip": "20-core",
+        "position": "Collecting",
+        "price": 3299
+      },
+      {
+        "query": "ASUS ProArt P14 H7407BA-XB99T",
+        "retailer": "NVIDIA Marketplace",
+        "brand": "Asus",
+        "chip": "20-core",
+        "position": "Collecting",
+        "price": "No Data"
+      },
+      {
+        "query": "ASUS ProArt P16 H7607BA-XP99T",
+        "retailer": "NVIDIA Marketplace",
+        "brand": "Asus",
+        "chip": "20-core",
+        "position": "Collecting",
+        "price": "No Data"
+      },
+      {
+        "query": "Microsoft Surface Ultra - EP 2 56902",
+        "retailer": "NVIDIA Marketplace",
+        "brand": "Microsoft",
+        "chip": "20-core",
+        "position": "Collecting",
+        "price": "No Data"
+      },
+      {
+        "query": "ASUS ProArt P16 - H7607 BA PA P161X0 32",
+        "retailer": "NVIDIA Marketplace",
+        "brand": "Asus",
+        "chip": "20-core",
+        "position": "Collecting",
+        "price": "No Data"
+      },
+      {
+        "query": "HP OmniBook X 14 - 14 ks 0075cl",
+        "retailer": "NVIDIA Marketplace",
+        "brand": "HP",
+        "chip": "18-core",
+        "position": "Collecting",
+        "price": "No Data"
+      },
+      {
+        "query": "ASUS ProArt P14 - H7407 BA XB97T",
+        "retailer": "NVIDIA Marketplace",
+        "brand": "Asus",
+        "chip": "20-core",
+        "position": "Collecting",
+        "price": "No Data"
+      },
+      {
+        "query": "Lenovo Pro 9n 15\" - 83 SSC TO1",
+        "retailer": "NVIDIA Marketplace",
+        "brand": "Lenovo",
+        "chip": "18-core",
+        "position": "Collecting",
+        "price": "No Data"
+      },
+      {
+        "query": "HP OmniBook Ultra 16 - 16-bk0000-BG9S9AV",
+        "retailer": "NVIDIA Marketplace",
+        "brand": "HP",
+        "chip": "20-core",
+        "position": "Collecting",
+        "price": "No Data"
+      },
+      {
+        "query": "Dell XPS 16 Creator Edition Laptop / 6144-core / 32GB",
+        "retailer": "NVIDIA Marketplace",
+        "brand": "Dell",
+        "chip": "20-core",
+        "position": "Collecting",
+        "price": "No Data"
+      },
+      {
+        "query": "HP OmniBook Ultra 16-bk0499ngx",
+        "retailer": "NVIDIA",
+        "brand": "HP",
+        "chip": "20-core",
+        "position": "Collecting",
+        "price": "No Data"
+      },
+      {
+        "query": "ASUS ProArt P16H7607BA-SE400X",
+        "retailer": "NVIDIA",
+        "brand": "Asus",
+        "chip": "20-core",
+        "position": "Collecting",
+        "price": "No Data"
+      },
+      {
+        "query": "HP OmniBook Ultra 16-bk0197ng",
+        "retailer": "NVIDIA",
+        "brand": "HP",
+        "chip": "20-core",
+        "position": "Collecting",
+        "price": "No Data"
+      },
+      {
+        "query": "ASUS ProArt P14 H7407BA-SM044W",
+        "retailer": "NVIDIA",
+        "brand": "Asus",
+        "chip": "20-core",
+        "position": "Collecting",
+        "price": "No Data"
+      },
+      {
+        "query": "MSI Prestige N16 Flip AI+ C1XMT-029Y",
+        "retailer": "NVIDIA",
+        "brand": "MSI",
+        "chip": "20-core",
+        "position": "Collecting",
+        "price": "No Data"
+      }
+    ]
+  },
+  "listingClaims": [
+    {
+      "category": "Local AI & NPU Acceleration",
+      "rtx_claim": "120B parameter local LLMs offline, Blackwell RTX Tensor Cores, up to 64GB unified memory for AI developers",
+      "intel_claim": "Copilot+ PC, Intel AI Boost NPU, Integrated NPU for Windows Studio Effects (ASUS 14 Pro AI & MSI Prestige)",
+      "intel_source": "Google Shopping titles & productDetails (ASUS 14 Pro AI, MSI Prestige 16 Flip)"
+    },
+    {
+      "category": "Display & Visual Architecture",
+      "rtx_claim": "3K / 4K 120Hz OLED Touchscreen, Mini LED PixelSense Ultra, 100% DCI-P3 color gamut",
+      "intel_claim": "16\" 2.8K (2880 x 1800) 120Hz OLED Touchscreen, 3K OLED (HP OmniBook X 14 & MSI Prestige 16)",
+      "intel_source": "Google Shopping titles (HP OmniBook X 14, MSI Prestige 16 Flip)"
+    },
+    {
+      "category": "Connectivity & Networking",
+      "rtx_claim": "Wi-Fi 7, Dual Thunderbolt / USB4 ports, HDMI 2.1",
+      "intel_claim": "WiFi 7, Dual 2.5G LAN, Bluetooth 5.4, Thunderbolt 4 (ASUS NUC 16 Pro & ASUS 14 Pro AI)",
+      "intel_source": "Google Shopping titles (ASUS NUC 16 Pro, ASUS 14 Pro AI)"
+    },
+    {
+      "category": "Memory & Storage Expandability",
+      "rtx_claim": "Unified LPDDR5X (24GB to 64GB soldered), up to 2TB NVMe PCIe 4.0 SSD",
+      "intel_claim": "32GB LPDDR5X RAM, up to 4 TB PCIe SSD (MSI Prestige 16 Flip AI+ C3MTG-058US)",
+      "intel_source": "Google Shopping details (MSI Prestige 16 Flip AI+ Hubitx Tech listing)"
+    },
+    {
+      "category": "Enterprise OS & Software Compatibility",
+      "rtx_claim": "Windows 11 on Arm, Prism translation layer for x86 apps, Copilot+ experiences",
+      "intel_claim": "Windows 11 Pro native x86, zero-emulation compatibility with enterprise VPNs, DAWs & anti-cheat",
+      "intel_source": "Google Shopping titles (ASUS 14 Pro AI Copilot+ PC W11 Pro, ASUS ExpertBook)"
+    }
+  ],
+  "sellerMix": [
+    {
+      "laptop": "HP OmniBook X 14\"",
+      "oem": "HP",
+      "official_sellers": "Walmart.com (1st party), HP Official Store",
+      "marketplace_sellers": "None captured on Walmart; DealKing / Master Electronics on Newegg",
+      "split": "65% 1st-party / 35% 3rd-party",
+      "primary_seller_status": "Direct Retail / 1st Party"
+    },
+    {
+      "laptop": "Surface Laptop Ultra 15\"",
+      "oem": "Microsoft",
+      "official_sellers": "Microsoft Store, Best Buy (1st party)",
+      "marketplace_sellers": "antonline.com (Walmart marketplace seller ID: 446FD754391F425D863D68925949A94C)",
+      "split": "40% 1st-party / 60% 3rd-party",
+      "primary_seller_status": "Marketplace Dominated (antonline on Walmart)"
+    },
+    {
+      "laptop": "Lenovo Pro 9n 15.3\"",
+      "oem": "Lenovo",
+      "official_sellers": "lenovo.com, Lenovo Store",
+      "marketplace_sellers": "antonline.com (Walmart marketplace seller)",
+      "split": "45% 1st-party / 55% 3rd-party",
+      "primary_seller_status": "Mixed (antonline on Walmart, lenovo.com official)"
+    },
+    {
+      "laptop": "MSI Prestige N16 Flip AI+",
+      "oem": "MSI",
+      "official_sellers": "MSI US Official Store, Best Buy",
+      "marketplace_sellers": "Newegg Inc. (Walmart marketplace seller ID: E40E7BA8219047C0BFFFCD730ED45C56), Hubitx Tech",
+      "split": "30% 1st-party / 70% 3rd-party",
+      "primary_seller_status": "Marketplace Dominated (Newegg Inc on Walmart)"
+    },
+    {
+      "laptop": "ASUS ProArt P16",
+      "oem": "Asus",
+      "official_sellers": "ASUS Store US, Best Buy",
+      "marketplace_sellers": "HIDevolution US (Newegg), Rugged Books, eBay (jaxpawn904)",
+      "split": "50% 1st-party / 50% 3rd-party",
+      "primary_seller_status": "Equal Mix (ASUS Official vs Authorized Resellers)"
+    },
+    {
+      "laptop": "ASUS ProArt P14",
+      "oem": "Asus",
+      "official_sellers": "ASUS Store US, Best Buy",
+      "marketplace_sellers": "gpuelitecom (eBay), Rugged Books, inpexopcion.com, GCC Gamers",
+      "split": "35% 1st-party / 65% 3rd-party",
+      "primary_seller_status": "Marketplace Dominated (eBay, Rugged Books)"
+    },
+    {
+      "laptop": "Dell XPS 16 Creator Edition",
+      "oem": "Dell",
+      "official_sellers": "Dell.com (1st party direct), Best Buy",
+      "marketplace_sellers": "None captured in US; JP marketplace listings",
+      "split": "90% 1st-party / 10% 3rd-party",
+      "primary_seller_status": "OEM Direct"
+    },
+    {
+      "laptop": "HP OmniBook Ultra 16",
+      "oem": "HP",
+      "official_sellers": "HP.com Official Store, Best Buy",
+      "marketplace_sellers": "DealKing, XM-Electronics, Craving Savings (Newegg)",
+      "split": "55% 1st-party / 45% 3rd-party",
+      "primary_seller_status": "Mixed"
+    },
+    {
+      "laptop": "Lenovo Yoga 9n 2-in-1",
+      "oem": "Lenovo",
+      "official_sellers": "lenovo.com, Best Buy",
+      "marketplace_sellers": "Limited 3rd-party listings",
+      "split": "80% 1st-party / 20% 3rd-party",
+      "primary_seller_status": "OEM Direct / Best Buy"
+    }
+  ],
+  "reviewsCoverage": [
+    {
+      "laptop": "Surface Laptop Ultra",
+      "oem": "Microsoft",
+      "bestbuy_reviews": 8,
+      "bestbuy_avg": 4.38,
+      "amazon_reviews": 1,
+      "amazon_avg": 3.0,
+      "total_verified": 9,
+      "coverage_status": "Active (9 reviews)",
+      "gap_note": "Only model with multi-retailer buyer review volume."
+    },
+    {
+      "laptop": "ProArt P14",
+      "oem": "Asus",
+      "bestbuy_reviews": 0,
+      "bestbuy_avg": "No Data",
+      "amazon_reviews": 0,
+      "amazon_avg": "No Data",
+      "total_verified": 0,
+      "coverage_status": "Coverage Gap",
+      "gap_note": "0 buyer reviews on Amazon or Best Buy; only OEM press ratings."
+    },
+    {
+      "laptop": "ProArt P16",
+      "oem": "Asus",
+      "bestbuy_reviews": 0,
+      "bestbuy_avg": "No Data",
+      "amazon_reviews": 0,
+      "amazon_avg": "No Data",
+      "total_verified": 0,
+      "coverage_status": "Coverage Gap",
+      "gap_note": "0 buyer reviews on Amazon or Best Buy."
+    },
+    {
+      "laptop": "XPS 16 Creator Edition",
+      "oem": "Dell",
+      "bestbuy_reviews": 0,
+      "bestbuy_avg": "No Data",
+      "amazon_reviews": 0,
+      "amazon_avg": "No Data",
+      "total_verified": 0,
+      "coverage_status": "Coverage Gap",
+      "gap_note": "Best Buy listing states \"Reviews coming soon\"."
+    },
+    {
+      "laptop": "OmniBook Ultra 16",
+      "oem": "HP",
+      "bestbuy_reviews": 0,
+      "bestbuy_avg": "No Data",
+      "amazon_reviews": 0,
+      "amazon_avg": "No Data",
+      "total_verified": 0,
+      "coverage_status": "Coverage Gap",
+      "gap_note": "0 buyer reviews on Amazon or Best Buy."
+    },
+    {
+      "laptop": "OmniBook X 14",
+      "oem": "HP",
+      "bestbuy_reviews": 0,
+      "bestbuy_avg": "No Data",
+      "amazon_reviews": 0,
+      "amazon_avg": "No Data",
+      "total_verified": 0,
+      "coverage_status": "Coverage Gap",
+      "gap_note": "Shipped in Nov; 0 buyer reviews captured."
+    },
+    {
+      "laptop": "Yoga 9n 2-in-1",
+      "oem": "Lenovo",
+      "bestbuy_reviews": 0,
+      "bestbuy_avg": "No Data",
+      "amazon_reviews": 0,
+      "amazon_avg": "No Data",
+      "total_verified": 0,
+      "coverage_status": "Coverage Gap",
+      "gap_note": "1 initial review previously captured; 0 currently in live feeds."
+    },
+    {
+      "laptop": "Pro 9n",
+      "oem": "Lenovo",
+      "bestbuy_reviews": 0,
+      "bestbuy_avg": "No Data",
+      "amazon_reviews": 0,
+      "amazon_avg": "No Data",
+      "total_verified": 0,
+      "coverage_status": "Coverage Gap",
+      "gap_note": "0 buyer reviews on Amazon or Best Buy."
+    },
+    {
+      "laptop": "Prestige N16 Flip AI+",
+      "oem": "MSI",
+      "bestbuy_reviews": 0,
+      "bestbuy_avg": "No Data",
+      "amazon_reviews": 0,
+      "amazon_avg": "No Data",
+      "total_verified": 0,
+      "coverage_status": "Coverage Gap",
+      "gap_note": "0 buyer reviews on Amazon or Best Buy."
+    }
+  ],
+  "priceHistoryMeta": {
+    "totalRecords": 423,
+    "uniqueDates": [
+      "2026-11-22"
+    ],
+    "dateCount": 1,
+    "status": "Collecting: needs 2+ snapshots",
+    "statusNote": "1 daily snapshot captured on 2026-11-22 across 5 sources (Walmart, Best Buy, Google Shopping, Newegg, Amazon). Trend lines activate automatically once 2+ dated snapshots exist."
   }
-];
+};
+const RETAIL_HEADLINE = DASHBOARD_DATA.headline;
+const BLACK_FRIDAY_DEALS = DASHBOARD_DATA.blackFridayDeals;
+const PRICE_LADDER_COMPARE = DASHBOARD_DATA.priceLadder;
+const AVAILABILITY_HEATMAP = DASHBOARD_DATA.availabilityHeatmap;
+const RIVALS_NAMED_DATA = DASHBOARD_DATA.rivalsNamed.map(r => [r.name, r.count, r.color, `${r.pct}% (${r.count} mentions)`]);
+const SHOPPER_QA_THEMES_DATA = DASHBOARD_DATA.shopperQAThemes.map(t => [t.theme, t.count, t.color, `${t.count} verified threads (tag: ${t.raw_tag}) · ${t.desc}`]);
+const SHARE_OF_SHELF = DASHBOARD_DATA.shareOfShelf;
+const LISTING_CLAIMS_COMPARE = DASHBOARD_DATA.listingClaims;
+const SELLER_MIX_DATA = DASHBOARD_DATA.sellerMix;
+const REVIEWS_COVERAGE_DATA = DASHBOARD_DATA.reviewsCoverage;
+const PRICE_HISTORY_META = DASHBOARD_DATA.priceHistoryMeta;
+const SURFACE_RATING = DASHBOARD_DATA.surfaceRating;
 
-const AVAILABILITY_HEATMAP = [
-  {model:'Surface Laptop Ultra', oem:'Microsoft', us:'In Stock', eu:'In Stock', jp:'In Stock', cn:'No Data', tw:'Pre-Order'},
-  {model:'ProArt P14', oem:'Asus', us:'In Stock', eu:'In Stock', jp:'Pre-Order', cn:'No Data', tw:'Pre-Order'},
-  {model:'ProArt P16', oem:'Asus', us:'In Stock', eu:'In Stock', jp:'Pre-Order', cn:'No Data', tw:'Pre-Order'},
-  {model:'XPS 16 Creator Edition', oem:'Dell', us:'No Data', eu:'No Data', jp:'Out of Stock', cn:'No Data', tw:'No Data'},
-  {model:'OmniBook Ultra 16', oem:'HP', us:'In Stock', eu:'Out of Stock', jp:'Pre-Order', cn:'No Data', tw:'No Data'},
-  {model:'OmniBook X 14', oem:'HP', us:'In Stock', eu:'No Data', jp:'No Data', cn:'No Data', tw:'No Data'},
-  {model:'Yoga 9n 2-in-1', oem:'Lenovo', us:'In Stock', eu:'Limited', jp:'No Data', cn:'No Data', tw:'No Data'},
-  {model:'Pro 9n', oem:'Lenovo', us:'Pre-Order', eu:'In Stock', jp:'No Data', cn:'No Data', tw:'Out of Stock'},
-  {model:'Prestige N16 Flip AI+', oem:'MSI', us:'Out of Stock', eu:'In Stock', jp:'Pre-Order', cn:'No Data', tw:'Pre-Order'}
-];
 
-const RIVALS_NAMED_DATA = [
-  ['Intel Core Ultra (Series 1 / 2)', 325, '#0068B5', '41.9% (325 mentions)'],
-  ['AMD Ryzen AI (300 / Halo)', 304, '#B4372F', '39.2% (304 mentions)'],
-  ['Apple MacBook Pro (M4 / M5)', 146, 'var(--accent-strong)', '18.8% (146 mentions)']
-];
 
-const SHOPPER_QA_THEMES_DATA = [
-  ['Technical Specifications (RAM & Specs)', 116, 'var(--accent-strong)', '116 verified threads (tag: specs) · LPDDR5X unified soldered RAM, storage expansion slots, port I/O'],
-  ['General Inquiries & Portability', 44, 'var(--muted)', '44 verified threads (tag: other / portability) · Chassis weight, dimensions, travel cases, accessories'],
-  ['Operating System & App Compatibility', 23, '#2C5E8A', '23 verified threads (tag: compatibility) · Windows on Arm Prism translation, Adobe Creative Cloud, Linux'],
-  ['Gaming & Graphics Performance', 14, '#7A57C2', '14 verified threads (tag: gaming) · Blackwell 5120/6144-core GPU frame rates, DLSS support, anti-cheat'],
-  ['Pricing & Purchase Timing', 9, '#B4372F', '9 verified threads (tag: price) · Black Friday discounts, holiday sale timing, and price-to-performance'],
-  ['Battery Life & Power Delivery', 7, '#2F7D4F', '7 verified threads (tag: battery) · Real-world battery duration under local LLM loads, 140W USB-C charging'],
-  ['Display Quality & Refresh Rate', 4, '#E67E22', '4 verified threads (tag: display) · Mini LED ghosting / backlight response vs OLED, 120Hz refresh rates']
-];
 
 const RETAILERS = ['OEM store','Best Buy','Amazon','Newegg','Micro Center','B&H','Costco','Walmart'];
 const listed = (k, r) => r==='OEM store' ? true : r==='Amazon' ? !/^Not/.test(k.amz) : k.ret.includes(r);
@@ -1251,15 +1938,15 @@ const FEEDS = [
   ['Tech press','Reviews','Expert reviews and scores','Weekly','2,760 reviews & articles']
 ];
 const RETAIL_REV = {
-  'Surface Laptop Ultra': {amz:[3.0,1,0], bb:[4.4,8,2]},
-  'ProArt P14':             {amz:null,     bb:[4.8,23,2]},
-  'ProArt P16':             {amz:null,     bb:[4.7,18,1]},
-  'XPS 16 Creator Edition': {amz:null,     bb:[4.0,1,0]},
-  'OmniBook Ultra 16':      {amz:null,     bb:[4.8,20,1]},
+  'Surface Laptop Ultra': {amz:[3.0,1,0], bb:[4.4,8,1]},
+  'ProArt P14':             {amz:null,     bb:null},
+  'ProArt P16':             {amz:null,     bb:null},
+  'XPS 16 Creator Edition': {amz:null,     bb:null},
+  'OmniBook Ultra 16':      {amz:null,     bb:null},
   'OmniBook X 14':          {amz:null,     bb:null},
-  'Yoga 9n 2-in-1':         {amz:null,     bb:[5.0,2,5]},
-  'Pro 9n':                 {amz:[4.2,1,0],bb:null},
-  'Prestige N16 Flip AI+':  {amz:[4.0,1,0],bb:null}
+  'Yoga 9n 2-in-1':         {amz:null,     bb:null},
+  'Pro 9n':                 {amz:null,     bb:null},
+  'Prestige N16 Flip AI+':  {amz:null,     bb:null}
 };
 const COMMENTS = [
   // --- Verified Amazon Review Mapped to Surface Laptop Ultra (CI_5c / Amazon R1JO7MK3OG1W05) ---
@@ -2111,7 +2798,7 @@ function vRetail(){
   const pSum = cut.length ? `${cut.length} laptop${cut.length>1?'s have':' has'} been discounted since launch, by $100–400. ${cut.map(k=>k.model).join(', ')}.` : 'No discounts for this brand yet.';
   const listedCount = new Set(SKUS.flatMap(k=>RETAILERS.filter(r=>listed(k,r)))).size;
 
-  return `${vhead('Retail & pricing','Prices, discounts, shelf presence and competitor comparison','Comprehensive retail intelligence across 2,092 listings in 15+ countries, Black Friday promotional tracking, and side-by-side price ladder vs Intel Core Ultra.', `<div class="hero-meta">${pill('real','2,092 listings verified')}${pill('real','Black Friday active')}</div>`)}
+  return `${vhead('Retail & pricing','Prices, discounts, shelf presence and competitor comparison','Comprehensive retail intelligence across 2,091 listings in 15+ countries, Black Friday promotional tracking, and side-by-side price ladder vs Intel Core Ultra.', `<div class="hero-meta">${pill('real','2,091 listings verified')}${pill('real','Black Friday active')}</div>`)}
   ${marketNote()}
   
   <!-- Executive Headline Strip (BridgeAI Recommendation) -->
@@ -2197,7 +2884,7 @@ function vRetail(){
         </tbody>
       </table>
     </div>
-    <p class="note" style="margin-top:10px">Compiled from verified Google Shopping (60 listings) and Walmart exports for Intel Core Ultra siblings and Apple MacBook Pro 16" M5 (Apple M5 Pro chip, 24GB, $2,499). Verified chassis comparisons show Intel delivers $300 to $1,550 lower acquisition cost on matching OEM models.</p>
+    <p class="note" style="margin-top:10px">Compiled from verified Google Shopping (60 listings) and Walmart exports for Intel Core Ultra siblings and Apple MacBook Pro 16" M5 (Apple M5 Pro chip, 24GB, $2,499). Verified chassis comparisons show Intel delivers $300 to $1,300 lower acquisition cost on matching OEM models.</p>
   `, `<div class="hero-meta">${pill('real','60 listings verified')}${pill('real','Mac M5 updated')}</div>`)}
 
   <!-- Apify Daily Tracking Pipeline & Missing Data Resolution Card -->
@@ -2320,7 +3007,7 @@ function vRetail(){
           <span class="tag" style="background:${t[2]};color:#fff;font-weight:700">${t[1]}</span>
           <div>
             <b>${esc(t[0])}</b>
-            <div class="note" style="font-size:12.5px;margin-top:2px">${esc(t[4])}</div>
+            <div class="note" style="font-size:12.5px;margin-top:2px">${esc(t[3])}</div>
           </div>
         </div>`).join('')}
       </div>
@@ -2328,12 +3015,111 @@ function vRetail(){
     `, `<div class="hero-meta">${pill('real','217 Q&amp;A threads verified')}</div>`)}
   </div>
 
-  <!-- Split: Price Since Launch & Best Buy Rank -->
+  <!-- Split: Price Trend (History) & Best Buy Rank -->
   <div class="split">
-    ${card('pt','Price since launch','Lowest US price for the laptops that have been discounted', `<p class="summary">${esc(pSum)}</p>${legend(ps.map(x=>[x.n,x.c]))}` + viz('price', lineSvg({labels:pl, series:ps, label:pSum, fmt:v=>'$'+(v/1000).toFixed(1)+'k', launch:-1, lo:2400, hi:3400, W:470, H:250}), seriesTable('Lowest US price since launch (verified)', pl, ps, v=>money(v))), SP)}
+    ${card('pt', 'Price trend (Daily Snapshots)', 'Daily price trajectory per laptop and country', `
+      <div style="padding:22px 18px;text-align:center;background:var(--bg-card);border:1.5px dashed var(--line-strong);border-radius:8px;margin:6px 0 12px">
+        <div style="font-size:20px;font-weight:700;color:var(--ink);margin-bottom:6px">${esc(PRICE_HISTORY_META.status)}</div>
+        <p class="note" style="max-width:540px;margin:0 auto 12px;font-size:13px;line-height:1.5">${esc(PRICE_HISTORY_META.statusNote)}</p>
+        <div style="display:inline-flex;gap:14px;font-size:12px;color:var(--muted);background:var(--bg);padding:5px 12px;border-radius:16px;border:1px solid var(--line)">
+          <span><b>Snapshot Date:</b> 2026-11-22</span>
+          <span>&bull;</span>
+          <span><b>Ingested Rows:</b> ${PRICE_HISTORY_META.totalRecords}</span>
+          <span>&bull;</span>
+          <span><b>Sources:</b> Walmart, Best Buy, Google Shopping, Newegg, Amazon</span>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <caption class="sr-only">Seeded snapshot summary</caption>
+          <thead><tr><th>Date</th><th>Sources Ingested</th><th>Total Rows</th><th>Stock Normalization</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><b>2026-11-22</b></td>
+              <td>Walmart, Best Buy, Google Shopping, Newegg, Amazon</td>
+              <td class="num">423 product rows</td>
+              <td>Merged UK&rarr;GB, stock normalized (In Stock, Limited, Pre-Order, Out of Stock, No Data)</td>
+              <td>${status('Seeded (Snapshot 1)', 'good')}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `, `<div class="hero-meta">${pill('sample','Collecting: 1 / 2 snapshots')}${pill('real','2026-11-22 Seeded')}</div>`)}
     ${card('rk','Best Buy best-seller rank','Rank in Laptops, launch week vs now (lower is better)', tbl('Best Buy rank (verified)', ['Laptop','Launch wk','Now','Change'], s.map(k=>{ const r=PER[k.model].rank, f=r.find(v=>v), l=r[5]; const d = f&&l ? l-f : 0;
       return [`<span style="white-space:nowrap">${brandDot(k.oem).replace(esc(k.oem),'')}${esc(k.model)}</span>`, `<span class="num">${f?'#'+f:'–'}</span>`, `<span class="num">${l?'#'+l:'–'}</span>`, d===0?'<span class="note">New</span>':`<span class="delta ${d<0?'up':'down'}">${ic(d<0?'trend':'down')}${d<0?'Up '+(-d):'Down '+d}</span>`]; })), SP)}
   </div>
+
+  <!-- Share of Shelf Card (Task 6a) -->
+  ${card('share-of-shelf', 'Share of Shelf: Retailer Search Presence', 'Search result prominence, query positions, and brand visibility from 897 retailer search-page rows', `
+    <div class="grid3" style="margin-bottom:14px">
+      <div class="kpi"><span class="kl">${ic('cart')}Total Search Rows</span><b>${SHARE_OF_SHELF.totalSearchRows}</b><div class="kfoot"><span class="ks">Extracted from CI_5_Ecommerce search pages</span></div></div>
+      <div class="kpi"><span class="kl">${ic('award')}Top Search Brand</span><b>${SHARE_OF_SHELF.brandShare[0].brand} (${SHARE_OF_SHELF.brandShare[0].pct}%)</b><div class="kfoot"><span class="ks">${SHARE_OF_SHELF.brandShare[0].count} search result appearances</span></div></div>
+      <div class="kpi"><span class="kl">${ic('tag')}Search Ranking Status</span><b>Collecting</b><div class="kfoot"><span class="ks">Organic position tracking across Best Buy &amp; Walmart feeds</span></div></div>
+    </div>
+    <div style="margin-bottom:16px">
+      <p class="summary" style="margin-bottom:8px">Brand Share of Retailer Search Results (897 rows):</p>
+      ${hbars(SHARE_OF_SHELF.brandShare.map(b=>[b.brand, b.count, BRAND_COLOR[b.brand]||'var(--accent)', b.pct+'% ('+b.count+' results)']), {max:400, fmt:v=>v})}
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <caption class="sr-only">Search page query sampling</caption>
+        <thead><tr><th>Search Query</th><th>Retailer Platform</th><th>Brand</th><th>Chip / GPU Tier</th><th>Search Rank / Position</th><th>Listed Price</th></tr></thead>
+        <tbody>
+          ${SHARE_OF_SHELF.sampleListings.map(l=>`<tr>
+            <td><code>${esc(l.query)}</code></td>
+            <td><b>${esc(l.retailer)}</b></td>
+            <td>${brandDot(l.brand).replace(esc(l.brand),'')}<b>${esc(l.brand)}</b></td>
+            <td><span class="tag">${esc(l.chip)}</span></td>
+            <td><span class="note">${esc(l.position)}</span></td>
+            <td class="num">${typeof l.price === 'number' ? money(l.price) : `<span class="note">${esc(l.price)}</span>`}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:10px">Source: CI_5_Ecommerce search-page rows (897 rows). Organic rank positions marked as "Collecting" pending live SERP rank tracking. Category pages separated from pricing analysis.</p>
+  `, `<div class="hero-meta">${pill('real','897 search rows')}${pill('sample','Position: Collecting')}</div>`)}
+
+  <!-- Listing Claims Card: RTX Spark vs Intel Side by Side (Task 6b) -->
+  ${card('listing-claims', 'Listing Claims: RTX Spark vs. Intel Core Ultra', 'Side-by-side marketing claims extracted directly from retailer product titles &amp; Google Shopping details', `
+    <div class="tbl-wrap">
+      <table>
+        <caption class="sr-only">Listing claims side-by-side comparison</caption>
+        <thead><tr><th style="width:20%">Feature Dimension</th><th style="width:38%">RTX Spark Product Page Claims</th><th style="width:42%">Intel Core Ultra Listing Claims (Google Shopping)</th></tr></thead>
+        <tbody>
+          ${LISTING_CLAIMS_COMPARE.map(c=>`<tr>
+            <td><b>${esc(c.category)}</b></td>
+            <td>${esc(c.rtx_claim)}</td>
+            <td>
+              <div>${esc(c.intel_claim)}</div>
+              <div class="note" style="margin-top:4px;font-size:11.5px;color:var(--muted)"><em>Source: ${esc(c.intel_source)}</em></div>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:10px">Intel claims extracted strictly from <code>data/google_shopping_intel_core_ultra.csv</code> titles and productDetails. Unrecorded attributes are marked as "No Data".</p>
+  `, `<div class="hero-meta">${pill('real','Google Shopping feed')}${pill('real','Side-by-side claims')}</div>`)}
+
+  <!-- Seller Mix Card (Task 6c) -->
+  ${card('seller-mix', 'Seller Mix: 1st-Party Retail vs. 3rd-Party Marketplace', 'Breakdown of official store vs. marketplace sellers per laptop across Walmart, Newegg, Best Buy, and eBay', `
+    <div class="tbl-wrap">
+      <table>
+        <caption class="sr-only">Seller mix per laptop</caption>
+        <thead><tr><th>Laptop Model</th><th>OEM</th><th>Official 1st-Party Sellers</th><th>Marketplace 3rd-Party Sellers</th><th>Estimated Channel Split</th><th>Primary Fulfillment Status</th></tr></thead>
+        <tbody>
+          ${SELLER_MIX_DATA.map(m=>`<tr>
+            <td>${brandDot(m.oem).replace(esc(m.oem),'')}<b>${esc(m.laptop)}</b></td>
+            <td><b>${esc(m.oem)}</b></td>
+            <td>${esc(m.official_sellers)}</td>
+            <td>${esc(m.marketplace_sellers)}</td>
+            <td><span class="tag">${esc(m.split)}</span></td>
+            <td><span class="chip-s ${m.primary_seller_status.includes('Direct')||m.primary_seller_status.includes('OEM')?'pos':'watch'}">${esc(m.primary_seller_status)}</span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:10px">Source: Seller columns in Walmart scraper, Newegg listings, and CI_5_Ecommerce. HP OmniBook and Dell XPS are dominated by direct/1st-party retail, while Surface Laptop Ultra and Lenovo Pro 9n on Walmart are fulfilled by 3rd-party marketplace seller antonline.</p>
+  `, `<div class="hero-meta">${pill('real','Seller columns verified')}${pill('real','Marketplace breakdown')}</div>`)}
   `;
 }
 
@@ -2345,12 +3131,84 @@ function vReviews(){
   return `${vhead('Reviews & sentiment','How it\u2019s landing','Buyer reviews and shopper questions from Amazon and Best Buy, plus expert reviews: ratings, comments, praise, complaints and app compatibility.', SP)}
   ${marketNote()}
   <div class="grid4">
-    ${kpi('star','Buyer reviews collected', state.laptop==='All laptops'?'101':PER[state.laptop].rev, state.laptop==='All laptops'?'Amazon, Best Buy, OEM stores':esc(state.laptop))}
-    ${kpi('star','Average buyer rating', state.laptop==='All laptops'?'4.1 / 5':(PER[state.laptop].rate?PER[state.laptop].rate.toFixed(1)+' / 5':'Too few'),'since launch', state.laptop==='All laptops'?delta(-0.3,'',false,'since launch week'):'')}
+    ${kpi('star','Buyer reviews collected', state.laptop==='All laptops'?'9':PER[state.laptop].rev, state.laptop==='All laptops'?'Amazon (1) + Best Buy (8)':esc(state.laptop))}
+    ${kpi('star','Average buyer rating', state.laptop==='All laptops'?'4.2 / 5':(PER[state.laptop].rate?PER[state.laptop].rate.toFixed(1)+' / 5':'No Data'),'across 9 verified reviews', state.laptop==='All laptops'?delta(-0.3,'',false,'since launch week'):'')}
     ${kpi('users','Average press score','7.6 / 10','from 14 expert reviews')}
-    ${kpi('alert','One-star reviews','14%','of buyer reviews')}
+    ${kpi('alert','One-star reviews','11%','1 of 9 verified buyer reviews')}
   </div>
   ${retailSplit()}
+  <!-- Reviews Coverage Table (Task 6d) -->
+
+  ${card('reviews-coverage', 'Reviews Coverage &amp; Data Gap Analysis', 'Verified buyer review counts per laptop across Best Buy and Amazon (demonstrating early-market coverage gaps)', `
+
+    <div class="tbl-wrap">
+
+      <table>
+
+        <caption class="sr-only">Review coverage per laptop</caption>
+
+        <thead><tr><th>Laptop Model</th><th>OEM</th><th>Best Buy Reviews</th><th>Best Buy Avg Rating</th><th>Amazon Reviews</th><th>Amazon Avg Rating</th><th>Total Verified Reviews</th><th>Coverage Status</th><th>Audit Notes / Retail Gaps</th></tr></thead>
+
+        <tbody>
+
+          ${REVIEWS_COVERAGE_DATA.map(r=>`<tr>
+
+            <td>${brandDot(r.oem).replace(esc(r.oem),'')}<b>${esc(r.laptop)}</b></td>
+
+            <td><b>${esc(r.oem)}</b></td>
+
+            <td class="num">${r.bestbuy_reviews > 0 ? `<b>${r.bestbuy_reviews}</b>` : '<span class="note">0 (No Data)</span>'}</td>
+
+            <td class="num">${typeof r.bestbuy_avg === 'number' ? `<b>${r.bestbuy_avg.toFixed(2)}★</b>` : '<span class="note">–</span>'}</td>
+
+            <td class="num">${r.amazon_reviews > 0 ? `<b>${r.amazon_reviews}</b>` : '<span class="note">0 (No Data)</span>'}</td>
+
+            <td class="num">${typeof r.amazon_avg === 'number' ? `<b>${r.amazon_avg.toFixed(1)}★</b>` : '<span class="note">–</span>'}</td>
+
+            <td class="num"><b>${r.total_verified}</b></td>
+
+            <td><span class="chip-s ${r.coverage_status.startsWith('Active')?'pos':'watch'}">${esc(r.coverage_status)}</span></td>
+
+            <td><span class="note">${esc(r.gap_note)}</span></td>
+
+          </tr>`).join('')}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <p class="note" style="margin-top:10px">Source: Best Buy live reviews export (8 verified reviews for Surface Laptop Ultra, mean 4.38★) and Amazon reviews mapped feed (1 verified review, 3★). 35 unmapped generic budget laptops moved to <code>data/excluded/unrelated_amazon_reviews.csv</code>. 8 out of 9 models currently have zero buyer reviews in live feeds.</p>
+
+  `, `<div class="hero-meta">${pill('real','9 verified reviews')}${pill('alert','8 / 9 models have 0 reviews')}</div>`)}
+
+
+
+  <!-- Reviews Coverage Table (Task 6d) -->
+  ${card('reviews-coverage', 'Reviews Coverage &amp; Data Gap Analysis', 'Verified buyer review counts per laptop across Best Buy and Amazon (demonstrating early-market coverage gaps)', `
+    <div class="tbl-wrap">
+      <table>
+        <caption class="sr-only">Review coverage per laptop</caption>
+        <thead><tr><th>Laptop Model</th><th>OEM</th><th>Best Buy Reviews</th><th>Best Buy Avg Rating</th><th>Amazon Reviews</th><th>Amazon Avg Rating</th><th>Total Verified Reviews</th><th>Coverage Status</th><th>Audit Notes / Retail Gaps</th></tr></thead>
+        <tbody>
+          ${REVIEWS_COVERAGE_DATA.map(r=>`<tr>
+            <td>${brandDot(r.oem).replace(esc(r.oem),'')}<b>${esc(r.laptop)}</b></td>
+            <td><b>${esc(r.oem)}</b></td>
+            <td class="num">${r.bestbuy_reviews > 0 ? `<b>${r.bestbuy_reviews}</b>` : '<span class="note">0 (No Data)</span>'}</td>
+            <td class="num">${typeof r.bestbuy_avg === 'number' ? `<b>${r.bestbuy_avg.toFixed(2)}★</b>` : '<span class="note">–</span>'}</td>
+            <td class="num">${r.amazon_reviews > 0 ? `<b>${r.amazon_reviews}</b>` : '<span class="note">0 (No Data)</span>'}</td>
+            <td class="num">${typeof r.amazon_avg === 'number' ? `<b>${r.amazon_avg.toFixed(1)}★</b>` : '<span class="note">–</span>'}</td>
+            <td class="num"><b>${r.total_verified}</b></td>
+            <td><span class="chip-s ${r.coverage_status.startsWith('Active')?'pos':'watch'}">${esc(r.coverage_status)}</span></td>
+            <td><span class="note">${esc(r.gap_note)}</span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:10px">Source: Best Buy live reviews export (8 verified reviews for Surface Laptop Ultra, mean 4.38★) and Amazon reviews mapped feed (1 verified review, 3★). 35 unmapped generic budget laptops moved to <code>data/excluded/unrelated_amazon_reviews.csv</code>. 8 out of 9 models currently have zero buyer reviews in live feeds.</p>
+  `, `<div class="hero-meta">${pill('real','9 verified reviews')}${pill('alert','8 / 9 models have 0 reviews')}</div>`)}
+
   ${commentsCard()}
   <div class="grid3">
     ${card('rd','Buyer rating mix','Share of buyer reviews', hbars(RATING_DIST, {max:50, color:'linear-gradient(90deg,#F2A574,#C9592A)'}), SP)}

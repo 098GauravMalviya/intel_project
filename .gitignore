@@ -1,11 +1,16 @@
-# Python
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
-.env
 
-# Editor
+# Windows thumbnail & desktop caches
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Temporary and swap files
+*.tmp
+*.temp
+*~
 .vscode/
 .idea/
-*.swp

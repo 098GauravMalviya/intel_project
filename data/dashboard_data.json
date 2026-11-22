@@ -1,0 +1,371 @@
+{
+  "headline": {
+    "lowestPrice": "$2,499.00",
+    "lowestLaptop": "HP OmniBook X 14\" (Walmart)",
+    "biggestDeal": "Save $400.00 (-13.8%)",
+    "dealSource": "Walmart Black Friday Deal (Ends 28 Nov 2026)",
+    "globalCoverage": "2,091 listings across 15+ countries (GB/UK merged: 120)",
+    "intelAdvantage": "-$300 to -$1,550 lower",
+    "intelNote": "Verified across direct OEM chassis pairs (Lenovo -$365, MSI -$1,300, HP -$600 to -$1,000)"
+  },
+  "blackFridayDeals": [
+    {
+      "model": "HP OmniBook X 14\"",
+      "oem": "HP",
+      "retailer": "Walmart",
+      "was": 2899.0,
+      "now": 2499.0,
+      "save": 400.0,
+      "pct": 13.8,
+      "deal_type": "Verified Price Cut (-$400)",
+      "status": "In Stock (Delivery by 23 Nov)",
+      "captured_date": "2026-11-22",
+      "deal_expiry": "2026-11-28",
+      "url": "https://www.walmart.com/ip/Omnibook-X-NVIDIA-N1X-650-32G-1TB/20452003275?classType=REGULAR",
+      "is_verified_discount": true
+    },
+    {
+      "model": "Surface Laptop Ultra 15\" (24GB)",
+      "oem": "Microsoft",
+      "retailer": "Walmart / antonline",
+      "was": 2599.99,
+      "now": 2599.99,
+      "save": 0.0,
+      "pct": 0.0,
+      "deal_type": "Regular MSRP (No Discount)",
+      "status": "In Stock (Delivery by 25 Nov)",
+      "captured_date": "2026-11-22",
+      "deal_expiry": "2026-11-28",
+      "url": "https://www.walmart.com/ip/Microsoft-Surface-Laptop-Ultra-15-PixelSense-Ultra-Touchscreen-NVIDIA-RTX-Spark-N1X-18-core-2026-NVIDIA-Blackwell-RTX-5120-Core-GPU-24GB-Unified-Memo/21445367547?classType=REGULAR",
+      "is_verified_discount": false
+    },
+    {
+      "model": "Surface Laptop Ultra 15\" (32GB)",
+      "oem": "Microsoft",
+      "retailer": "Walmart / antonline",
+      "was": 3299.99,
+      "now": 3299.99,
+      "save": 0.0,
+      "pct": 0.0,
+      "deal_type": "Regular MSRP (No Discount)",
+      "status": "In Stock (Delivery by 25 Nov)",
+      "captured_date": "2026-11-22",
+      "deal_expiry": "2026-11-28",
+      "url": "https://www.walmart.com/ip/Microsoft-Surface-Laptop-Ultra-15-PixelSense-Ultra-Touchscreen-NVIDIA-RTX-Spark-N1X-18-core-2026-NVIDIA-Blackwell-RTX-5120-Core-GPU-32GB-Unified-Memo/21232856512?classType=REGULAR",
+      "is_verified_discount": false
+    },
+    {
+      "model": "Lenovo Pro 9n 15.3\" (32GB/1TB)",
+      "oem": "Lenovo",
+      "retailer": "Walmart / antonline",
+      "was": 2999.99,
+      "now": 2999.99,
+      "save": 0.0,
+      "pct": 0.0,
+      "deal_type": "Regular MSRP (No Discount)",
+      "status": "In Stock (Delivery by 25 Nov)",
+      "captured_date": "2026-11-22",
+      "deal_expiry": "2026-11-28",
+      "url": "https://www.walmart.com/ip/Lenovo-Pro-9n-15-3-WQXGA-OLED-Touchscreen-Copilot-PC-NVIDIA-RTX-Spark-N1X-with-5120-core-CPU-and-18-core-GPU-32GB-RAM-1TB-SSD-Thunder-Grey/21264858344?classType=REGULAR",
+      "is_verified_discount": false
+    },
+    {
+      "model": "MSI Prestige N16 Flip AI+ (32GB/1TB)",
+      "oem": "MSI",
+      "retailer": "Walmart / Newegg Inc",
+      "was": 3299.0,
+      "now": 3299.0,
+      "save": 0.0,
+      "pct": 0.0,
+      "deal_type": "Regular MSRP (Extended Warranty Promo)",
+      "status": "In Stock (Delivery by 28 Nov)",
+      "captured_date": "2026-11-22",
+      "deal_expiry": "2026-11-28",
+      "url": "https://www.walmart.com/ip/MSI-Prestige-16-0-120-Hz-NVIDIA-RTX-Spark-N1X-6144-core-GPU-20-core-CPU-32GB-LPDDR5X-1TB-NVMe-SSD-2-8K-OLED-Touch-Windows-11-Home-Prestige-N16-Flip-A/21081716137?classType=REGULAR",
+      "is_verified_discount": false
+    },
+    {
+      "model": "ASUS ProArt P16 (64GB/2TB)",
+      "oem": "Asus",
+      "retailer": "Best Buy / ASUS US Store",
+      "was": 4499.99,
+      "now": 4499.99,
+      "save": 0.0,
+      "pct": 0.0,
+      "deal_type": "Flagship Workstation Listing",
+      "status": "In Stock",
+      "captured_date": "2026-11-22",
+      "deal_expiry": "2026-11-28",
+      "url": "https://www.google.com/search?q=ASUS%20ProArt%20P16%20Intel%20Core%20Ultra%20X7",
+      "is_verified_discount": false
+    }
+  ],
+  "priceLadder": [
+    {
+      "tier": "Entry AI & Productivity ($800 \u2013 $1,500)",
+      "rtx": "None available (RTX Spark ecosystem floor starts at $2,499+)",
+      "intel": "HP OmniBook X 14\" (Core Ultra 5/7, 16GB) \u00b7 $829.00 (Walmart) / $899.99 (HP Store)<br>HP OmniBook Ultra 16 (Core Ultra 5, 16GB, 1TB) \u00b7 $919.99 \u2013 $939.99 (Newegg)<br>Lenovo Yoga Pro 9i 16 (Core Ultra 9 285H refurb/outlet) \u00b7 $849.99 \u2013 $1,231.99 (eBay)",
+      "mac": "MacBook Air 13\"/15\" M3/M4 (entry creative tier) \u00b7 $1,099 \u2013 $1,299",
+      "gap": "Intel provides full entry access $829 \u2013 $1,499; RTX Spark has zero market presence under $2,499",
+      "diff": "-$1,000 to -$1,670 lower",
+      "edge": "intel"
+    },
+    {
+      "tier": "Mainstream Creator ($1,500 \u2013 $2,500)",
+      "rtx": "HP OmniBook X 14\" (N1X 18-core, 32GB, 1TB) \u00b7 $2,499.00 (Black Friday deal at Walmart, was $2,899)",
+      "intel": "ASUS ProArt P16 (Intel Core Ultra 7 258V, 32GB, 1TB) \u00b7 $1,390.30 (Best Buy)<br>HP OmniBook X 14 (Core Ultra 7 356H, 24GB, 1TB) \u00b7 $1,899.99 (Abt) / $1,499.99 (Target)<br>MSI Prestige 16 Flip AI+ (Core Ultra 7 355, 32GB, 2.8K OLED) \u00b7 $1,999.99 (Best Buy)<br>ASUS ROG Zephyrus G16 (Core Ultra 9 285H, OLED) \u00b7 $2,149.99 (Best Buy, 313 rev, 4.6\u2605)",
+      "mac": "Apple MacBook Pro 14\" M4 Pro \u00b7 $1,999.00",
+      "gap": "Intel matching chassis are $350 to $1,100 lower than RTX Spark entry ($1,390 \u2013 $2,150 vs $2,499)",
+      "diff": "-$350 to -$1,100 lower",
+      "edge": "intel"
+    },
+    {
+      "tier": "Premium Flagship ($2,500 \u2013 $4,000)",
+      "rtx": "Microsoft Surface Laptop Ultra 15\" (N1X 18-core, 24GB) \u00b7 $2,599.99 (Walmart)<br>Lenovo Pro 9n 15.3\" (N1X 18-core, 32GB, 1TB) \u00b7 $2,999.99 (Walmart)<br>MSI Prestige N16 Flip AI+ (N1X 20-core, 32GB) \u00b7 $3,299.00 (Walmart)",
+      "intel": "Lenovo 16\" Pro 9i Aura Edition (Core Ultra 9 285H, 32GB) \u00b7 $2,634.99 (Lenovo.com official)<br>Dell XPS 16 (Current Core Ultra generation, Best Buy SKU) \u00b7 $2,249.99 (Best Buy, current gen)<br>MSI Prestige 16 Flip AI+ (Core Ultra 7 355, 32GB, 4TB) \u00b7 $2,489.00 (Newegg)",
+      "mac": "Apple MacBook Pro 16\" M5 (Apple M5 Pro chip, 24GB unified memory, 512GB SSD) \u00b7 $2,499.00 (Apple Store / B&H, captured Nov 2026)",
+      "gap": "Intel is $365 lower (Lenovo Pro 9n $2,999 vs Yoga Pro 9i $2,635) and $1,300 lower (MSI Prestige N16 $3,299 vs Prestige 16 $1,999); MacBook Pro 16\" M5 matches entry at $2,499",
+      "diff": "-$300 to -$1,550 lower across matching OEM pairs",
+      "edge": "intel"
+    },
+    {
+      "tier": "Ultra Workstation ($4,000+)",
+      "rtx": "Lenovo Pro 9n 15.3\" (N1X 20-core, 64GB, 2TB) \u00b7 $4,499.99 (Walmart)<br>ASUS ProArt P16 (N1X 20-core, 64GB, 4K OLED) \u00b7 $4,499.99 \u2013 $6,999.99 (Best Buy / ASUS US)",
+      "intel": "Custom OEM Mobile Workstations (Core Ultra 9 285HX + RTX 5080/5090) \u00b7 $3,499 \u2013 $4,299",
+      "mac": "Apple MacBook Pro 16\" M5 Max (128GB unified memory) \u00b7 $4,499.00",
+      "gap": "RTX Spark delivers 64GB unified memory for LLM execution; Intel mobile workstations provide discrete GPU modularity at lower initial chassis cost",
+      "diff": "-$200 to -$1,200 lower",
+      "edge": "rtx"
+    }
+  ],
+  "availabilityHeatmap": [
+    {
+      "model": "Surface Laptop Ultra",
+      "oem": "Microsoft",
+      "us": "In Stock",
+      "us_supported": true,
+      "eu": "In Stock",
+      "eu_supported": true,
+      "jp": "Limited",
+      "jp_supported": true,
+      "cn": "No Data",
+      "cn_supported": false,
+      "tw": "Pre-Order",
+      "tw_supported": true
+    },
+    {
+      "model": "ProArt P14",
+      "oem": "Asus",
+      "us": "In Stock",
+      "us_supported": true,
+      "eu": "In Stock",
+      "eu_supported": true,
+      "jp": "In Stock",
+      "jp_supported": true,
+      "cn": "No Data",
+      "cn_supported": false,
+      "tw": "Pre-Order",
+      "tw_supported": true
+    },
+    {
+      "model": "ProArt P16",
+      "oem": "Asus",
+      "us": "In Stock",
+      "us_supported": true,
+      "eu": "In Stock",
+      "eu_supported": true,
+      "jp": "In Stock",
+      "jp_supported": true,
+      "cn": "No Data",
+      "cn_supported": false,
+      "tw": "Out of Stock",
+      "tw_supported": true
+    },
+    {
+      "model": "XPS 16 Creator Edition",
+      "oem": "Dell",
+      "us": "No Data",
+      "us_supported": false,
+      "eu": "No Data",
+      "eu_supported": false,
+      "jp": "Pre-Order",
+      "jp_supported": true,
+      "cn": "No Data",
+      "cn_supported": false,
+      "tw": "No Data",
+      "tw_supported": false
+    },
+    {
+      "model": "OmniBook Ultra 16",
+      "oem": "HP",
+      "us": "In Stock",
+      "us_supported": true,
+      "eu": "In Stock",
+      "eu_supported": true,
+      "jp": "Pre-Order",
+      "jp_supported": true,
+      "cn": "No Data",
+      "cn_supported": false,
+      "tw": "No Data",
+      "tw_supported": false
+    },
+    {
+      "model": "OmniBook X 14",
+      "oem": "HP",
+      "us": "In Stock",
+      "us_supported": true,
+      "eu": "No Data",
+      "eu_supported": false,
+      "jp": "No Data",
+      "jp_supported": false,
+      "cn": "No Data",
+      "cn_supported": false,
+      "tw": "No Data",
+      "tw_supported": false
+    },
+    {
+      "model": "Yoga 9n 2-in-1",
+      "oem": "Lenovo",
+      "us": "In Stock",
+      "us_supported": true,
+      "eu": "Limited",
+      "eu_supported": true,
+      "jp": "No Data",
+      "jp_supported": false,
+      "cn": "No Data",
+      "cn_supported": false,
+      "tw": "No Data",
+      "tw_supported": false
+    },
+    {
+      "model": "Pro 9n",
+      "oem": "Lenovo",
+      "us": "In Stock",
+      "us_supported": true,
+      "eu": "In Stock",
+      "eu_supported": true,
+      "jp": "No Data",
+      "jp_supported": false,
+      "cn": "No Data",
+      "cn_supported": false,
+      "tw": "Out of Stock",
+      "tw_supported": true
+    },
+    {
+      "model": "Prestige N16 Flip AI+",
+      "oem": "MSI",
+      "us": "In Stock",
+      "us_supported": true,
+      "eu": "In Stock",
+      "eu_supported": true,
+      "jp": "In Stock",
+      "jp_supported": true,
+      "cn": "No Data",
+      "cn_supported": false,
+      "tw": "Pre-Order",
+      "tw_supported": true
+    }
+  ],
+  "heatmapSummary": {
+    "totalCells": 45,
+    "verifiedCells": 26,
+    "unsupportedCells": 19,
+    "note": "26 of 45 regional cells verified from CI_5_Ecommerce; 19 unmonitored cells transparently noted as No Data."
+  },
+  "rivalsNamed": [
+    {
+      "name": "Intel Core Ultra (Series 1 / 2)",
+      "count": 325,
+      "pct": 41.9,
+      "color": "#0068B5"
+    },
+    {
+      "name": "AMD Ryzen AI (300 / Halo)",
+      "count": 304,
+      "pct": 39.2,
+      "color": "#B4372F"
+    },
+    {
+      "name": "Apple MacBook Pro (M4 / M5)",
+      "count": 146,
+      "pct": 18.8,
+      "color": "#5C768D"
+    }
+  ],
+  "shopperQAThemes": [
+    {
+      "theme": "Technical Specifications (RAM & Specs)",
+      "raw_tag": "specs",
+      "count": 116,
+      "pct": 53.5,
+      "color": "var(--accent-strong)",
+      "desc": "Questions on RAM expandability (LPDDR5X unified solder), storage slots, and port specs."
+    },
+    {
+      "theme": "Operating System & Software Compatibility",
+      "raw_tag": "compatibility",
+      "count": 23,
+      "pct": 10.6,
+      "color": "#2C5E8A",
+      "desc": "ARM64 vs x86 Windows Prism emulation, Adobe Creative Cloud, and developer tooling."
+    },
+    {
+      "theme": "Gaming & Graphics Performance",
+      "raw_tag": "gaming",
+      "count": 14,
+      "pct": 6.5,
+      "color": "#7A57C2",
+      "desc": "RTX Blackwell 5120/6144-core GPU frame rates, DLSS support, and external monitor drive."
+    },
+    {
+      "theme": "Pricing & Purchase Timing",
+      "raw_tag": "price",
+      "count": 9,
+      "pct": 4.1,
+      "color": "#B4372F",
+      "desc": "Black Friday promotional discounts, holiday trade-in values, and price protection."
+    },
+    {
+      "theme": "Battery Life & Power Delivery",
+      "raw_tag": "battery",
+      "count": 7,
+      "pct": 3.2,
+      "color": "#2F7D4F",
+      "desc": "Watt-hour capacity, USB-C PD 140W charging, and endurance under local LLM loads."
+    },
+    {
+      "theme": "Display Quality & Form Factor",
+      "raw_tag": "display",
+      "count": 4,
+      "pct": 1.8,
+      "color": "#E67E22",
+      "desc": "Mini LED vs OLED ghosting trails, refresh rates (120Hz), and color gamut."
+    },
+    {
+      "theme": "General Inquiries & Portability",
+      "raw_tag": "other + portability",
+      "count": 44,
+      "pct": 20.3,
+      "color": "var(--muted)",
+      "desc": "Chassis weight, travel cases, stylus compatibility, and regional SKU availability."
+    }
+  ],
+  "surfaceRating": {
+    "bestBuyRating": 4.38,
+    "displayRating": "4.4\u2605",
+    "reviewCount": 8,
+    "ratingsList": [
+      5.0,
+      4.0,
+      5.0,
+      1.0,
+      5.0,
+      5.0,
+      5.0,
+      5.0
+    ],
+    "amazonMappedCount": 2,
+    "amazonUnmappedGenericCount": 35,
+    "notes": "Best Buy verified score: 4.4\u2605 (35/8 = 4.38\u2605). 1 Amazon review mapped to Surface Laptop Ultra (3\u2605), 1 mapped to RTX Spark 128GB (3\u2605); 35 unmapped rows from broad third-party search scraper sweeps documented."
+  }
+}

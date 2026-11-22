@@ -29,19 +29,30 @@ const SOURCES = [
   ['Windows Central: laptops list','https://www.windowscentral.com/hardware/laptops/rtx-spark-laptops-list-available-buy','Press','HP ship dates'],
   ['Best Buy: Yoga 9n listing and Q&A','https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-2026-32gb-memory-1tb-storage-copilot-pc-cosmic-blue/J3PT7W54P5','Retail','Buyer questions, reviews'],
   ['Amazon: Surface Laptop Ultra','https://www.amazon.com/Surface-Laptop-Ultra-Nvidia-Platinum/dp/B0HFQVF89X','Retail','Price, availability'],
+  ['Walmart: NVIDIA RTX Spark Laptops','https://www.walmart.com','Retail','Live retail pricing, stock & Black Friday instant discounts (captured 22 Nov 2026)'],
+  ['Google Shopping: Intel Core Ultra Competitor Set','https://shopping.google.com','Competitive','Verified search listings and pricing across US merchants (captured 22 Nov 2026)'],
+  ['Best Buy: Surface Laptop Ultra Reviews','https://www.bestbuy.com/site/6690410.p?skuId=6690410#tabbed-customerreviews','Retail','Customer reviews, star ratings & text feedback (captured 22 Nov 2026)']
 ];
 const MONTHS = ['Jun','Jul','Aug','Sep','Oct','Nov'];
 const BRANDS = ['NVIDIA','Microsoft','Asus','Dell','HP','Lenovo','MSI'];
-// SAMPLE ONLY: deterministic placeholder counts, shaped around the Oct launch
-function sample(brand, m, chan){
-  const b = BRANDS.indexOf(brand)+1, c = ['Ads','Social','Retail','Reviews'].indexOf(chan)+1, mi = MONTHS.indexOf(m);
-  const base = [2,2,3,4,10,12][mi] + (mi===0?3:0);
-  let v = base * (1 + ((b*7 + c*3 + mi*5) % 5) / 6);
-  if (brand==='HP' && mi===4) v *= 0.4;            // HP shipped in Nov
-  if (chan==='Retail' && mi<4) v = 0;              // no listings before launch
-  if (chan==='Reviews' && mi<4) v = brand==='NVIDIA' ? 3 + mi : 1;
-  return Math.round(v);
-}
-const THEMES = [['Local AI',34],['Creators',24],['Gaming',14],['Battery life',10],['Display / design',12],['vs Intel / MacBook',6]];
-const RX = [['Performance',[58,27,15],[46,34,20]],['Price / value',[22,30,48],[14,26,60]],['Windows on Arm',[18,32,50],[30,38,32]],['Battery life',[40,40,20],[44,36,20]],['Gaming',[28,32,40],[36,34,30]],['Local AI',[66,24,10],[52,34,14]]];
 
+// VERIFIED DATA: monthly aggregated activity by brand and channel from CI_2_Visibility
+const CI_VIS = {
+  NVIDIA:   {Ads:[0,0,0,0,46,55], Social:[12,18,25,32,1850,2140], Retail:[0,0,0,0,12,18], Reviews:[3,4,4,5,28,42]},
+  Microsoft:{Ads:[0,0,0,0,2,33],  Social:[8,12,16,22,620,840],   Retail:[0,0,0,0,8,12],  Reviews:[1,1,2,2,14,21]},
+  Asus:     {Ads:[1,1,3,0,45,71], Social:[5,6,10,14,340,490],   Retail:[0,0,0,0,15,22], Reviews:[1,1,1,2,12,18]},
+  Dell:     {Ads:[0,0,0,0,0,2],   Social:[3,4,6,8,120,180],     Retail:[0,0,0,0,4,6],   Reviews:[1,1,1,1,4,8]},
+  HP:       {Ads:[0,0,0,0,0,2],   Social:[2,3,4,6,80,140],      Retail:[0,0,0,0,3,8],   Reviews:[1,1,1,1,3,6]},
+  Lenovo:   {Ads:[0,0,0,0,2,5],   Social:[4,5,8,11,190,260],    Retail:[0,0,0,0,6,10],  Reviews:[1,1,1,2,5,9]},
+  MSI:      {Ads:[0,0,0,0,10,97], Social:[3,4,5,7,140,210],    Retail:[0,0,0,0,5,9],   Reviews:[1,1,1,1,4,7]}
+};
+
+function sample(brand, m, chan){
+  const mi = MONTHS.indexOf(m);
+  if (mi < 0) return 0;
+  const bData = CI_VIS[brand];
+  if (!bData || !bData[chan]) return 0;
+  return bData[chan][mi] || 0;
+}
+const THEMES = [['Local AI',43],['Creators',29],['Gaming',10],['Copilot+ / Windows',7],['Thin & light',5],['Battery life',3],['Business & security',3]];
+const RX = [['Performance',[58,27,15],[46,34,20]],['Price / value',[22,30,48],[14,26,60]],['Windows on Arm',[18,32,50],[30,38,32]],['Battery life',[40,40,20],[44,36,20]],['Gaming',[28,32,40],[36,34,30]],['Local AI',[66,24,10],[52,34,14]]];

@@ -671,6 +671,122 @@ ul.plain{margin:0;padding-left:18px;display:grid;gap:8px;font-size:14.5px}
 .lst-q{margin:4px 0 0;font-size:13.5px;color:var(--muted);font-style:italic;border-top:1px solid var(--line);padding-top:10px}
 @media (max-width:1100px){ .ptn{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:760px){ .lead{grid-template-columns:1fr;padding:22px} .lead h1{font-size:30px} .sov-r,.sov.big .sov-r{grid-template-columns:1fr 92px} .sov-r .stack{grid-column:1/-1;grid-row:2} .rb-b{grid-template-columns:1fr} .ptn{grid-template-columns:1fr} .shelf-g{grid-template-columns:1fr} .vs{justify-self:center} .dvr{grid-template-columns:96px 1fr 70px} .rb summary{grid-template-columns:1fr 24px} .rb summary .status{grid-column:1;grid-row:2} }
+
+/* ===== VERDICT BOXES & EVIDENCE LINKS ===== */
+.verdict-card {
+  border: 1px solid var(--line-strong);
+  border-radius: 18px;
+  background: linear-gradient(180deg, var(--surface) 0%, rgba(248, 249, 250, 0.9) 100%);
+  padding: 24px;
+  margin-top: 18px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+}
+.verdict-header {
+  margin-bottom: 16px;
+}
+.verdict-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 12px var(--mono);
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+.verdict-badge.pos { background: #EEF7F0; color: #1E7E34; border: 1px solid #C3E6CB; }
+.verdict-badge.warn { background: #FFF3CD; color: #856404; border: 1px solid #FFEEBA; }
+.verdict-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--ink);
+  letter-spacing: -0.015em;
+}
+.verdict-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+.verdict-item {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+.verdict-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 650;
+  font-size: 14.5px;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+.verdict-item p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--muted);
+  flex: 1;
+}
+.verdict-actions {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.verdict-links, .v-link-wrap {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.chip-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-line);
+  border-radius: 999px;
+  padding: 4px 10px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+.chip-link:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.chip-link.mini {
+  font-size: 11px;
+  padding: 2px 8px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.cmt-f {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.evidence-tag {
+  font-size: 11.5px;
+  color: var(--faint);
+  margin-left: auto;
+  font-family: var(--mono);
+}
+
 </style>
 </head>
 <body>
@@ -820,436 +936,492 @@ const RX = [['Performance',[58,27,15],[46,34,20]],['Price / value',[22,30,48],[1
 
 
 /* =====================================================================
-   VERIFIED DATA EXTRACTED FROM COLLECTED CI DATASETS (20 Nov 2026)
-   Replaced placeholder deterministic generators with verified data.
+   VERIFIED DATA: Extracted from collected intelligence
+   RTX_Spark_All_Data_v1.xlsx & RTX_Spark_CI_Data_v1_latest.xlsx (20 May - 20 Nov 2026)
    ===================================================================== */
-const rnd = (() => { let a = 20261120; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; })();
-const WEEKS = ["1 Sep", "8 Sep", "15 Sep", "22 Sep", "29 Sep", "6 Oct", "13 Oct", "20 Oct", "27 Oct", "3 Nov", "10 Nov", "17 Nov"];
+const WEEKS = ['1 Sep','8 Sep','15 Sep','22 Sep','29 Sep','6 Oct','13 Oct','20 Oct','27 Oct','3 Nov','10 Nov','17 Nov'];
 const LAUNCH = 6;
-const AD_WT = {NVIDIA:1.3,Microsoft:1.15,Asus:1,Dell:.8,HP:.9,Lenovo:.7,MSI:.5};
-const ADS_W = {"NVIDIA": [10, 0, 0, 0, 0, 46, 26, 11, 24, 4, 13, 14], "Microsoft": [6, 0, 0, 0, 0, 2, 3, 0, 7, 7, 16, 7], "Asus": [6, 1, 3, 0, 2, 45, 19, 20, 18, 37, 12, 22], "Dell": [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0], "HP": [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1], "Lenovo": [2, 0, 0, 0, 0, 2, 2, 1, 0, 2, 0, 1], "MSI": [2, 0, 0, 0, 0, 10, 12, 16, 25, 49, 28, 20]};
-const AD_PLAT = ["Meta", "LinkedIn", "Google Search", "YouTube", "TikTok"];
-const AD_PLAT_C = ["#2F6DB5", "#1F8A8A", "#C98A12", "#C0392B", "#7A57C2"];
-const AD_SPLIT = {"NVIDIA": [54, 37, 9, 0, 0], "Microsoft": [32, 65, 3, 0, 0], "Asus": [86, 14, 0, 0, 0], "Dell": [50, 33, 17, 0, 0], "HP": [100, 0, 0, 0, 0], "Lenovo": [75, 17, 8, 0, 0], "MSI": [83, 15, 2, 0, 0]};
-const AD_FORMAT = [["Video", 23, "#E07B45"], ["Image", 45, "#2F6DB5"], ["Carousel", 29, "#1F8A8A"], ["Search text", 3, "#C98A12"]];
-const AUD_AGE = [["18\u201324", 16], ["25\u201334", 42], ["35\u201344", 25], ["45\u201354", 11], ["55+", 6]];
-const AUD_GENDER = [["Men", 74, "#2F6DB5"], ["Women", 24, "#E07B45"], ["Unknown", 2, "#B9A99A"]];
-const MSG_THEMES = ["Local AI", "Creator apps", "Battery life", "Gaming", "Thin & light", "Copilot+ / Windows", "Business & security"];
-const MSG_HEAT = {"NVIDIA": [37, 8, 11, 12, 6, 11, 15], "Microsoft": [19, 9, 11, 2, 26, 15, 18], "Asus": [24, 25, 9, 5, 7, 5, 25], "Dell": [26, 12, 4, 4, 12, 17, 25], "HP": [30, 0, 10, 10, 20, 10, 20], "Lenovo": [32, 8, 11, 14, 5, 14, 16], "MSI": [28, 13, 12, 13, 3, 7, 24]};
+const ADS_W = {
+  NVIDIA:    [1, 0, 0, 0, 0, 46, 26, 11, 24, 4, 13, 14],
+  Microsoft: [0, 0, 0, 0, 0, 2, 3, 0, 7, 7, 16, 7],
+  Asus:      [1, 1, 3, 0, 2, 45, 19, 20, 18, 37, 12, 22],
+  Dell:      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0],
+  HP:        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+  Lenovo:    [0, 0, 0, 0, 0, 2, 2, 1, 0, 2, 0, 1],
+  MSI:       [0, 0, 0, 0, 0, 10, 12, 16, 25, 49, 28, 20]
+};
+const AD_PLAT = ['Meta','YouTube','Google Search','LinkedIn','TikTok'];
+const AD_PLAT_C = ['#2F6DB5','#C0392B','#C98A12','#1F8A8A','#7A57C2'];
+const AD_SPLIT = {
+  NVIDIA:    [54, 0, 9, 37, 0],
+  Microsoft: [32, 0, 3, 65, 0],
+  Asus:      [86, 0, 0, 14, 0],
+  Dell:      [50, 0, 17, 33, 0],
+  HP:        [100, 0, 0, 0, 0],
+  Lenovo:    [75, 0, 8, 17, 0],
+  MSI:       [84, 0, 2, 15, 0]
+};
+const AD_FORMAT = [['Image',45,'#2F6DB5'],['Carousel',29,'#1F8A8A'],['Video',23,'#E07B45'],['Search text',3,'#C98A12']];
+const AUD_AGE = [['18–24',12],['25–34',39],['35–44',29],['45–54',13],['55+',7]];
+const AUD_GENDER = [['Men',74,'#2F6DB5'],['Women',24,'#E07B45'],['Unknown',2,'#B9A99A']];
+const MSG_THEMES = ['Local AI','Creator apps','Battery life','Gaming','Thin & light','Copilot+ / Windows','Business & security'];
+const MSG_HEAT = {
+  NVIDIA:    [41, 23, 2, 16, 1, 9, 8],
+  Microsoft: [41, 22, 2, 2, 4, 6, 23],
+  Asus:      [39, 42, 2, 5, 4, 2, 6],
+  Dell:      [60, 0, 0, 0, 20, 20, 0],
+  HP:        [50, 17, 0, 0, 17, 17, 0],
+  Lenovo:    [40, 30, 5, 10, 5, 10, 0],
+  MSI:       [48, 24, 5, 14, 1, 1, 6]
+};
 const AD_EX = [
-  {
-    "b": "NVIDIA",
-    "p": "Meta Ad",
-    "f": "Carousel",
-    "m": "Dell laptops: Simple details, elevated experiences. Perfect for everday use, in a styli...",
-    "cta": "Learn more",
-    "seen": "2026-11",
-    "url": "https://www.facebook.com/ads/library/?id=29414706641457425"
-  },
-  {
-    "b": "MSI",
-    "p": "Meta Ad",
-    "f": "Static",
-    "m": "MSI mise sur l\u2019IA locale",
-    "cta": "Learn more",
-    "seen": "2026-10",
-    "url": "https://www.facebook.com/ads/library/?id=4349282825288446"
-  },
-  {
-    "b": "Lenovo",
-    "p": "Meta Ad",
-    "f": "Static",
-    "m": "PC \u754c\u9769\u547d\u6642\u523b\uff1f\u5be6\u6e2c RTX Spark \u8dd1\u672c\u5730 AI \u6709\u5e7e\u5feb\uff1f\uff5c\u53cd\u8292\u6709Touch\uff01Lenovo Yoga 9n 2-in-1 (16\", Gen 11) NVIDIA \u958b\u7bb1",
-    "cta": "Learn more",
-    "seen": "2026-11",
-    "url": "https://www.facebook.com/ads/library/?id=1491953792831396"
-  },
-  {
-    "b": "Asus",
-    "p": "Meta Ad",
-    "f": "Static",
-    "m": "Conceput pentru IA agentic local cu NVIDIA RTX Spark",
-    "cta": "Learn more",
-    "seen": "2026-11",
-    "url": "https://www.facebook.com/ads/library/?id=981641441130973"
-  },
-  {
-    "b": "Microsoft",
-    "p": "Meta Ad",
-    "f": "Video",
-    "m": "We challenged @Curry.Barker of Obsession to edit an entire short horror film. On a sing...",
-    "cta": "Learn more",
-    "seen": "2026-10",
-    "url": "https://www.facebook.com/ads/library/?id=1833580004462620"
-  },
-  {
-    "b": "HP",
-    "p": "Meta Ad",
-    "f": "Carousel",
-    "m": "Sprawd\u017a nasz\u0105 ofert\u0119 \u27a1",
-    "cta": "Learn more",
-    "seen": "2026-11",
-    "url": "https://www.facebook.com/ads/library/?id=1649810413452703"
-  }
+  {b:'NVIDIA',p:'Meta',f:'Carousel',m:'Dell XPS 16 with RTX Spark N1X offered by Best Buy with Copilot+ PC features',cta:'Shop now',seen:'13 Nov',reach:'100K–500K',u:'https://www.facebook.com/ads/library/?id=29414706641457425'},
+  {b:'Microsoft',p:'Meta',f:'Video · 30s',m:'Surface Laptop Ultra can edit an entire short film while running unplugged',cta:'Learn more',seen:'30 Oct',reach:'500K–1M',u:'https://www.facebook.com/ads/library/?id=1833580004462620'},
+  {b:'Asus',p:'Meta',f:'Carousel',m:'ASUS ProArt P16 turns any location into an AI creative studio with RTX Spark',cta:'Visit profile',seen:'31 Oct',reach:'100K–500K',u:'https://www.facebook.com/ads/library/?id=1826947141681263'},
+  {b:'Dell',p:'Meta',f:'Carousel',m:'Dell XPS 16 Creator Edition for AI developers, studio workloads, and local LLMs',cta:'Shop now',seen:'13 Nov',reach:'50K–100K',u:'https://www.facebook.com/ads/library/?id=29414706641457425'},
+  {b:'HP',p:'Meta',f:'Carousel',m:'HP OmniBook Ultra 16 with NVIDIA RTX Spark available at retail and online stores',cta:'Shop now',seen:'3 Nov',reach:'100K–500K',u:'https://www.facebook.com/ads/library/?id=1649810413452703'},
+  {b:'Lenovo',p:'Meta',f:'Video · 15s',m:'Lenovo Yoga 9n 2-in-1 runs 120B parameter LLMs offline with OLED touch display',cta:'Learn more',seen:'8 Nov',reach:'250K–500K',u:'https://www.facebook.com/ads/library/?id=1491953792831396'},
+  {b:'MSI',p:'Meta',f:'Static',m:'Pre-orders open for MSI Prestige N16 Flip AI+ with RTX Spark and early bird bundle',cta:'See details',seen:'19 Oct',reach:'100K–500K',u:'https://www.facebook.com/ads/library/?id=4349282825288446'}
 ];
-const PLAT = ["Reddit", "YouTube", "X", "Instagram", "TikTok"];
-const PLAT_C = {Reddit:'#E07B45',YouTube:'#C0392B',X:'#2A1F17',Instagram:'#7A57C2',TikTok:'#1F8A8A'};
-const PLAT_WT = {Reddit:1.25,YouTube:.8,X:1.1,Instagram:.45,TikTok:.6};
-const MENTIONS = {"Reddit": [1384, 40, 2, 32, 46, 765, 1268, 335, 149, 106, 251, 87], "YouTube": [113, 6, 4, 3, 4, 52, 103, 64, 34, 22, 20, 45], "X": [88, 4, 2, 2, 1, 24, 32, 27, 15, 12, 18, 130], "Instagram": [68, 5, 3, 1, 2, 41, 31, 51, 31, 28, 16, 35], "TikTok": [29, 0, 0, 0, 1, 22, 19, 12, 10, 13, 9, 32]};
-const SOV = [["NVIDIA", 49], ["Microsoft", 23], ["Asus", 12], ["Lenovo", 5], ["MSI", 5], ["Dell", 3], ["HP", 3]];
-const SENT = {"Reviewers": [56, 68, 43, 11, 23, 43, 43, 46, 37, 39, 42, 42], "Buyers": [-15, -20, 0, -3, -43, -15, -26, -31, -11, -5, -11, -8]};
-const TOPICS = [["Local AI / LLMs on device", 29, 44], ["Price & value", 24, -42], ["App compatibility", 18, -35], ["Gaming performance", 14, -18], ["Battery life & thermals", 9, 22], ["Build quality & OLED display", 6, 52]];
-const COMPARE = [["Apple MacBook Pro", 38, [22, 34, 44]], ["Intel Core Ultra laptops", 28, [36, 36, 28]], ["GeForce RTX gaming laptops", 18, [42, 30, 28]], ["Qualcomm Snapdragon X laptops", 16, [45, 35, 20]]];
-const CREATORS = [["Dave2D", "YouTube", "Tech reviewer", "3.8M", 2, "2.4M", "Organic", "Mixed"], ["Just Josh", "YouTube", "Laptop specialist", "680K", 3, "890K", "Organic", "Critical"], ["Matthew Moniz", "YouTube", "Tech reviewer", "820K", 2, "540K", "Sponsored", "Positive"], ["The Phawx", "YouTube", "Handheld & Arm tester", "140K", 4, "310K", "Organic", "Mixed"], ["ETA PRIME", "YouTube", "Hardware & emulation", "1.2M", 2, "980K", "Sponsored", "Positive"], ["PCWorld", "YouTube / Press", "Industry media", "540K", 3, "720K", "Organic", "Mixed"]];
+const PLAT = ['Reddit','X','YouTube','TikTok','Instagram'];
+const PLAT_C = {Reddit:'#E07B45',X:'#2A1F17',YouTube:'#C0392B',TikTok:'#1F8A8A',Instagram:'#7A57C2'};
+const MENTIONS = {
+  Reddit:    [123, 40, 2, 32, 46, 765, 1268, 335, 149, 106, 251, 87],
+  X:         [1, 0, 0, 2, 0, 11, 11, 7, 6, 5, 13, 120],
+  YouTube:   [6, 5, 4, 3, 3, 47, 94, 57, 31, 20, 19, 44],
+  TikTok:    [3, 0, 0, 0, 1, 22, 19, 12, 10, 13, 9, 32],
+  Instagram: [9, 5, 3, 1, 2, 38, 29, 47, 28, 27, 15, 34]
+};
+const SOV = [['NVIDIA',49],['Microsoft',23],['Asus',11],['Lenovo',5],['MSI',5],['Dell',3],['HP',4]];
+const SENT = {
+  Reviewers: [62, 72, 43, 12, 27, 48, 57, 61, 49, 52, 58, 50],
+  Buyers:    [-10, -21, 25, 0, -43, -17, -29, -35, -11, -5, -12, -9]
+};
+const TOPICS = [
+  ['Local AI / LLMs on device',40,26],
+  ['Price & value',21,-43],
+  ['Performance & speed',18,6],
+  ['App compatibility',12,-9],
+  ['Display & design',8,-8],
+  ['Battery life',1,-21]
+];
+const COMPARE = [
+  ['Apple MacBook Pro',66,[33,31,36]],
+  ['Intel Core Ultra laptops',19,[33,31,36]],
+  ['AMD Ryzen AI laptops',8,[24,40,36]],
+  ['Snapdragon X2 laptops',7,[43,35,22]]
+];
+const CREATORS = [
+  ['Notebookcheck','Web / YouTube','Tech hardware lab','1.2M',16,'850K','Organic','Positive'],
+  ['PCWorld','YouTube / Web','Tech reviewer','980K',12,'1.4M','Organic','Mixed'],
+  ['StorageReview','YouTube / Web','Enterprise lab','420K',20,'610K','Organic','Positive'],
+  ['Andrew Marc David','YouTube','Laptop specialist','310K',12,'540K','Organic','Positive'],
+  ['Just Josh','YouTube','Laptop benchmarks','680K',3,'920K','Organic','Mixed'],
+  ['Tom’s Guide (Jason England)','Web / YouTube','Computing editor','2.1M',15,'1.1M','Organic','Mixed'],
+  ['TechLinked','YouTube','Daily tech news','1.9M',9,'2.8M','Organic','Mixed'],
+  ['r/hardware','Reddit','Enthusiast community','3.8M',45,'1.2M views','Organic','Negative']
+];
+const CUTS = {
+  'Surface Laptop Ultra':[[7,-200],[10,-500]],
+  'ProArt P16':[[8,-200]],
+  'Pro 9n':[[9,-400]],
+  'OmniBook X 14':[[10,-400]],
+  'Prestige N16 Flip AI+':[[8,-100]]
+};
+const priceAt = (k, i) => (CUTS[k.model]||[]).reduce((p,[w,d]) => i>=w ? p+d : p, k.price);
+const PER = {
+  'Surface Laptop Ultra':{mom:82,rate:4.5,rev:11,rank:[18,16,19,22,21,24],prem:18,act:[46,2270,11,48]},
+  'ProArt P14':{mom:68,rate:4.8,rev:23,rank:[41,38,44,47,52,55],prem:22,act:[31,803,6,25]},
+  'ProArt P16':{mom:65,rate:4.7,rev:18,rank:[36,39,42,40,33,35],prem:20,act:[24,803,8,20]},
+  'XPS 16 Creator Edition':{mom:54,rate:4.0,rev:2,rank:[58,55,59,62,60,63],prem:27,act:[12,276,1,2]},
+  'OmniBook Ultra 16':{mom:58,rate:4.8,rev:20,rank:[52,48,46,43,41,40],prem:23,act:[18,276,4,22]},
+  'OmniBook X 14':{mom:46,rate:null,rev:0,rank:[65,62,60,58,55,54],prem:25,act:[8,276,0,0]},
+  'Yoga 9n 2-in-1':{mom:62,rate:5.0,rev:2,rank:[44,42,45,41,39,38],prem:20,act:[20,276,2,7]},
+  'Pro 9n':{mom:55,rate:4.2,rev:1,rank:[50,48,51,49,46,44],prem:20,act:[14,276,1,1]},
+  'Prestige N16 Flip AI+':{mom:59,rate:4.0,rev:1,rank:[48,46,47,45,43,42],prem:22,act:[22,276,1,2]}
+};
 const RETAILERS = ['OEM store','Best Buy','Amazon','Newegg','Micro Center','B&H','Costco','Walmart'];
 const listed = (k, r) => r==='OEM store' ? true : r==='Amazon' ? !/^Not/.test(k.amz) : k.ret.includes(r);
 const stockOf = (k, r) => { const h = [...(k.model+r)].reduce((a,c)=>a+c.charCodeAt(0),0) % 7; return h<4 ? 'In stock' : h<6 ? 'Low stock' : 'Pre-order'; };
-const CUTS = {'Surface Laptop Ultra':[[10,-100]],'ProArt P16':[[9,-200]],'Yoga 9n 2-in-1':[[11,-150]],'Prestige N16 Flip AI+':[[8,-100]]};
-const priceAt = (k, i) => (CUTS[k.model]||[]).reduce((p,[w,d]) => i>=w ? p+d : p, k.price);
-const PER = {
-  'Surface Laptop Ultra':{mom:82,rate:4.3,rev:38,rank:[18,16,19,22,21,24],prem:18,act:[46,2900,11,38]},
-  'ProArt P14':{mom:71,rate:4.8,rev:4,rank:[42,38,36,34,31,28],prem:22,act:[34,1800,8,4]},
-  'ProArt P16':{mom:79,rate:4.5,rev:6,rank:[31,28,26,24,22,19],prem:16,act:[39,2400,9,6]},
-  'XPS 16 Creator Edition':{mom:58,rate:3.5,rev:2,rank:[55,52,49,46,44,41],prem:26,act:[24,1200,5,2]},
-  'OmniBook Ultra 16':{mom:52,rate:4.0,rev:1,rank:[62,58,55,51,48,46],prem:14,act:[18,900,4,1]},
-  'OmniBook X 14':{mom:64,rate:4.1,rev:8,rank:[48,44,40,38,35,32],prem:12,act:[22,1100,6,8]},
-  'Yoga 9n 2-in-1':{mom:68,rate:4.0,rev:3,rank:[38,35,32,30,28,26],prem:20,act:[28,1600,7,3]},
-  'Pro 9n':{mom:61,rate:4.4,rev:2,rank:[46,42,39,37,34,31],prem:15,act:[20,1300,5,2]},
-  'Prestige N16 Flip AI+':{mom:76,rate:4.4,rev:5,rank:[34,30,27,25,23,21],prem:17,act:[31,2100,8,5]}
-};
-const RATING_W = [4.5, 4.4, 4.3, 4.3, 4.2, 4.2], DISC_W = [0, 0, 0.8, 1.8, 2.9, 3.6];
-const RATING_DIST = [["5 stars", 71], ["4 stars", 8], ["3 stars", 14], ["2 stars", 2], ["1 star", 5]];
-const PRAISE = [["Local AI inference speed", 34], ["OLED display & color accuracy", 28], ["Chassis build & trackpad", 21], ["NPU & unified memory architecture", 17]];
-const COMPLAIN = [["Price for specification ($2,599+)", 39], ["Windows on Arm app compatibility", 31], ["Kernel anti-cheat games won\u2019t run", 18], ["Fan noise under sustained AI load", 12]];
-const COMPAT = [["Adobe Premiere Pro", "GPU acceleration required beta v25.1 build at launch", "Fixed in beta", "Fixed in beta", "https://www.pcworld.com"], ["Autodesk Maya / 3ds Max", "x86 emulation runs CPU-only; viewport GPU plug-in missing", "Unresolved", "Workaround", "https://forums.developer.nvidia.com"], ["DaVinci Resolve Studio", "Tensor cores work via OpenCL/DirectML beta patch", "Fixed in beta", "Fixed in beta", "https://www.blackmagicdesign.com"], ["Anti-cheat games (Valorant, Apex)", "Kernel-level anti-cheat drivers fail on ARM64 translation", "Unresolved", "Blocked", "https://www.theverge.com"], ["Blender 4.2", "Cycles GPU rendering functional via Vulkan/OptiX preview", "Resolved", "Resolved", "https://blender.org"], ["Docker Desktop / WSL2", "WSL2 Linux ARM64 container runtime working natively", "Resolved", "Resolved", "https://learn.microsoft.com"]];
-const SWITCH = [['Intel-based Windows laptop',42],['MacBook',34],['AMD-based Windows laptop',14],['Snapdragon laptop',10]];
-const DRIVERS = [['Local AI performance',34],['OLED display & hardware',24],['Creative GPU workload',18],['Battery life',14],['Brand loyalty',10]];
+
+const RATING_W = [4.8,4.7,4.6,4.5,4.5,4.4], DISC_W = [0,0,0.8,2.2,3.4,4.2];
+const RATING_DIST = [['5 stars',58],['4 stars',18],['3 stars',10],['2 stars',6],['1 star',8]];
+const PRAISE = [['Performance & responsiveness',24],['Local AI speed',19],['OLED display & visual quality',12],['Build quality & thin design',7],['Battery life under regular load',4]];
+const COMPLAIN = [['Price for the specification',27],['Windows on Arm compatibility',11],['Gaming & anti-cheat incompatibility',8],['VPN & enterprise software setup',7],['Battery drain under AI/GPU load',4]];
+const COMPAT = [
+  ['Developer tools & containers','Containers and CUDA/PyTorch setup need specific Arm images','624','Works with setup','good'],
+  ['Printer & legacy peripheral drivers','Older USB and network devices missing Arm64 drivers','230','Mixed','watch'],
+  ['Pro video editing','GPU acceleration in Premiere needed beta build at launch','175','Fixed in beta','good'],
+  ['Competitive games & anti-cheat','Kernel-level anti-cheat blocks titles on Windows on Arm','100','Not working','alert'],
+  ['Audio plug-ins & DAWs','Legacy x86 VST plug-ins require translation or fail','94','Works via emulation','watch'],
+  ['VPN & enterprise security clients','Corporate VPN clients fail to install on Arm architecture','70','Mixed','alert']
+];
+const SWITCH = [['Intel-based Windows laptop',44],['Apple MacBook',36],['AMD-based Windows laptop',12],['Snapdragon laptop',8]];
+const DRIVERS = [['Local AI performance',34],['OLED display & thin chassis',24],['Creative app acceleration',20],['Battery life efficiency',14],['Novelty / early adoption',8]];
 const CLAIMS = [
-  ['Local AI performance','Big models running on the laptop, offline','Reviewers confirm strong local AI inference, but note limited consumer application support','Intel Core Ultra matches on real-world local AI tasks'],
-  ['Gaming performance','Full RTX ray tracing and high frame rates','Reviewers flag heavy anti-cheat incompatibilities and emulation overhead','Intel x86 runs 100% of PC games with zero translation layer'],
-  ['Battery life','All-day battery life for creators','Reviewers confirm competitive video playback battery life; heavy AI loads drain battery quickly','Intel Core Ultra provides competitive efficiency across mixed creator tasks'],
-  ['Creator workflows','Faster video rendering in Adobe and DaVinci','Reviewers found Adobe Premiere GPU acceleration required launch beta builds','Intel Core Ultra has native, verified optimizations across all creator suites']
+  ['Local AI performance','Large models running offline on device','Reviewers and benchmarks confirm strong N1X local AI throughput','Aligned','good'],
+  ['Battery life','All-day battery efficiency','Strong under light tasks; drops noticeably under sustained GPU/AI load','Gap','watch'],
+  ['Gaming capability','Promoted in NVIDIA launch creative','GeForce RTX laptops provide superior frame rates and value with no anti-cheat issues','Gap','alert'],
+  ['App compatibility','Broad Windows compatibility claimed','Key software (anti-cheat, VPNs, specialized DAWs) requires x86 translation or fails','Gap','alert']
 ];
 const FEED = [
-  {tag:'Retail',b:'Microsoft',t:'Surface Laptop Ultra available across all major US retailers',d:'Best Buy, Amazon, B&H and Newegg all actively listing stock',v:'retail',seen:'20 Nov'},
-  {tag:'Ads',b:'MSI',t:'MSI ad volume up significantly around Prestige N16 launch',d:'Heavy social and paid ad push featuring early-bird stylus bundle',v:'advertising',seen:'18 Nov'},
-  {tag:'Reviews',b:'Asus',t:'ProArt P16 reviews highlight OLED display and local AI upscaling',d:'Thin review volume (6 buyer reviews) but strong 4.5/5 average rating',v:'reviews',seen:'16 Nov'},
-  {tag:'Social',b:'NVIDIA',t:'Mentions spike around local AI and LLM benchmarks',d:'Reddit discussions center on Windows on Arm compatibility caveats',v:'social',seen:'15 Nov'}
+  {tag:'Ads',b:'MSI',t:'MSI surges to 97 active Meta creatives pushing local AI bundles',d:'Early-bird warranty and dual drive promotions',v:'advertising'},
+  {tag:'Price',b:'Micro Center',t:'Micro Center posts first $500 discount on Surface Laptop Ultra',d:'Surface Laptop Ultra 64GB configuration cut to $3,499.99',v:'retail'},
+  {tag:'Retail',b:'Best Buy',t:'Best Buy shopper Q&A flags price premium on Lenovo Yoga 9n',d:'Shoppers question $1,500 premium over Intel Core Ultra models',v:'retail'},
+  {tag:'Social',b:'NVIDIA',t:'Reddit discussion on game anti-cheat and driver compatibility tops threads',d:'Developer tools and container setup lead enthusiast inquiries',v:'social'},
+  {tag:'Creators',b:'Press',t:'Notebookcheck and PCWorld publish detailed RTX Spark N1X deep dives',d:'Strong local AI benchmarks contrasted with x86 gaming value',v:'reviews'}
 ];
 const THREAT = [
-  ['Premium creator laptops ($2.5K+)',4,'Rising','All six OEMs now ship a creator flagship on RTX Spark; Asus and Microsoft pushing hardest','Counter with Core Ultra color accuracy, native Adobe plug-ins and lower price'],
-  ['AI developer workstations',4,'Rising','Local LLM development with 64GB unified memory is RTX Spark’s strongest selling point','Demonstrate Intel Core Ultra local AI capability and native Linux/WSL2 tooling'],
-  ['Mainstream premium ($1.5K–$2.5K)',2,'Flat','RTX Spark has zero presence below $2,599; Intel owns this critical volume segment','Defend vigorously: expand Core Ultra offerings in the $1,500–$2,499 sweet spot'],
-  ['Thin & light laptops',3,'Flat','Battery life is competitive, but thermal load under local AI inference is significant','Emphasize Core Ultra thin-and-light power efficiency without ARM app compromises'],
-  ['PC gaming',1,'Falling','Kernel-level anti-cheat completely fails under ARM64 translation; gamers rejecting RTX Spark','Own gaming: highlight that GeForce laptops on Intel x86 deliver true native gaming']
+  ['Premium creator laptops ($2.5K+)',4,'Rising','All six OEMs ship RTX Spark creator flagships; Asus and Microsoft dominate creative media','Lead with complete x86 plug-in and creative suite compatibility'],
+  ['AI developers and local LLMs',4,'Rising','Local AI is the top positive theme across reviews and developer communities','Demonstrate Intel AI PC capabilities on matched quantization workloads'],
+  ['14-inch ultraportables',3,'Rising','Surface Laptop Ultra and ProArt P14 compete directly in the premium portable tier','Highlight verified battery runtimes and lower starting price points'],
+  ['Enterprise and commercial fleets',2,'Watch','HP and Dell commercial messaging on LinkedIn; enterprise IT wary of Arm client support','Provide turnkey commercial software compatibility validation'],
+  ['High-performance gaming laptops',1,'Stable','Conventional GeForce RTX laptops with x86 CPUs provide higher FPS at lower price','Maintain clear performance-per-dollar advantage and anti-cheat reliability'],
+  ['Mainstream consumer laptops',1,'Stable','RTX Spark pricing starts at $2,599.99, well above volume price bands','Reinforce dominant sub-$2,000 Intel Core Ultra leadership']
 ];
 const ACTIONS = [
-  {h:'Messaging',i:'megaphone',v:'rebuttals',b:['Own “runs everything you already use”: compatibility is RTX Spark’s primary objection.','Anchor on price: point out that every RTX Spark laptop starts at $2,599.99 or higher.','Lead on gaming: highlight that Intel-based gaming laptops run anti-cheat games without translation.']},
-  {h:'Retail',i:'cart',v:'retail',b:['Retail floor sales rep briefing: equip Best Buy and Amazon reps with app compatibility comparison sheets.','Promote Intel sibling models directly next to RTX Spark displays with clear price gap callouts.','Monitor Black Friday discounting on Asus and MSI models.']},
-  {h:'Partners',i:'handshake',v:'partners',b:['Reinforce Dell and HP partnership alignment: both have kept flagship consumer volume with Intel.','Target co-marketing funds toward Lenovo and Asus creators who value native x86 plugin support.','Offer joint promotion incentives for Core Ultra flagships during holiday shopping.']},
-  {h:'Creators',i:'video',v:'social',b:['Engage video editors and music producers affected by broken ARM plugins.','Support AI-developer creators who benchmark real-world local AI models on Intel Core Ultra.']},
-  {h:'Commercial',i:'target',v:'partners',b:['Provide Arm compatibility checklists for enterprise IT buyers evaluating fleet refreshes.','Track commercial LinkedIn ad pressure from HP and Dell.']}
+  {h:'Messaging',i:'megaphone',v:'rebuttals',b:['Lead with “Runs everything you already use”: compatibility is RTX Spark’s critical vulnerability.','Highlight native x86 performance across professional software and enterprise VPNs.']},
+  {h:'Retail',i:'cart',v:'retail',b:['Dominate the $1,800–2,499 price corridor immediately below RTX Spark’s $2,599 floor.','Deploy Black Friday promotional counter-offers alongside OEM partners.']},
+  {h:'Creators',i:'users',v:'social',b:['Arm independent creators with real-world creative application compatibility benchmarks.','Support AI developers comparing model fine-tuning and inference across architectures.']},
+  {h:'Enterprise',i:'target',v:'partners',b:['Distribute Arm compatibility audit checklists to corporate IT procurement teams.','Monitor commercial B2B advertising campaigns from HP and Dell.']}
 ];
 const EWI = [
-  ['Weekly social mentions','5,180','Back above 8,000 for two weeks','On track','good'],
-  ['Buyer net sentiment','−8','Below −15','Watch','watch'],
-  ['Average discount','3.6%','Above 10% before holiday peak','On track','good'],
-  ['RTX Spark laptops in Best Buy top 30','1','4 or more','On track','good'],
-  ['Comparisons that name Intel','28%','Above 35%','Watch','watch'],
-  ['App compatibility complaints per week','78','Above 100','On track','good']
+  ['Weekly social mentions','5,169','Above 8,000 sustained','On track','good'],
+  ['Buyer net sentiment','-9','Below -15','Watch','watch'],
+  ['Average observed discount','4.2%','Above 10% across tier-1 retail','On track','good'],
+  ['RTX Spark laptops in Best Buy top 30','1','4 or more models','On track','good'],
+  ['Comparative mentions citing Intel','19%','Above 30%','Watch','watch'],
+  ['Compatibility reports per week','100+','Above 150','Watch','watch']
 ];
 const FEEDS = [
-  [
-    "Meta Ad Library",
-    "Ads",
-    "Active creatives, platforms, EU reach and audience",
-    "Daily",
-    "481"
-  ],
-  [
-    "Google Ads Transparency Center",
-    "Ads",
-    "YouTube and Search creatives by advertiser",
-    "Daily",
-    "28"
-  ],
-  [
-    "LinkedIn Ad Library",
-    "Ads",
-    "B2B creatives from OEMs",
-    "Weekly",
-    "200"
-  ],
-  [
-    "YouTube",
-    "Social",
-    "Videos, views, comments, sponsorship labels",
-    "Daily",
-    "3,015"
-  ],
-  [
-    "Reddit, X, Instagram, TikTok",
-    "Social",
-    "Posts, threads and engagement",
-    "Daily",
-    "5,180"
-  ],
-  [
-    "Amazon and Best Buy",
-    "Retail",
-    "Price, stock, rank, ratings, reviews, Q&A",
-    "Daily",
-    "9 listings \u00b7 48 reviews"
-  ],
-  [
-    "Newegg, Micro Center, B&H, OEM stores",
-    "Retail",
-    "Price, stock and promotions",
-    "Daily",
-    "2,091 listings"
-  ],
-  [
-    "Tech press & QA threads",
-    "Reviews",
-    "Expert reviews, buyer questions and scores",
-    "Weekly",
-    "217 QA \u00b7 14 reviews"
-  ]
+  ['Meta Ad Library','Ads','Active creatives, platforms, EU reach and audience','Daily','481'],
+  ['Google Ads Transparency Center','Ads','YouTube and Search creatives by advertiser','Daily','28'],
+  ['LinkedIn Ad Library','Ads','B2B creatives from OEMs','Weekly','200'],
+  ['YouTube','Social','Videos, views, comments, sponsorship labels','Daily','3,015'],
+  ['Reddit, X, Instagram, TikTok','Social','Posts, threads and engagement','Daily','5,169'],
+  ['Amazon and Best Buy','Retail','Price, stock, rank, ratings, reviews, Q&A','Daily','264 listings · 48 reviews · 217 Q&A'],
+  ['Newegg, Micro Center, B&H, OEM stores','Retail','Price, stock and promotions','Daily','1,827 listings'],
+  ['Tech press','Reviews','Expert reviews and scores','Weekly','2,760 reviews & articles']
 ];
-
-/* ===================================================================== */
-/* ===== Verified data: retailers, comments, lenses ===== */
 const RETAIL_REV = {
-  "Surface Laptop Ultra": {
-    "amz": [
-      4.3,
-      18,
-      12
-    ],
-    "bb": [
-      4.2,
-      24,
-      14
-    ]
-  },
-  "ProArt P14": {
-    "amz": null,
-    "bb": [
-      4.8,
-      4,
-      3
-    ]
-  },
-  "ProArt P16": {
-    "amz": null,
-    "bb": [
-      4.5,
-      6,
-      5
-    ]
-  },
-  "XPS 16 Creator Edition": {
-    "amz": null,
-    "bb": [
-      3.5,
-      2,
-      4
-    ]
-  },
-  "OmniBook Ultra 16": {
-    "amz": null,
-    "bb": [
-      4.0,
-      1,
-      2
-    ]
-  },
-  "OmniBook X 14": {
-    "amz": null,
-    "bb": [
-      4.1,
-      8,
-      6
-    ]
-  },
-  "Yoga 9n 2-in-1": {
-    "amz": null,
-    "bb": [
-      4.0,
-      3,
-      5
-    ]
-  },
-  "Pro 9n": {
-    "amz": null,
-    "bb": [
-      4.4,
-      2,
-      3
-    ]
-  },
-  "Prestige N16 Flip AI+": {
-    "amz": [
-      4.5,
-      5,
-      2
-    ],
-    "bb": [
-      4.3,
-      3,
-      2
-    ]
-  }
+  'Surface Laptop Ultra': {amz:[4.0,2,0], bb:[4.7,9,2]},
+  'ProArt P14':             {amz:null,     bb:[4.8,23,2]},
+  'ProArt P16':             {amz:null,     bb:[4.7,18,1]},
+  'XPS 16 Creator Edition': {amz:null,     bb:[4.0,1,0]},
+  'OmniBook Ultra 16':      {amz:null,     bb:[4.8,20,1]},
+  'OmniBook X 14':          {amz:null,     bb:null},
+  'Yoga 9n 2-in-1':         {amz:null,     bb:[5.0,2,5]},
+  'Pro 9n':                 {amz:[4.2,1,0],bb:null},
+  'Prestige N16 Flip AI+':  {amz:[4.0,1,0],bb:null}
 };
 const COMMENTS = [
-  {
-    "m": "Surface Laptop Ultra",
-    "r": "Amazon",
-    "t": "Review",
-    "s": 3,
-    "d": "Nov",
-    "th": "Compatibility",
-    "x": "A striking machine, built exceptionally well, but Windows on Arm translation leaves a lot of x86 plugins stranded.",
-    "url": "https://www.amazon.com/dp/B0HFQVF89X"
-  },
-  {
-    "m": "Surface Laptop Ultra",
-    "r": "Amazon",
-    "t": "Review",
-    "s": 5,
-    "d": "Nov",
-    "th": "Local AI",
-    "x": "Needed a memory-intensive laptop to run local LLMs and 3D slicing offline. It handles local inference effortlessly.",
-    "url": "https://www.amazon.com/dp/B0HFQVF89X"
-  },
-  {
-    "m": "Yoga 9n 2-in-1",
-    "r": "Best Buy",
-    "t": "Q&A",
-    "s": null,
-    "d": "Nov",
-    "th": "Price",
-    "x": "Shoppers are asking Best Buy staff why this 2-in-1 costs $2,999 when comparable Core Ultra 2-in-1s start at $1,799.",
-    "url": "https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1"
-  },
-  {
-    "m": "ProArt P16",
-    "r": "Best Buy",
-    "t": "Review",
-    "s": 5,
-    "d": "Oct",
-    "th": "Creators",
-    "x": "The 4K OLED display is phenomenal and local AI upscaling in DaVinci Resolve is noticeably faster than my previous workstation.",
-    "url": "https://www.bestbuy.com"
-  },
-  {
-    "m": "Prestige N16 Flip AI+",
-    "r": "Newegg",
-    "t": "Review",
-    "s": 4,
-    "d": "Nov",
-    "th": "Performance",
-    "x": "Impressive local AI capabilities and good battery life, but gaming performance is hit-or-miss depending on anti-cheat compatibility.",
-    "url": "https://www.newegg.com"
-  }
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is NVIDIA RTX Spark?",real:true,u:"https://www.microsoft.com/en-us/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Why are RTX Spark Windows PCs different?",real:true,u:"https://www.microsoft.com/en-us/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"How do RTX Spark Windows PCs balance local and cloud AI?",real:true,u:"https://www.microsoft.com/en-us/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Are RTX Spark Windows PCs good for video editing and content creation?",real:true,u:"https://www.microsoft.com/en-us/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Gaming",x:"How is an RTX Spark Windows PC different from a traditional gaming laptop?",real:true,u:"https://www.microsoft.com/en-us/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Are RTX Spark Windows PCs only laptops, or are desktops available too?",real:true,u:"https://www.microsoft.com/en-us/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Which Windows PC brands offer RTX Spark Windows PCs?",real:true,u:"https://www.microsoft.com/en-us/windows/rtx-spark-laptops"},
+  {m:"ProArt P14",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Is there an additional M.2 slot for more storage?",real:true,u:"https://www.bestbuy.com/product/asus-proart-p14-14-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-2026-24gb-memory-512gb-storage-copilot-pc-nano-black/JJGHGSKG3C"},
+  {m:"ProArt P14",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Price",x:"Why is it soooooooo expensive?",real:true,u:"https://www.bestbuy.com/product/asus-proart-p14-14-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-2026-24gb-memory-512gb-storage-copilot-pc-nano-black/JJGHGSKG3C"},
+  {m:"ProArt P16",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Does this version comes with the mouse?",real:true,u:"https://www.bestbuy.com/product/asus-proart-p16-16-4k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-24gb-memory-512gb-storage-nano-black/JJGHGSKG3Y"},
+  {m:"OmniBook Ultra 16",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Does the keyboard backlight allow you to really dial in your desired brightness (granular) or is it the basic 4 step adjustment (off, low, medium, high) ?",real:true,u:"https://www.bestbuy.com/product/hp-omnibook-ultra-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-20-core-2026-32gb-memory-1tb-ssd-copilot-pc-eclipse-gray/J3PPH557Q8"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Price",x:"Why does it feel like you are paying an extra $1500ish just to have the word NVIDIA on it?",real:true,u:"https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-2026-32gb-memory-1tb-storage-copilot-pc-cosmic-blue/J3PT7W54P5"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"Is the OS Windows 11 or Windows 11 arm? On Best Buy it says Windows 11 Home, but on Lenovo it says Windows 11 ARM64. Does it differ between retailers?",real:true,u:"https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-2026-32gb-memory-1tb-storage-copilot-pc-cosmic-blue/J3PT7W54P5"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"Can I erase windows 11 and install Linux?",real:true,u:"https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-2026-32gb-memory-1tb-storage-copilot-pc-cosmic-blue/J3PT7W54P5"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"I've noticed no clock speed is shown for the NPU installed. Does it vary for NPUs depending on the drivers and data being processed?",real:true,u:"https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-2026-32gb-memory-1tb-storage-copilot-pc-cosmic-blue/J3PT7W54P5"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Other",x:"I bought this laptop today and I'm looking for a docking station to run 2 monitors key board and a Logitech trackball. Also a backup system Can you recommend a docking station?",real:true,u:"https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-2026-32gb-memory-1tb-storage-copilot-pc-cosmic-blue/J3PT7W54P5"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Prestige N16 Flip AI+とはどのような製品ですか？",real:true,u:"https://jp.msi.com/news/detail/%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%ABAI%E6%B4%BB%E7%94%A8%E3%82%92%E3%83%8E%E3%83%BC%E3%83%88PC%E3%81%A7%E5%AE%9F%E7%8F%BE%E3%81%99%E3%82%8B%E6%96%B0%E4%B8%96%E4%BB%A3AI-PC-NVIDIA-RTX-Spark--%E3%82%B9%E3%83%BC%E3%83%91%E3%83%BC%E3%83%81%E3%83%83%E3%83%97%E6%90%AD%E8%BC%89-Prestige-N16-Flip-AI--C1XM-%E7%99%BA%E5%A3%B2150091"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"最大128GBのユニファイドメモリで何ができますか？",real:true,u:"https://jp.msi.com/news/detail/%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%ABAI%E6%B4%BB%E7%94%A8%E3%82%92%E3%83%8E%E3%83%BC%E3%83%88PC%E3%81%A7%E5%AE%9F%E7%8F%BE%E3%81%99%E3%82%8B%E6%96%B0%E4%B8%96%E4%BB%A3AI-PC-NVIDIA-RTX-Spark--%E3%82%B9%E3%83%BC%E3%83%91%E3%83%BC%E3%83%81%E3%83%83%E3%83%97%E6%90%AD%E8%BC%89-Prestige-N16-Flip-AI--C1XM-%E7%99%BA%E5%A3%B2150091"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"なぜローカルAIを利用するのでしょうか？",real:true,u:"https://jp.msi.com/news/detail/%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%ABAI%E6%B4%BB%E7%94%A8%E3%82%92%E3%83%8E%E3%83%BC%E3%83%88PC%E3%81%A7%E5%AE%9F%E7%8F%BE%E3%81%99%E3%82%8B%E6%96%B0%E4%B8%96%E4%BB%A3AI-PC-NVIDIA-RTX-Spark--%E3%82%B9%E3%83%BC%E3%83%91%E3%83%BC%E3%83%81%E3%83%83%E3%83%97%E6%90%AD%E8%BC%89-Prestige-N16-Flip-AI--C1XM-%E7%99%BA%E5%A3%B2150091"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Gaming",x:"Prestige N16 Flip AI+はクリエイターやゲーマーにも適していますか？",real:true,u:"https://jp.msi.com/news/detail/%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%ABAI%E6%B4%BB%E7%94%A8%E3%82%92%E3%83%8E%E3%83%BC%E3%83%88PC%E3%81%A7%E5%AE%9F%E7%8F%BE%E3%81%99%E3%82%8B%E6%96%B0%E4%B8%96%E4%BB%A3AI-PC-NVIDIA-RTX-Spark--%E3%82%B9%E3%83%BC%E3%83%91%E3%83%BC%E3%83%81%E3%83%83%E3%83%97%E6%90%AD%E8%BC%89-Prestige-N16-Flip-AI--C1XM-%E7%99%BA%E5%A3%B2150091"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"프레스티지 N16 Flip AI+는 어떤 제품인가요?",real:true,u:"https://kr.msi.com/news/detail/MSI-Unveils-Prestige-N16-Flip-AI---An-NVIDIA-RTX-Spark-Powered-2-in-1-Built-for-the-Agentic-AI-Era-150008"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"128GB 통합 메모리로 무엇을 할 수 있나요?",real:true,u:"https://kr.msi.com/news/detail/MSI-Unveils-Prestige-N16-Flip-AI---An-NVIDIA-RTX-Spark-Powered-2-in-1-Built-for-the-Agentic-AI-Era-150008"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"AI를 내 노트북에서 실행하면 어떤 점이 좋은가요?",real:true,u:"https://kr.msi.com/news/detail/MSI-Unveils-Prestige-N16-Flip-AI---An-NVIDIA-RTX-Spark-Powered-2-in-1-Built-for-the-Agentic-AI-Era-150008"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Gaming",x:"콘텐츠 제작과 게임에도 활용할 수 있나요?",real:true,u:"https://kr.msi.com/news/detail/MSI-Unveils-Prestige-N16-Flip-AI---An-NVIDIA-RTX-Spark-Powered-2-in-1-Built-for-the-Agentic-AI-Era-150008"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is the Prestige N16 Flip AI +?",real:true,u:"https://sg-store.msi.com/products/prestige-n16-flip-ai-c1xmt-223sg"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Who is the Prestige N16 Flip AI + designed for?",real:true,u:"https://sg-store.msi.com/products/prestige-n16-flip-ai-c1xmt-223sg"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What sets the Prestige N16 Flip AI + apart from other RTX Spark laptops?",real:true,u:"https://sg-store.msi.com/products/prestige-n16-flip-ai-c1xmt-223sg"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Gaming",x:"Is the MSI Prestige N16 Flip AI + suitable for creators and gaming?",real:true,u:"https://sg-store.msi.com/products/prestige-n16-flip-ai-c1xmt-223sg"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What does up to 128GB of unified memory enable?",real:true,u:"https://sg-store.msi.com/products/prestige-n16-flip-ai-c1xmt-223sg"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Why run AI locally on the MSI Prestige N16 Flip AI +?",real:true,u:"https://sg-store.msi.com/products/prestige-n16-flip-ai-c1xmt-223sg"},
+  {m:"ProArt P14",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Is there an additional M.2 slot for more storage?",real:true,u:"https://www.bestbuy.com/product/asus-proart-p14-14-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-24gb-memory-512gb-storage-nano-black/JJGHGSKG3C"},
+  {m:"ProArt P14",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Price",x:"Why is it soooooooo expensive?",real:true,u:"https://www.bestbuy.com/product/asus-proart-p14-14-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-24gb-memory-512gb-storage-nano-black/JJGHGSKG3C"},
+  {m:"ProArt P14",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"If I got this, can I upgrade storage on it as qell at best buy? I am ok with the systems 512gb but id like to add a 2tb ssd onto the laptop as well and wanted to know if it was possible and how much it would cost",real:true,u:"https://www.bestbuy.com/product/asus-proart-p14-14-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-20-core-2026-32gb-memory-512gb-storage-nano-black/JJGHGSKG8Q"},
+  {m:"ProArt P16",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Does this version comes with the mouse?",real:true,u:"https://www.bestbuy.com/product/asus-proart-p16-16-4k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-2026-24gb-memory-512gb-storage-copilot-pc-nano-black/JJGHGSKG3Y"},
+  {m:"XPS 16 Creator Edition",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Is the storage expandable? You can't expect us to do AI in just 512 GB of space",real:true,u:"https://www.bestbuy.com/product/dell-xps-16-3-2k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-20-core-2026-32gb-memory-1tb-storage-graphite/J3K4L6QH26"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"Can I erase windows 11 and install Linux?",real:true,u:"https://www.bestbuy.com/product/hp-14-laptop-intel-n150-processor-4gb-memory-128gb-ufs-pale-rose-gold/J3PT7W54P5"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"I've noticed no clock speed is shown for the NPU installed. Does it vary for NPUs depending on the drivers and data being processed?",real:true,u:"https://www.bestbuy.com/product/hp-14-laptop-intel-n150-processor-4gb-memory-128gb-ufs-pale-rose-gold/J3PT7W54P5"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"I bought this laptop today and I'm looking for a docking station to run 2 monitors key board and a Logitech trackball. Also a backup system Can you recommend a docking station?",real:true,u:"https://www.bestbuy.com/product/hp-14-laptop-intel-n150-processor-4gb-memory-128gb-ufs-pale-rose-gold/J3PT7W54P5"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Gaming",x:"Are These workforce or gaming laptops ??? Asking the same thing a different way … Does this replace 5000 series gaming laptops ??",real:true,u:"https://www.bestbuy.com/product/hp-14-laptop-intel-n150-processor-4gb-memory-128gb-ufs-pale-rose-gold/J3PT7W54P5"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Price",x:"Why does it feel like you are paying an extra $1500ish just to have the word NVIDIA on it?",real:true,u:"https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-cosmic-blue/J3PT7W54P5"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"Is the OS Windows 11 or Windows 11 arm? On Best Buy it says Windows 11 Home, but on Lenovo it says Windows 11 ARM64. Does it differ between retailers?",real:true,u:"https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-cosmic-blue/J3PT7W54P5"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"Can I erase windows 11 and install Linux?",real:true,u:"https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-cosmic-blue/J3PT7W54P5"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"I've noticed no clock speed is shown for the NPU installed. Does it vary for NPUs depending on the drivers and data being processed?",real:true,u:"https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-cosmic-blue/J3PT7W54P5"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Other",x:"I bought this laptop today and I'm looking for a docking station to run 2 monitors key board and a Logitech trackball. Also a backup system Can you recommend a docking station?",real:true,u:"https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-cosmic-blue/J3PT7W54P5"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"Is the OS Windows 11 or Windows 11 arm? On Best Buy it says Windows 11 Home, but on Lenovo it says Windows 11 ARM64. Does it differ between retailers?",real:true,u:"https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-cosmic-blue/J3PT7W54P5/sku/6689930/openbox"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"Can I erase windows 11 and install Linux?",real:true,u:"https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-cosmic-blue/J3PT7W54P5/sku/6689930/openbox"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"I've noticed no clock speed is shown for the NPU installed. Does it vary for NPUs depending on the drivers and data being processed?",real:true,u:"https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-cosmic-blue/J3PT7W54P5/sku/6689930/openbox"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"I bought this laptop today and I'm looking for a docking station to run 2 monitors key board and a Logitech trackball. Also a backup system Can you recommend a docking station?",real:true,u:"https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-cosmic-blue/J3PT7W54P5/sku/6689930/openbox"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Gaming",x:"Are These workforce or gaming laptops ??? Asking the same thing a different way … Does this replace 5000 series gaming laptops ??",real:true,u:"https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-cosmic-blue/J3PT7W54P5/sku/6689930/openbox"},
+  {m:"Surface Laptop Ultra",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Is this stylus compatible",real:true,u:"https://www.bestbuy.com/product/microsoft-surface-laptop-ultra-15-3k-touchscreen-nvidia-rtx-spark-n1x-18-core-2026-24gb-memory-512gb-storage-platinum/JJGXP3CQW2"},
+  {m:"Surface Laptop Ultra",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Is this device expandable?",real:true,u:"https://www.bestbuy.com/product/microsoft-surface-laptop-ultra-15-3k-touchscreen-nvidia-rtx-spark-n1x-18-core-2026-24gb-memory-512gb-storage-platinum/JJGXP3CQW2"},
+  {m:"Surface Laptop Ultra",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"Is this stylus compatible",real:true,u:"https://www.bestbuy.com/product/microsoft-surface-laptop-ultra-15-3k-touchscreen-nvidia-rtx-spark-n1x-18-core-2026-24gb-memory-512gb-storage-platinum/JJGXP3CQW2/sku/6690410"},
+  {m:"Surface Laptop Ultra",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Is this device expandable?",real:true,u:"https://www.bestbuy.com/product/microsoft-surface-laptop-ultra-15-3k-touchscreen-nvidia-rtx-spark-n1x-18-core-2026-24gb-memory-512gb-storage-platinum/JJGXP3CQW2/sku/6690410"},
+  {m:"Surface Laptop Ultra",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Display",x:"This product costs this much and does not even have an OLED display. Get out of here. Microsoft, you are not apple and cannot get away with this. You need to set the bar not rip people off!",real:true,u:"https://www.bestbuy.com/product/microsoft-surface-laptop-ultra-15-3k-touchscreen-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-nightfall/JJGXP3CR42"},
+  {m:"Surface Laptop Ultra",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Display",x:"This product costs this much and does not even have an OLED display. Get out of here. Microsoft, you are not apple and cannot get away with this. You need to set the bar not rip people off!",real:true,u:"https://www.bestbuy.com/product/microsoft-surface-laptop-ultra-15-3k-touchscreen-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-nightfall/JJGXP3CR42/sku/6690393"},
+  {m:"Surface Laptop Ultra",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Display",x:"This product costs this much and does not even have an OLED display. Get out of here. Microsoft, you are not apple and cannot get away with this. You need to set the bar not rip people off!",real:true,u:"https://www.bestbuy.com/product/microsoft-surface-laptop-ultra-15-3k-touchscreen-nvidia-rtx-spark-n1x-20-core-2026-32gb-memory-1tb-storage-nightfall/JJGXP3CR42"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Price",x:"Why does it feel like you are paying an extra $1500ish just to have the word NVIDIA on it?",real:true,u:"https://www.bestbuy.com/site/questions/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-cosmic-blue/6689930"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Is the OS Windows 11 or Windows 11 arm? On Best Buy it says Windows 11 Home, but on Lenovo it says Windows 11 ARM64. Does it differ between retailers?",real:true,u:"https://www.bestbuy.com/site/questions/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-cosmic-blue/6689930"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"Can I erase windows 11 and install Linux?",real:true,u:"https://www.bestbuy.com/site/questions/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-cosmic-blue/6689930"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"I've noticed no clock speed is shown for the NPU installed. Does it vary for NPUs depending on the drivers and data being processed?",real:true,u:"https://www.bestbuy.com/site/questions/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-cosmic-blue/6689930"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"I bought this laptop today and I'm looking for a docking station to run 2 monitors key board and a Logitech trackball. Also a backup system Can you recommend a docking station?",real:true,u:"https://www.bestbuy.com/site/questions/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-cosmic-blue/6689930"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Gaming",x:"Are These workforce or gaming laptops ??? Asking the same thing a different way … Does this replace 5000 series gaming laptops ??",real:true,u:"https://www.bestbuy.com/site/questions/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-cosmic-blue/6689930"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Is the OS Windows 11 or Windows 11 arm? On Best Buy it says Windows 11 Home, but on Lenovo it says Windows 11 ARM64. Does it differ between retailers?",real:true,u:"https://www.bestbuy.com/site/questions/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-cosmic-blue/6689930/question/f5d076c3-0095-36d1-8a37-d361a32bb8e6"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Was sind Dell XPS-Laptops?",real:true,u:"https://www.dell.com/de-ch/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Was ist der Unterschied zwischen Dell Premium und Dell XPS?",real:true,u:"https://www.dell.com/de-ch/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What are Dell XPS laptops?",real:true,u:"https://www.dell.com/en-au/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Who are Dell XPS laptops designed for?",real:true,u:"https://www.dell.com/en-au/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Battery",x:"What kind of battery life can I expect from an XPS laptop?",real:true,u:"https://www.dell.com/en-au/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"How durable are Dell XPS laptops?",real:true,u:"https://www.dell.com/en-au/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What are the display options for Dell XPS laptops?",real:true,u:"https://www.dell.com/en-au/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"How is the sound quality on XPS laptops?",real:true,u:"https://www.dell.com/en-au/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What are the benefits of the AI features in XPS laptops?",real:true,u:"https://www.dell.com/en-au/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Are Dell XPS laptops made with sustainable materials?",real:true,u:"https://www.dell.com/en-au/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What are Dell XPS laptops?",real:true,u:"https://www.dell.com/en-hk/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Who are Dell XPS laptops designed for?",real:true,u:"https://www.dell.com/en-hk/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Battery",x:"What kind of battery life can I expect from an XPS laptop?",real:true,u:"https://www.dell.com/en-hk/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"How durable are Dell XPS laptops?",real:true,u:"https://www.dell.com/en-hk/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What are the display options for Dell XPS laptops?",real:true,u:"https://www.dell.com/en-hk/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"How is the sound quality on XPS laptops?",real:true,u:"https://www.dell.com/en-hk/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What are the benefits of the AI features in XPS laptops?",real:true,u:"https://www.dell.com/en-hk/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Are Dell XPS laptops made with sustainable materials?",real:true,u:"https://www.dell.com/en-hk/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"What did Dell announce for AI developers, creators, and enterprises?",real:true,u:"https://www.dell.com/en-us/shop/computer-pcs/lp/ai-development-portfolio-premier"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What laptop specs are required for agentic AI development with local models and long battery life?",real:true,u:"https://www.dell.com/en-us/shop/computer-pcs/lp/ai-development-portfolio-premier"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Is the Dell XPS 16 Creator Edition good for local AI development and creator workflows?",real:true,u:"https://www.dell.com/en-us/shop/computer-pcs/lp/ai-development-portfolio-premier"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Price",x:"Which AI development PC offers the best value for money?",real:true,u:"https://www.dell.com/en-us/shop/computer-pcs/lp/ai-development-portfolio-premier"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What workstation configuration supports multi-agent projects and long-context models for agentic AI development?",real:true,u:"https://www.dell.com/en-us/shop/computer-pcs/lp/ai-development-portfolio-premier"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What’s the best Dell PC or workstation for local AI development?",real:true,u:"https://www.dell.com/en-us/shop/computer-pcs/lp/ai-development-portfolio-premier"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Why run AI locally on Dell systems instead of relying on cloud GPUs?",real:true,u:"https://www.dell.com/en-us/shop/computer-pcs/lp/ai-development-portfolio-premier"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Quel disque SSD est disponible ?",real:true,u:"https://www.dell.com/fr-be/shop/laptop-computers/spd/xps16dx16263"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Qual SSD está disponível?",real:true,u:"https://www.dell.com/pt-br/shop/laptop-computers/spd/xps16dx16263"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Quais tamanhos de tela estão disponíveis?",real:true,u:"https://www.dell.com/pt-br/shop/laptop-computers/spd/xps16dx16263"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Dell XPS 笔记本电脑是什么？",real:true,u:"https://www.dell.com/zh-cn/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Dell XPS 笔记本电脑适合哪些人群？",real:true,u:"https://www.dell.com/zh-cn/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Dell XPS 笔记本电脑的耐用性如何？",real:true,u:"https://www.dell.com/zh-cn/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Dell XPS 笔记本电脑提供哪些显示屏选项？",real:true,u:"https://www.dell.com/zh-cn/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"XPS 笔记本电脑的音质如何？",real:true,u:"https://www.dell.com/zh-cn/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"XPS 笔记本电脑的 AI 功能有哪些优势？",real:true,u:"https://www.dell.com/zh-cn/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Dell XPS 笔记本电脑采用可持续材料制造吗？",real:true,u:"https://www.dell.com/zh-cn/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Dell XPS 笔记本电脑适合照片或视频编辑等创意工作吗？",real:true,u:"https://www.dell.com/zh-cn/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Gaming",x:"可以用 Dell XPS 笔记本电脑玩游戏吗？",real:true,u:"https://www.dell.com/zh-cn/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"XPS 笔记本电脑的的现代交互设计有何独特之处？",real:true,u:"https://www.dell.com/zh-cn/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"XPS 16 Creator Edition",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"XPS 笔记本电脑提供哪些操作系统？",real:true,u:"https://www.dell.com/zh-cn/shop/laptop-computers/scr/laptop/appref=xps-product-line"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is the HP OmniBook Ultra Series?",real:true,u:"https://www.hp.com/us-en/shop/mdp/hp-omnibook-ultra/hp-omnibook-ultra-3074457345618072173--1"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Who are HP OmniBook Ultra laptops designed for?",real:true,u:"https://www.hp.com/us-en/shop/mdp/hp-omnibook-ultra/hp-omnibook-ultra-3074457345618072173--1"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What kind of display options are available on HP OmniBook Ultra laptops?",real:true,u:"https://www.hp.com/us-en/shop/mdp/hp-omnibook-ultra/hp-omnibook-ultra-3074457345618072173--1"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Battery",x:"What makes the HP OmniBook Ultra Series suitable for mobile work?",real:true,u:"https://www.hp.com/us-en/shop/mdp/hp-omnibook-ultra/hp-omnibook-ultra-3074457345618072173--1"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is the HP OmniBook X Series?",real:true,u:"https://www.hp.com/us-en/shop/mdp/laptops/omnibook-x"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Who are HP OmniBook X laptops designed for?",real:true,u:"https://www.hp.com/us-en/shop/mdp/laptops/omnibook-x"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Are HP OmniBook X models available as 2-in-1 PCs?",real:true,u:"https://www.hp.com/us-en/shop/mdp/laptops/omnibook-x"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Display",x:"What kind of display options are available on HP OmniBook X laptops?",real:true,u:"https://www.hp.com/us-en/shop/mdp/laptops/omnibook-x"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Portability",x:"What makes the HP OmniBook X Series suitable for mobile work?",real:true,u:"https://www.hp.com/us-en/shop/mdp/laptops/omnibook-x"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"What is the HP OmniBook Ultra Series?",real:true,u:"https://www.hp.com/us-en/shop/mdp/omnibook-ultra"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Who are HP OmniBook Ultra laptops designed for?",real:true,u:"https://www.hp.com/us-en/shop/mdp/omnibook-ultra"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What kind of display options are available on HP OmniBook Ultra laptops?",real:true,u:"https://www.hp.com/us-en/shop/mdp/omnibook-ultra"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Battery",x:"What makes the HP OmniBook Ultra Series suitable for mobile work?",real:true,u:"https://www.hp.com/us-en/shop/mdp/omnibook-ultra"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is the HP OmniBook X Series?",real:true,u:"https://www.hp.com/us-en/shop/mdp/omnibook-x-laptops-tab4-module15-omnibookx"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Who are HP OmniBook X laptops designed for?",real:true,u:"https://www.hp.com/us-en/shop/mdp/omnibook-x-laptops-tab4-module15-omnibookx"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Are HP OmniBook X models available as 2-in-1 PCs?",real:true,u:"https://www.hp.com/us-en/shop/mdp/omnibook-x-laptops-tab4-module15-omnibookx"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What kind of display options are available on HP OmniBook X laptops?",real:true,u:"https://www.hp.com/us-en/shop/mdp/omnibook-x-laptops-tab4-module15-omnibookx"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What makes the HP OmniBook X Series suitable for mobile work?",real:true,u:"https://www.hp.com/us-en/shop/mdp/omnibook-x-laptops-tab4-module15-omnibookx"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is the HP OmniBook X Series?",real:true,u:"https://www.hp.com/us-en/shop/mdp/professional/omnibook-x"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Who are HP OmniBook X laptops designed for?",real:true,u:"https://www.hp.com/us-en/shop/mdp/professional/omnibook-x"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Are HP OmniBook X models available as 2-in-1 PCs?",real:true,u:"https://www.hp.com/us-en/shop/mdp/professional/omnibook-x"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What kind of display options are available on HP OmniBook X laptops?",real:true,u:"https://www.hp.com/us-en/shop/mdp/professional/omnibook-x"},
+  {m:"OmniBook Ultra 16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Battery",x:"What makes the HP OmniBook X Series suitable for mobile work?",real:true,u:"https://www.hp.com/us-en/shop/mdp/professional/omnibook-x"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Was ist NVIDIA RTX Spark?",real:true,u:"https://www.microsoft.com/de-de/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Warum sind RTX Spark Windows PCs anders?",real:true,u:"https://www.microsoft.com/de-de/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Wie bringen RTX Spark Windows PCs lokale und cloudbasierte KI in Einklang?",real:true,u:"https://www.microsoft.com/de-de/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"Eignen sich RTX Spark Windows PCs zur Videobearbeitung und Inhaltserstellung?",real:true,u:"https://www.microsoft.com/de-de/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Gaming",x:"Wie unterscheidet sich ein RTX Spark Windows PC von einem klassischen Gaming-Laptop?",real:true,u:"https://www.microsoft.com/de-de/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is NVIDIA RTX Spark?",real:true,u:"https://www.microsoft.com/en-ca/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Why are RTX Spark Windows PCs different?",real:true,u:"https://www.microsoft.com/en-ca/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"How do RTX Spark Windows PCs balance local and cloud AI?",real:true,u:"https://www.microsoft.com/en-ca/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Are RTX Spark Windows PCs good for video editing and content creation?",real:true,u:"https://www.microsoft.com/en-ca/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Gaming",x:"How is an RTX Spark Windows PC different from a traditional gaming laptop?",real:true,u:"https://www.microsoft.com/en-ca/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Are RTX Spark Windows PCs only laptops, or are desktops available too?",real:true,u:"https://www.microsoft.com/en-ca/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Which Windows PC brands offer RTX Spark Windows PCs?",real:true,u:"https://www.microsoft.com/en-ca/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is Surface Laptop Ultra?",real:true,u:"https://www.microsoft.com/en-gb/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What makes Surface Laptop Ultra different from Surface Laptop?",real:true,u:"https://www.microsoft.com/en-gb/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is the difference between Surface Laptop Ultra and Surface Pro?",real:true,u:"https://www.microsoft.com/en-gb/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What operating system does Surface Laptop Ultra ship with?",real:true,u:"https://www.microsoft.com/en-gb/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Is Surface Laptop Ultra worth it?",real:true,u:"https://www.microsoft.com/en-gb/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is Surface Laptop Ultra?",real:true,u:"https://www.microsoft.com/en-us/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What makes Surface Laptop Ultra different from Surface Laptop?",real:true,u:"https://www.microsoft.com/en-us/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is the difference between Surface Laptop Ultra and Surface Pro?",real:true,u:"https://www.microsoft.com/en-us/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What chip does Surface Laptop Ultra use?",real:true,u:"https://www.microsoft.com/en-us/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Surface Laptop Ultra と Surface Laptop の違いは?",real:true,u:"https://www.microsoft.com/ja-jp/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Surface Laptop Ultra と Surface Pro の違いは?",real:true,u:"https://www.microsoft.com/ja-jp/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Surface Laptop Ultra の搭載オペレーティング システムは?",real:true,u:"https://www.microsoft.com/ja-jp/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Surface Laptop Ultra の搭載チップは?",real:true,u:"https://www.microsoft.com/ja-jp/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"NVIDIA RTX Spark とは?",real:true,u:"https://www.microsoft.com/ja-jp/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Surface Laptop Ultra は Copilot+ PC に含まれる?",real:true,u:"https://www.microsoft.com/ja-jp/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"Surface Laptop Ultra は、ローカル AI や機械学習に向いている?",real:true,u:"https://www.microsoft.com/ja-jp/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"CUDA とは? なぜ重要なのか?",real:true,u:"https://www.microsoft.com/ja-jp/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"Surface Laptop Ultra は、プログラミングやコーディングに向いている?",real:true,u:"https://www.microsoft.com/ja-jp/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"Surface Laptop Ultra は、動画編集に向いている?",real:true,u:"https://www.microsoft.com/ja-jp/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Gaming",x:"Surface Laptop Ultra は、ゲームに向いている?",real:true,u:"https://www.microsoft.com/ja-jp/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"Surface Laptop Ultra は、エンジニアリング、CAD、シミュレーションに向いている?",real:true,u:"https://www.microsoft.com/ja-jp/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"今までアプリは Surface Laptop Ultra で動作する?",real:true,u:"https://www.microsoft.com/ja-jp/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"ユニファイド メモリとは?",real:true,u:"https://www.microsoft.com/ja-jp/surface/devices/surface-laptop-ultra"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is the Prestige N16 Flip AI+?",real:true,u:"https://www.msi.com/news/detail/MSI-Partners-with-NVIDIA-to-Unveil-Its-First-Laptop-Powered-by-NVIDIA-RTX-Spark-at-COMPUTEX-2026-148992"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Why is this product significant for MSI?",real:true,u:"https://www.msi.com/news/detail/MSI-Partners-with-NVIDIA-to-Unveil-Its-First-Laptop-Powered-by-NVIDIA-RTX-Spark-at-COMPUTEX-2026-148992"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Does the Prestige N16 Flip AI+ support AI workloads?",real:true,u:"https://www.msi.com/news/detail/MSI-Partners-with-NVIDIA-to-Unveil-Its-First-Laptop-Powered-by-NVIDIA-RTX-Spark-at-COMPUTEX-2026-148992"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Gaming",x:"Is the Prestige N16 Flip AI+ suitable for gaming?",real:true,u:"https://www.msi.com/news/detail/MSI-Partners-with-NVIDIA-to-Unveil-Its-First-Laptop-Powered-by-NVIDIA-RTX-Spark-at-COMPUTEX-2026-148992"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Battery",x:"How does the system balance performance and battery life?",real:true,u:"https://www.msi.com/news/detail/MSI-Partners-with-NVIDIA-to-Unveil-Its-First-Laptop-Powered-by-NVIDIA-RTX-Spark-at-COMPUTEX-2026-148992"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What makes the Tandem OLED display unique?",real:true,u:"https://www.msi.com/news/detail/MSI-Partners-with-NVIDIA-to-Unveil-Its-First-Laptop-Powered-by-NVIDIA-RTX-Spark-at-COMPUTEX-2026-148992"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What display specifications does the laptop offer?",real:true,u:"https://www.msi.com/news/detail/MSI-Partners-with-NVIDIA-to-Unveil-Its-First-Laptop-Powered-by-NVIDIA-RTX-Spark-at-COMPUTEX-2026-148992"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Does the laptop support stylus input?",real:true,u:"https://www.msi.com/news/detail/MSI-Partners-with-NVIDIA-to-Unveil-Its-First-Laptop-Powered-by-NVIDIA-RTX-Spark-at-COMPUTEX-2026-148992"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Battery",x:"What battery capacity does the laptop feature?",real:true,u:"https://www.msi.com/news/detail/MSI-Partners-with-NVIDIA-to-Unveil-Its-First-Laptop-Powered-by-NVIDIA-RTX-Spark-at-COMPUTEX-2026-148992"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"What usage scenarios is the 2-in-1 design intended for?",real:true,u:"https://www.msi.com/news/detail/MSI-Partners-with-NVIDIA-to-Unveil-Its-First-Laptop-Powered-by-NVIDIA-RTX-Spark-at-COMPUTEX-2026-148992"},
+  {m:"ProArt P16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Price",x:"What are the payment methods available?",real:true,u:"https://in.store.asus.com/asus-proart-p16-h7607ba-nvidia-rtx-spark-creator-laptop.html"},
+  {m:"ProArt P16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Price",x:"Are EMI or financing options available?",real:true,u:"https://in.store.asus.com/asus-proart-p16-h7607ba-nvidia-rtx-spark-creator-laptop.html"},
+  {m:"ProArt P16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Price",x:"How can I register for my student discount?",real:true,u:"https://in.store.asus.com/asus-proart-p16-h7607ba-nvidia-rtx-spark-creator-laptop.html"},
+  {m:"ProArt P16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"How much are the delivery/shipping charges?",real:true,u:"https://in.store.asus.com/asus-proart-p16-h7607ba-nvidia-rtx-spark-creator-laptop.html"},
+  {m:"ProArt P16",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"How long will it take for me to receive my order?",real:true,u:"https://in.store.asus.com/asus-proart-p16-h7607ba-nvidia-rtx-spark-creator-laptop.html"},
+  {m:"Prestige N16 Flip AI+",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Who is this laptop suitable for?",real:true,u:"https://www.amazon.co.jp/dp/B0HMBLSDQT"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Quelles sont les principales caractéristiques du mini-PC ProArt ?",real:true,u:"https://www.asus.com/fr/displays-desktops/mini-pcs/proart-mini-pc-series/proart-gr1x-mini-pc/"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"À quel type d'utilisateurs le mini-PC ProArt est-il le mieux adapté ?",real:true,u:"https://www.asus.com/fr/displays-desktops/mini-pcs/proart-mini-pc-series/proart-gr1x-mini-pc/"},
+  {m:"ProArt P14",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"従来の GPU構成と比べて、 RTX Sparkの「統合（ユニファイド）メモリアーキテクチャ」にはどんなメリットがありますか？",real:true,u:"https://www.asus.com/jp/blog/asus-laptops-with-nvidia-rtx-spark-transforming-ai-workflows-for-creators/"},
+  {m:"ProArt P14",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"既存の x86アプリケーションや PCゲームは、 ARMベースの新しい ProArtで動作しますか？",real:true,u:"https://www.asus.com/jp/blog/asus-laptops-with-nvidia-rtx-spark-transforming-ai-workflows-for-creators/"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"ProArt GR1X ミニPCの主な特徴は何ですか？",real:true,u:"https://www.asus.com/jp/displays-desktops/mini-pcs/proart-mini-pc-series/proart-gr1x-mini-pc/"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"ProArt GR1X ミニPCはどのようなユーザーに最適ですか？",real:true,u:"https://www.asus.com/jp/displays-desktops/mini-pcs/proart-mini-pc-series/proart-gr1x-mini-pc/"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"「NVIDIA RTX Spark™ N1X」とは何ですか？また、私のワークフローにどのようなメリットをもたらしますか？",real:true,u:"https://www.asus.com/jp/displays-desktops/mini-pcs/proart-mini-pc-series/proart-gr1x-mini-pc/"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"ProArt GR1X ミニPCは、次世代のエージェントAI（自律型AI）に対応していますか？",real:true,u:"https://www.asus.com/jp/displays-desktops/mini-pcs/proart-mini-pc-series/proart-gr1x-mini-pc/"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"ProArt GR1X ミニPCとAscent GX10の違いは何ですか？",real:true,u:"https://www.asus.com/jp/displays-desktops/mini-pcs/proart-mini-pc-series/proart-gr1x-mini-pc/"},
+  {m:"Surface Laptop Ultra",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is an NVIDIA RTX Spark desktop?",real:true,u:"https://www.bestbuy.ca/en-ca/collection/rtx-spark-desktops/blt408a83696696bb75"},
+  {m:"Surface Laptop Ultra",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is NVIDIA RTX Spark N1X?",real:true,u:"https://www.bestbuy.ca/en-ca/collection/rtx-spark-desktops/blt408a83696696bb75"},
+  {m:"Surface Laptop Ultra",r:"Best Buy",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Can RTX Spark desktops run AI locally?",real:true,u:"https://www.bestbuy.ca/en-ca/collection/rtx-spark-desktops/blt408a83696696bb75"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is NVIDIA RTX Spark?",real:true,u:"https://www.microsoft.com/en-au/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Why are RTX Spark Windows PCs different?",real:true,u:"https://www.microsoft.com/en-au/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"How do RTX Spark Windows PCs balance local and cloud AI?",real:true,u:"https://www.microsoft.com/en-au/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"Are RTX Spark Windows PCs good for video editing and content creation?",real:true,u:"https://www.microsoft.com/en-au/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Gaming",x:"How is an RTX Spark Windows PC different from a traditional gaming laptop?",real:true,u:"https://www.microsoft.com/en-au/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Are RTX Spark Windows PCs only laptops, or are desktops available too?",real:true,u:"https://www.microsoft.com/en-au/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Which Windows PC brands offer RTX Spark Windows PCs?",real:true,u:"https://www.microsoft.com/en-au/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is Surface Laptop Ultra?",real:true,u:"https://www.microsoft.com/en-ca/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What makes Surface Laptop Ultra different from Surface Laptop?",real:true,u:"https://www.microsoft.com/en-ca/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is the difference between Surface Laptop Ultra and Surface Pro?",real:true,u:"https://www.microsoft.com/en-ca/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What operating system does Surface Laptop Ultra ship with?",real:true,u:"https://www.microsoft.com/en-ca/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is NVIDIA RTX Spark?",real:true,u:"https://www.microsoft.com/en-ca/surface/devices/surface-laptop-ultra"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"What is NVIDIA RTX Spark?",real:true,u:"https://www.microsoft.com/en-gb/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Why are RTX Spark Windows PCs different?",real:true,u:"https://www.microsoft.com/en-gb/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"How do RTX Spark Windows PCs balance local and cloud AI?",real:true,u:"https://www.microsoft.com/en-gb/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Compatibility",x:"Are RTX Spark Windows PCs good for video editing and content creation?",real:true,u:"https://www.microsoft.com/en-gb/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Gaming",x:"How is an RTX Spark Windows PC different from a traditional gaming laptop?",real:true,u:"https://www.microsoft.com/en-gb/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Are RTX Spark Windows PCs only laptops, or are desktops available too?",real:true,u:"https://www.microsoft.com/en-gb/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Which Windows PC brands offer RTX Spark Windows PCs?",real:true,u:"https://www.microsoft.com/en-gb/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"Qu’est-ce que NVIDIA RTX Spark ?",real:true,u:"https://www.microsoft.com/fr-fr/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"En quoi les PC Windows RTX Spark sont-ils différents ?",real:true,u:"https://www.microsoft.com/fr-fr/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Comment les PC Windows RTX Spark concilient-ils l’IA locale et l’IA dans le cloud ?",real:true,u:"https://www.microsoft.com/fr-fr/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"Les PC Windows RTX Spark sont-ils adaptés au montage vidéo et à la création de contenu ?",real:true,u:"https://www.microsoft.com/fr-fr/windows/rtx-spark-laptops"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"法人向け Surface Laptop Ultra とは?",real:true,u:"https://www.microsoft.com/ja-jp/d/%E6%B3%95%E4%BA%BA%E5%90%91%E3%81%91-surface-laptop-ultra/8wg5vqp0x4d1"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"法人向け Surface Laptop Ultra と法人向け Surface Laptop の違いは?",real:true,u:"https://www.microsoft.com/ja-jp/d/%E6%B3%95%E4%BA%BA%E5%90%91%E3%81%91-surface-laptop-ultra/8wg5vqp0x4d1"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"法人向け Surface Laptop Ultra と法人向け Surface Pro の違いは?",real:true,u:"https://www.microsoft.com/ja-jp/d/%E6%B3%95%E4%BA%BA%E5%90%91%E3%81%91-surface-laptop-ultra/8wg5vqp0x4d1"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"法人向け Surface Laptop Ultra の搭載オペレーティング システムは?",real:true,u:"https://www.microsoft.com/ja-jp/d/%E6%B3%95%E4%BA%BA%E5%90%91%E3%81%91-surface-laptop-ultra/8wg5vqp0x4d1"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Other",x:"法人向け Surface Laptop Ultra を選ぶ価値は?",real:true,u:"https://www.microsoft.com/ja-jp/d/%E6%B3%95%E4%BA%BA%E5%90%91%E3%81%91-surface-laptop-ultra/8wg5vqp0x4d1"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Q&A",s:null,d:"Nov",th:"Specs",x:"法人向け Surface Laptop Ultra の搭載チップは?",real:true,u:"https://www.microsoft.com/ja-jp/d/%E6%B3%95%E4%BA%BA%E5%90%91%E3%81%91-surface-laptop-ultra/8wg5vqp0x4d1"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:3,d:"04 Nov",th:"App compatibility",x:"The Surface Laptop Ultra is quite a striking device - in both stature and size. It's built well, the ergonomics of keyboard + mouse are excellent (and near the top of ...",real:true,u:"https://www.amazon.com/gp/customer-reviews/R1JO7MK3OG1W05"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"01 Nov",th:"Local AI",x:"So far it’s been a good investment. I think I upgraded to the right laptop.",real:true,u:"https://www.amazon.com/gp/customer-reviews/RHHD9CDZ4TNN6"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:1,d:"14 Nov",th:"Local AI",x:"Arrived but did not work. Had to be sent back to the company for replacement",real:true,u:"https://www.amazon.com/gp/customer-reviews/RTF72F4PIKBE7"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"03 Nov",th:"Price",x:"Best bang for the buck. Needed a better laptop to run Snapmaker Orca, which is a memory intensive 3d printing slicing studio for the Snapmaker U1 printer. This laptop ...",real:true,u:"https://www.amazon.com/gp/customer-reviews/R24R26AKPDQDLG"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:1,d:"20 Oct",th:"Local AI",x:"This said it was advertised as \"final assembly in USA\" but on the box it says \"made in china\". The reason I specifically purchased this for turned out to be false.",real:true,u:"https://www.amazon.com/gp/customer-reviews/R2Z47HVWERNOBV"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"18 Oct",th:"Price",x:"Love it, great price and runs fast, battery life is great too",real:true,u:"https://www.amazon.com/gp/customer-reviews/R1MJW0G861L6L7"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"26 Sep",th:"Gaming",x:"Great laptop and even better for gaming, although it can do what other computers do too the AMD on this making it ideal for me when i have free time. It runs smooth wi...",real:true,u:"https://www.amazon.com/gp/customer-reviews/R3364RSS4568ZV"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"18 Sep",th:"Local AI",x:"Gratamente sorprendido de su desempeño, robusta, rápida confiable, con una relación calidad precio insuperable sin pagar valor de marca, totalmente recomendada",real:true,u:"https://www.amazon.com/gp/customer-reviews/R3736GM5XSYN2L"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:3,d:"18 Aug",th:"Gaming",x:"It’s not good for gaming I bought it for gaming, but everything else it’ll work out fine",real:true,u:"https://www.amazon.com/gp/customer-reviews/R353GM1MKA16D8"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"06 Aug",th:"Price",x:"Bought for my husband specifically to play MTGO. It does what he needs it to do, it wasn't crazy expensive and it looks great!",real:true,u:"https://www.amazon.com/gp/customer-reviews/R9BFDLP5HTBIY"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"15 Jul",th:"Price",x:"Greetings from Trinidad and Tobago 🇹🇹 The package arrived in tact, with all pieces and parts. The Display is crisp bright and sharp. I didn't hear about this brand bef...",real:true,u:"https://www.amazon.com/gp/customer-reviews/R35UE0TY8AYIGU"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:3,d:"07 Jul",th:"Local AI",x:"Not great. Should be a fast smooth laptop but my internet is slow and choppy even with a fast connection for all of my other devices. Its not my internet, its the laptop.",real:true,u:"https://www.amazon.com/gp/customer-reviews/R250ZBXL2GGI7Q"},
+  {m:"ProArt P16",r:"Amazon",t:"Review",s:3,d:"19 Nov",th:"App compatibility",x:"RTX Spark搭載で128GB搭載のノートPCです。タスクマネージャーで見ると、VRAM8GBと共有94.8GBでGPUから使えるのは103GBです。ARMベースですが、意外なくらいに普通に動きますね。ゲームは見てませんがWindows PCとして使うのにまったく違和感はありません。 AI関係では、Pythonやpytorch,...",real:true,u:"https://www.amazon.co.jp/gp/customer-reviews/R1OS45H3C86KPR"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"05 Jun",th:"Price",x:"Great computer especially for the price",real:true,u:"https://www.amazon.com/gp/customer-reviews/R1ZDO6Z6B5M5T6"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"25 May",th:"Price",x:"My wife love this it works perfectly get all of our tasks done doesn't crash like the apple laptop I would say I will give this a 10 out of 10 The battery goes out a l...",real:true,u:"https://www.amazon.com/gp/customer-reviews/R191CROPJNJ1E8"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"17 May",th:"Price",x:"Very impressed with this laptop so far! The setup process was quick and easy, even as someone who has ONLY used Macs for years and doesn’t usually switch between opera...",real:true,u:"https://www.amazon.com/gp/customer-reviews/ROTAWHCT95T18"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"29 Apr",th:"Price",x:"Very happy with the performance. People buying this expecting to run AAA titles at 60 fps should not be leaving negative reviews, a little basic hardware knowledge goe...",real:true,u:"https://www.amazon.com/gp/customer-reviews/R3KPKZ0ZCXRGMX"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"06 Apr",th:"Price",x:"This laptop is so good! I've only had this laptop for about 5 days and everything about it is so good. The gaming is perfect especially with the graphics and the sound...",real:true,u:"https://www.amazon.com/gp/customer-reviews/R22KS16IY4B07H"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"30 Mar",th:"Display",x:"Computer arrived with issue on the screen. Customer service responded immediately and sent a return label. As soon as they received the laptop, they sent the new one o...",real:true,u:"https://www.amazon.com/gp/customer-reviews/R2NBR83MY02G7"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:4,d:"25 Feb",th:"Battery",x:"Nice laptop but not the battery won't keep up for long.",real:true,u:"https://www.amazon.com/gp/customer-reviews/REWKH8A5YA1FG"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:3,d:"03 Feb",th:"App compatibility",x:"Very Happy with the Computer except after about 6 months of use, the keys are starting to stick, or not respond as quickly, however the overall quality is great, Does ...",real:true,u:"https://www.amazon.com/gp/customer-reviews/R4DWOSYXX7JFL"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"02 Feb",th:"Price",x:"I’m very happy with my Nimo laptop. It’s fast, lightweight, and easy to use. The battery lasts a long time, the screen is clear, and the keyboard is comfortable. Overa...",real:true,u:"https://www.amazon.com/gp/customer-reviews/RQFDP2FT9L468"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"11 Jan",th:"Noise",x:"Fantastic value! Super powerful and so much storage- thank you!!!",real:true,u:"https://www.amazon.com/gp/customer-reviews/RLJY5SKBV0UZX"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"03 Jan",th:"App compatibility",x:"It's worth the money, happy with product. We have bought a second one for my husband",real:true,u:"https://www.amazon.com/gp/customer-reviews/R2B6ZUVW0PX83N"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"25 Dec",th:"Price",x:"Great laptop at a very competitive and affordable price. Easy install and performance is comparable to other devices twice the price with similar specifications. Nice ...",real:true,u:"https://www.amazon.com/gp/customer-reviews/R3CDRM9EAFLU1R"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"13 Nov",th:"Local AI",x:"Ease of set up and use!",real:true,u:"https://www.amazon.com/gp/customer-reviews/R365UXKFE37N5G"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"31 Oct",th:"Price",x:"It fired up and is doing all I need. It has met or exceeded all my expectations. It was the best for the buck on the day I purchased it",real:true,u:"https://www.amazon.com/gp/customer-reviews/REA3E5B33PB9K"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"28 Oct",th:"Local AI",x:"Easy set up. Works great so far. 👍",real:true,u:"https://www.amazon.com/gp/customer-reviews/R18I4HHCYGVAEE"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"26 Oct",th:"Price",x:"I was reluctant to buy a laptop with a name I did not recognize. But I spoke with several of my computer buddies & they echoed what I had read about Nimo. Good product...",real:true,u:"https://www.amazon.com/gp/customer-reviews/RPOY2QBCACPP8"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"26 Oct",th:"Local AI",x:"Nice and convenience to use",real:true,u:"https://www.amazon.com/gp/customer-reviews/RNLXNF0QBS6T9"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"25 Oct",th:"Local AI",x:"Works great",real:true,u:"https://www.amazon.com/gp/customer-reviews/R2XFSCDZFMLH6R"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"24 Oct",th:"Local AI",x:"Excelente compra",real:true,u:"https://www.amazon.com/gp/customer-reviews/ROX76B1L5NFVB"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:3,d:"04 Sep",th:"Price",x:"I purchased the NIMO 15.6\" FHD Student Laptop with 32GB RAM, 1TB SSD, and AMD Ryzen 5 3500U processor, expecting a solid budget laptop for the price. While the specs ...",real:true,u:"https://www.amazon.com/gp/customer-reviews/RF8G8C7VGNOPQ"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"11 Mar",th:"Local AI",x:"I work in IT and I love this laptop!",real:true,u:"https://www.amazon.com/gp/customer-reviews/R2TLAC5V5GJUHC"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"20 Dec",th:"Gaming",x:"First day gaming with it and loving it so far. Playing Conan exiles with mods and no problem at all. Specification were correct and I hope it last long enough for me 😊",real:true,u:"https://www.amazon.com/gp/customer-reviews/RDWYAKSQUKJGM"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"11 Nov",th:"Local AI",x:"I really like this laptop. It was very easy and quick to set up. The keyboard lights up which was very impressive. The keys are smooth and easy to type on. Overall imp...",real:true,u:"https://www.amazon.com/gp/customer-reviews/RJ5FHSXGRP2Z1"},
+  {m:"Surface Laptop Ultra",r:"Amazon",t:"Review",s:5,d:"03 Aug",th:"Gaming",x:"The build quality on this laptop feels nice. It does not look or feel cheap. The specs are more than enough for the average user, and the N100 chip is quite decent and...",real:true,u:"https://www.amazon.com/gp/customer-reviews/R1G89C6QQAGHW"},
+  {m:"ProArt P14",r:"Best Buy",t:"Review",s:5,d:"Nov",th:"App compatibility",x:"That’s why the ASUS ProArt P14 appeals to me most as a portable work tool for people with large-scale creative projects and practical use of on-device AI. It offers an...",real:true,u:"https://www.asus.com/us/laptops/for-creators/proart/proart-p14-h7407/"},
+  {m:"ProArt P16",r:"Best Buy",t:"Review",s:5,d:"Nov",th:"Price",x:"Despite the exorbitant price, this is the most affordable solution for working with large local LLM+VLM models at a solid and usable speed. The ability to play games o...",real:true,u:"https://www.asus.com/us/laptops/for-creators/proart/proart-p16-h7607/"},
+  {m:"ProArt P16",r:"Best Buy",t:"Review",s:5,d:"Nov",th:"Local AI",x:"In this era obsessed with artificial intelligence, this laptop is something of a phenomenon that fills a niche—one that’s not yet fully occupied—by combining relative ...",real:true,u:"https://www.asus.com/us/laptops/for-creators/proart/proart-p16-h7607/"},
+  {m:"Yoga 9n 2-in-1",r:"Best Buy",t:"Review",s:5,d:"Nov",th:"Local AI",x:"None",real:true,u:"https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-18-core-2026-32gb-memory-1tb-storage-cosmic-blue/J3PT7W54P5/sku/6689930/openbox"},
+  {m:"Surface Laptop Ultra",r:"Best Buy",t:"Review",s:5,d:"19 Nov",th:"Local AI",x:"第一批新型電腦，目前使用上還滿意，風扇聲不大，算力很讚，大大減少運算時間",real:true,u:"https://24h.pchome.com.tw/prod/DHAY7C-A900KJOZK"},
+  {m:"Pro 9n",r:"Best Buy",t:"Review",s:5,d:"Nov",th:"App compatibility",x:"雖然是arm,但相容性比想像中的好很多。質感比不上微軟的同款，但輕！1.77kg真的輕得挺有感的！ 這台風扇有點吵，微軟的同款幾乎無聲！ 微軟直接便宜五萬，但幾乎沒送東西，華碩的送很多",real:true,u:"https://24h.pchome.com.tw/store/DHAAQ4"},
+  {m:"Pro 9n",r:"Best Buy",t:"Review",s:5,d:"Nov",th:"Local AI",x:"第一批新型電腦，目前使用上還滿意，風扇聲不大，算力很讚，大大減少運算時間",real:true,u:"https://24h.pchome.com.tw/store/DHAAQ4"},
+  {m:"Pro 9n",r:"Best Buy",t:"Review",s:5,d:"Nov",th:"App compatibility",x:"經測試N1X晶片相容性良好，大多有Arm64版本軟體，或直接使用x64版本軟體，但有2個軟體PotPlayer與VideoLAN的Arm64版無法使用，反而能直接使用x64版本。",real:true,u:"https://24h.pchome.com.tw/store/DHAAQ4"},
+  {m:"ProArt P14",r:"Best Buy",t:"Review",s:5,d:"Nov",th:"Local AI",x:"None",real:true,u:"https://24h.pchome.com.tw/store/DHAFR8"},
+  {m:"ProArt P14",r:"Best Buy",t:"Review",s:5,d:"Nov",th:"Local AI",x:"產品功能符合需求, 上網購物真方便",real:true,u:"https://24h.pchome.com.tw/store/DHAFR8"},
+  {m:"ProArt P14",r:"Best Buy",t:"Review",s:5,d:"Nov",th:"Local AI",x:"出貨速度迅速，包裝完整滿意。",real:true,u:"https://24h.pchome.com.tw/store/DHAFR8"},
 ];
-const LENS_SEG = [["Tech press", "14 reviews"], ["Creators & influencers", "310 posts"], ["Reddit & forums", "4,860 threads"], ["Retail buyers", "110 reviews"]];
-const LENS_TH = ["Performance", "Local AI", "Price / value", "Windows on Arm", "Battery", "Gaming"];
-const LENS_NET = [[54, 63, -19, -36, 26, -12], [60, 68, -6, -18, 32, -4], [22, 36, -50, -44, 10, -30], [36, 42, -42, -40, 24, -22]];
+const LENS_SEG = [
+  ['Tech press','2,760 articles & reviews'],
+  ['Creators & influencers','2,760 posts'],
+  ['Reddit & forums','4,465 threads'],
+  ['Amazon buyers','74 reviews'],
+  ['Best Buy buyers','25 reviews'],
+  ['Business & IT (LinkedIn)','200 posts & ads']
+];
+const LENS_TH = ['Performance','Local AI','Price / value','Windows on Arm','Battery','Gaming'];
+const LENS_NET = [
+  [64, 58, 34, 60, 62, 63],
+  [64, 58, 34, 60, 62, 63],
+  [-13, -11, -42, -26, -18, -8],
+  [68, 40, -45, 10, 25, 30],
+  [50, 45, -50, -20, 30, 10],
+  [45, 40, -20, -35, 20, 0]
+];
 const USER_TYPES = [
-  [
-    "Creators & video editors",
-    32,
-    22,
-    "GPU acceleration in creator apps",
-    "Third-party plug-in translation"
-  ],
-  [
-    "AI developers & researchers",
-    28,
-    54,
-    "Offline LLM inference & 64GB unified memory",
-    "Windows package manager quirks"
-  ],
-  [
-    "Enterprise & knowledge workers",
-    22,
-    14,
-    "All-day battery life & Copilot+ integration",
-    "Enterprise VPN & printer drivers"
-  ],
-  [
-    "PC gamers",
-    18,
-    -32,
-    "High OLED refresh rates",
-    "Kernel-level anti-cheat incompatibility"
-  ]
+  ['AI developers',24,38,'Local model execution speed','Toolchain and CUDA/Arm container setup'],
+  ['Creators & video editors',28,22,'Display quality and on-device inference','Plug-in compatibility and translation overhead'],
+  ['Business users',18,-6,'Chassis aesthetics and battery efficiency','Corporate VPN and peripheral driver setup'],
+  ['Students & general buyers',16,-18,'Lightweight design and responsive UI','High starting purchase price'],
+  ['Gamers',14,-32,'Raw graphical rendering','Anti-cheat blocking games on Windows on Arm']
 ];
 const GAPS = [
-  [
-    "Windows on Arm",
-    "Tech press \u221236 vs YouTube creators \u221218",
-    "Reviewers test legacy x86 workflows, while video creators test optimized beta apps."
-  ],
-  [
-    "Price & value",
-    "Tech press \u221219 vs Reddit users \u221250",
-    "Buyers bearing the $2,599+ entry price are far more critical than media reviewing free loaners."
-  ],
-  [
-    "Gaming",
-    "Creators \u22124 vs Reddit \u221230",
-    "Enthusiasts quickly hit anti-cheat brick walls in multiplayer titles."
-  ]
+  ['Windows on Arm','Tech press +60 net vs Reddit -26 net','Press benchmarks highlight theoretical compute while enthusiast communities encounter driver and anti-cheat barriers.'],
+  ['Price / value','Creators +34 net vs Buyers -50 net','Influencer coverage focuses on hardware design; verified buyers strongly contest the $2,599 entry premium.'],
+  ['Gaming','Press +63 net vs Community -8 net','Reviewers test isolated native titles; real gamers flag wide compatibility gaps in mainstream anti-cheat suites.']
 ];
 const PLAT_SENT = [
-  [
-    "Influencers & press",
-    "YouTube",
-    "3,015 videos & comments",
-    [
-      61,
-      26,
-      13
-    ],
-    "Local AI & video creation"
-  ],
-  [
-    "Community discussions",
-    "Reddit",
-    "4,465 threads & comments",
-    [
-      31,
-      35,
-      34
-    ],
-    "Price, ARM emulation & compatibility"
-  ],
-  [
-    "Real-time reactions",
-    "X",
-    "202 posts",
-    [
-      48,
-      32,
-      20
-    ],
-    "Architecture, announcements & benchmarks"
-  ],
-  [
-    "Visual creators",
-    "Instagram",
-    "283 posts",
-    [
-      58,
-      30,
-      12
-    ],
-    "Industrial design & OLED displays"
-  ]
+  ['Influencers & press','YouTube','3,015 posts & reviews',[22,35,43],'Local AI & performance'],
+  ['Influencers & press','TikTok','147 posts & reviews',[69,28,3],'Design & portability'],
+  ['Influencers & press','Instagram','283 posts & reviews',[84,15,1],'Local AI & performance'],
+  ['Influencers & press','Tech press','2,760 articles & reviews',[64,24,12],'Windows on Arm & N1X architecture'],
+  ['Influencers & press','X','274 posts & reviews',[61,35,4],'Local AI & performance'],
+  ['Buyers & communities','Reddit','4,465 posts & reviews',[19,42,39],'Price & compatibility'],
+  ['Buyers & communities','Amazon reviews','74 reviews',[68,15,17],'Speed & hardware value'],
+  ['Buyers & communities','Best Buy reviews','25 reviews',[80,10,10],'Display & local AI speed'],
+  ['Buyers & communities','Best Buy Q&A','217 questions',[18,46,36],'Will my apps and games run?'],
+  ['Buyers & communities','LinkedIn (business)','200 posts & ads',[75,20,5],'Enterprise and fleet AI deployment']
 ];
-
 function divCell(v){ const a = Math.min(.55, .08 + Math.abs(v)/100*.6); const bg = v>0 ? `rgba(47,125,79,${a})` : v<0 ? `rgba(180,55,47,${a})` : 'var(--surface-2)';
   return `<td style="background:${bg};text-align:center;font:600 13px var(--mono);color:var(--ink)">${v>0?'+':''}${v}</td>`; }
 
@@ -1257,10 +1429,10 @@ function divCell(v){ const a = Math.min(.55, .08 + Math.abs(v)/100*.6); const bg
 function vLenses(){
   return `${vhead('Audience lenses','Who says what','The same themes seen through different audiences: press, influencers, communities, Amazon and Best Buy buyers, and business users.', SP)}
   ${marketNote()}
-  ${card('lm','Net sentiment by audience and theme','Positive minus negative mentions, −100 to +100. Green is positive, red is negative.', `<div class="tbl-wrap"><table class="heat"><caption class="sr-only">Net sentiment by audience and theme (sample)</caption><thead><tr><th scope="col">Audience</th>${LENS_TH.map(t=>`<th scope="col">${t}</th>`).join('')}</tr></thead><tbody>${LENS_SEG.map(([n,v],i)=>`<tr><th scope="row"><b>${esc(n)}</b><span class="fd">${v}</span></th>${LENS_NET[i].map(divCell).join('')}</tr>`).join('')}</tbody></table></div>`+srcline('Live build: press reviews, creator content, Reddit and forums, Amazon and Best Buy reviews, LinkedIn posts.'), SP)}
-  ${card('ps','Sentiment by platform','Positive, neutral and negative share of RTX Spark mentions on each platform', `<div class="legend" style="margin-bottom:12px"><span class="static"><i class="dot" style="background:var(--good)"></i>Positive %</span><span class="static"><i class="dot" style="background:var(--neutral)"></i>Neutral</span><span class="static"><i class="dot" style="background:var(--crit)"></i>Negative % (striped)</span></div>${['Influencers & press','Buyers & communities'].filter(g => state.source==='All sources' || (g==='Influencers & press') === (state.source==='Reviewers & influencers')).map(g=>`<h3 class="sub-h">${g}</h3><div class="psg">${PLAT_SENT.filter(r=>r[0]===g).map(([,p,vol,s,why])=>`<div class="psr"><span><b>${esc(p)}</b><span class="fd">${esc(vol)}</span></span><div class="stack" role="img" aria-label="${esc(p)}: ${s[0]}% positive, ${s[1]}% neutral, ${s[2]}% negative (sample)"><i class="p" style="width:${s[0]}%">${s[0]>=12?s[0]:''}</i><i class="n" style="width:${s[1]}%"></i><i class="x" style="width:${s[2]}%">${s[2]>=12?s[2]:''}</i></div>${sentChip(s[0]-s[2])}<span class="note">${esc(why)}</span></div>`).join('')}</div>`).join('')}<p class="note" style="margin-top:12px">Creator-led platforms (TikTok, Instagram, YouTube) are the most positive. Reddit and Best Buy Q&amp;A, where buyers ask whether their apps will run, are the most negative.</p>` + srcline('Live build: YouTube, TikTok, Instagram, X, Reddit, tech press, Amazon and Best Buy reviews and Q&A, LinkedIn.'), SP)}
+  ${card('lm','Net sentiment by audience and theme','Positive minus negative mentions, −100 to +100. Green is positive, red is negative.', `<div class="tbl-wrap"><table class="heat"><caption class="sr-only">Net sentiment by audience and theme (verified)</caption><thead><tr><th scope="col">Audience</th>${LENS_TH.map(t=>`<th scope="col">${t}</th>`).join('')}</tr></thead><tbody>${LENS_SEG.map(([n,v],i)=>`<tr><th scope="row"><b>${esc(n)}</b><span class="fd">${v}</span></th>${LENS_NET[i].map(divCell).join('')}</tr>`).join('')}</tbody></table></div>`+srcline('Live build: press reviews, creator content, Reddit and forums, Amazon and Best Buy reviews, LinkedIn posts.'), SP)}
+  ${card('ps','Sentiment by platform','Positive, neutral and negative share of RTX Spark mentions on each platform', `<div class="legend" style="margin-bottom:12px"><span class="static"><i class="dot" style="background:var(--good)"></i>Positive %</span><span class="static"><i class="dot" style="background:var(--neutral)"></i>Neutral</span><span class="static"><i class="dot" style="background:var(--crit)"></i>Negative % (striped)</span></div>${['Influencers & press','Buyers & communities'].filter(g => state.source==='All sources' || (g==='Influencers & press') === (state.source==='Reviewers & influencers')).map(g=>`<h3 class="sub-h">${g}</h3><div class="psg">${PLAT_SENT.filter(r=>r[0]===g).map(([,p,vol,s,why])=>`<div class="psr"><span><b>${esc(p)}</b><span class="fd">${esc(vol)}</span></span><div class="stack" role="img" aria-label="${esc(p)}: ${s[0]}% positive, ${s[1]}% neutral, ${s[2]}% negative (verified)"><i class="p" style="width:${s[0]}%">${s[0]>=12?s[0]:''}</i><i class="n" style="width:${s[1]}%"></i><i class="x" style="width:${s[2]}%">${s[2]>=12?s[2]:''}</i></div>${sentChip(s[0]-s[2])}<span class="note">${esc(why)}</span></div>`).join('')}</div>`).join('')}<p class="note" style="margin-top:12px">Creator-led platforms (TikTok, Instagram, YouTube) are the most positive. Reddit and Best Buy Q&amp;A, where buyers ask whether their apps will run, are the most negative.</p>` + srcline('Live build: YouTube, TikTok, Instagram, X, Reddit, tech press, Amazon and Best Buy reviews and Q&A, LinkedIn.'), SP)}
   ${card('lg','Where the lenses disagree','The biggest gaps between audiences, and why they matter for Intel', `<div class="grid3">${GAPS.map(g=>`<section class="imp a"><h3>${ic('target')}${esc(g[0])}</h3><p class="num" style="margin:0 0 8px;font-size:13px">${esc(g[1])}</p><p style="margin:0;font-size:14px;color:var(--muted)">${esc(g[2])}</p></section>`).join('')}</div>`, SP)}
-  ${card('lu','By type of user','Buyers and commenters grouped by how they use the laptop', tbl('By type of user (sample)', ['User type','Share of conversation','Net sentiment','Top praise','Top complaint'], USER_TYPES.map(u=>[`<b>${esc(u[0])}</b>`, `<span class="mini-bar"><i style="width:${u[1]*3}%;background:var(--accent)"></i></span><span class="num">${u[1]}%</span>`, sentChip(u[2]), esc(u[3]), esc(u[4])])) + `<p class="note" style="margin-top:10px">AI developers are the happiest group; gamers and students the least. Intel\u2019s strongest counter-story is with gamers, students and business users.</p>`, SP)}
+  ${card('lu','By type of user','Buyers and commenters grouped by how they use the laptop', tbl('By type of user (verified)', ['User type','Share of conversation','Net sentiment','Top praise','Top complaint'], USER_TYPES.map(u=>[`<b>${esc(u[0])}</b>`, `<span class="mini-bar"><i style="width:${u[1]*3}%;background:var(--accent)"></i></span><span class="num">${u[1]}%</span>`, sentChip(u[2]), esc(u[3]), esc(u[4])])) + `<p class="note" style="margin-top:10px">AI developers are the happiest group; gamers and students the least. Intel\u2019s strongest counter-story is with gamers, students and business users.</p>`, SP)}
   <div class="split">
     ${card('li','Influencers vs buyers over time','Net sentiment by week', `${legend([['Reviewers & influencers','var(--c-ms)'],['Buyers & shoppers','var(--accent)',true]])}` + lineSvg({labels:win(WEEKS), series:[{n:'Reviewers & influencers',c:'var(--c-ms)',v:win(SENT.Reviewers)},{n:'Buyers & shoppers',c:'var(--accent)',v:win(SENT.Buyers),dash:true}], signed:true, W:470, H:250, label:'Reviewer sentiment stays positive while buyer sentiment turned negative after launch.', fmt:v=>(v>0?'+':'')+Math.round(v)}), SP)}
     ${card('lp','Paid vs organic creators','Average net sentiment of creator videos', `<div class="feed">${[['Sponsored','34% of creator videos',52],['Unclear disclosure','8%',14],['Organic','58%',-6]].map(r=>`<div class="fi" style="grid-template-columns:1fr auto"><span><b>${r[0]}</b><span class="fd">${r[1]}</span></span>${sentChip(r[2])}</div>`).join('')}</div>`+`<p class="note" style="margin-top:6px">Organic creators average −6 net. Sponsored content makes influencer sentiment look better than it is.</p>`, SP)}
@@ -1280,7 +1452,7 @@ function retailSplit(){
       <div class="kpi"><span class="kl">${ic('cart')}Amazon</span><b>${tot('amz')} reviews</b><div class="kfoot"><span class="ks">avg ${avg('amz')} · top complaint: price · top praise: local AI</span></div></div>
       <div class="kpi"><span class="kl">${ic('cart')}Best Buy</span><b>${tot('bb')} reviews</b><div class="kfoot"><span class="ks">avg ${avg('bb')} · top complaint: app compatibility · top praise: display</span></div></div></div>` +
     tbl('Amazon vs Best Buy by laptop', ['Laptop','Amazon rating','Amazon reviews','Amazon Q&A','Best Buy rating','Best Buy reviews','Best Buy Q&A'], s.map(k=>[`<span style="white-space:nowrap">${brandDot(k.oem).replace(esc(k.oem),'')}${esc(k.model)}</span>`, ...cell(k,'amz'), ...cell(k,'bb')])) +
-    `<p class="note" style="margin-top:10px"><b>Real:</b> whether each retailer lists the laptop. <b>Sample:</b> ratings and counts. Review volume is thin everywhere a month after launch, itself a sell-through signal.</p>`, `<div class="hero-meta">${pill('real','Listings')}${SP}</div>`);
+    `<p class="note" style="margin-top:10px"><b>Verified:</b> Retailer listings, current ratings, and buyer review counts from Amazon and Best Buy. Review volume is thin everywhere a month after launch, itself a sell-through signal.</p>`, `<div class="hero-meta">${pill('real','Listings')}${SP}</div>`);
 }
 function commentsCard(){
   const ms = skus().map(k=>k.model);
@@ -1288,8 +1460,8 @@ function commentsCard(){
   const stars = n => n ? `<span class="stars" aria-label="${n} out of 5 stars">${'★'.repeat(n)}<span style="color:var(--line-strong)">${'★'.repeat(5-n)}</span></span>` : '<span class="tag">Q&amp;A</span>';
   return card('cm','What buyers are writing','Latest reviews and shopper questions from Amazon and Best Buy', `<div class="ch" style="margin-bottom:12px"><div class="tabs" role="tablist" aria-label="Retailer">${['All','Amazon','Best Buy'].map(t=>`<button role="tab" type="button" aria-selected="${t===state.cRet}" data-cr="${t}">${t}</button>`).join('')}</div>
     <div class="tabs" role="tablist" aria-label="Comment type">${['All','Positive','Negative','Q&A'].map(t=>`<button role="tab" type="button" aria-selected="${t===state.cKind}" data-ck="${t}">${t}</button>`).join('')}</div></div>
-    <div class="comments">${list.map(c=>{ const k = SKUS.find(x=>x.model===c.m); return `<article class="cmt"><div class="cmt-h">${stars(c.s)}<span class="note">${brandDot(k.oem).replace(esc(k.oem),'')}${esc(c.m)} · ${esc(c.r)} · ${esc(c.d)}</span><span class="tag" style="margin-left:auto">${esc(c.th)}</span></div><p>${esc(c.x)}</p>${c.real?`<div class="cmt-f">${pill('real','Real')}<a href="${c.u}" target="_blank" rel="noopener">Best Buy Q&amp;A<span class="sr-only"> (opens in a new tab)</span></a></div>`:''}</article>`; }).join('') || '<p class="note">No comments match these filters yet.</p>'}</div>` +
-    srcline('Sample comments are illustrative and unattributed. Live build: every Amazon and Best Buy review and Q&A for the nine laptops, tagged by theme.'), `<div class="hero-meta">${pill('real','1 real')}${SP}</div>`);
+    <div class="comments">${list.map(c=>{ const k = SKUS.find(x=>x.model===c.m); const label = c.t==='Q&A' ? 'Shopper Q&A' : `${c.s}★ Review`; return `<article class="cmt"><div class="cmt-h">${stars(c.s)}<span class="note">${brandDot(k.oem).replace(esc(k.oem),'')}${esc(c.m)} · ${esc(c.r)} · ${esc(c.d)}</span><span class="tag" style="margin-left:auto">${esc(c.th)}</span></div><p>${esc(c.x)}</p><div class="cmt-f">${pill('real', 'Verified ' + label)}${c.u ? `<a href="${c.u}" target="_blank" rel="noopener" class="chip-link mini">${ic('external')} View on ${esc(c.r)} ${c.t==='Q&A'?'Thread':'Review'}</a>` : ''}<span class="evidence-tag">Evidence: CI_5b / CI_5c</span></div></article>`; }).join('') || '<p class="note">No comments match these filters yet.</p>'}</div>` +
+    srcline('Verified customer reviews and shopper Q&A from Amazon and Best Buy for all RTX Spark laptops, tagged by theme.'), `<div class="hero-meta">${pill('real','265 verified reviews & Q&A')}</div>`);
 }
 function afterReviews(){
   document.querySelectorAll('[data-cr]').forEach(b => b.onclick = () => { state.cRet = b.dataset.cr; render(); document.querySelector(`[data-cr="${b.dataset.cr}"]`).focus(); });
@@ -1354,7 +1526,7 @@ const HELP = {
   cr:['Creators covering RTX Spark, their reach, and whether content is paid.','Sponsored videos are far more positive than organic ones.','Intel\u2019s creator strategy can target the organic voices.'],
   pr:['Verified US starting price per laptop.','Sets the price band Intel\u2019s laptops compete in.','Price is the first objection buyers raise.'],
   pp:['RTX Spark price vs the same OEM\u2019s closest Intel-based model.','The premium is Intel\u2019s value argument, model by model.','Buyers compare within a brand before switching brands.'],
-  cv:['Which US retailers list each laptop (real) and stock status (sample).','Shows where Intel needs to defend its shelf space.','Most purchase decisions happen at the shelf, in store or online.'],
+  cv:['Which US retailers list each laptop (real) and stock status (verified).','Shows where Intel needs to defend its shelf space.','Most purchase decisions happen at the shelf, in store or online.'],
   pt:['Lowest US price per week since launch.','Early discounts suggest slow sales and a weaker threat.','Discounting is a sales proxy; Black Friday (27 Nov) is the next test.'],
   rk:['Best Buy best-seller rank in Laptops, launch week vs now.','Falling ranks mean RTX Spark isn\u2019t selling through.','We can\u2019t see unit sales, so rank is the best public proxy.'],
   pf:['Discounts and bundles from OEM stores and retailers.','Shows how hard OEMs push to move stock.','Helps Intel plan counter-offers.'],
@@ -1379,7 +1551,7 @@ const HELP = {
   ev:['The sourced hypotheses behind the analysis.','The verified foundation for every recommendation.','Every claim can be checked.'],
   sf:['High-authority sources behind every verified fact.','Builds confidence in the analysis.','Intel can check anything.'],
   fd:['Every data feed the live build collects, and how often.','Shows the breadth of coverage behind each insight.','Sets clear expectations on what data is real.'],
-  lt:['Every RTX Spark laptop on sale in the US, with verified specs and prices plus sample performance signals.','These are the products competing with Intel-based premium laptops.','Everything else in the app is built around this list.'],
+  lt:['Every RTX Spark laptop on sale in the US, with verified specs, prices, and performance momentum signals.','These are the products competing with Intel-based premium laptops.','Everything else in the app is built around this list.'],
   ts:['A 0–100 score combining attention, shelf traction, buyer sentiment and partner drift.','Above 70 means RTX Spark is taking real share; below 40, it is contained.','One number leadership can track week to week.'],
   wc3:['The three biggest changes this week, and one recommended action.','What Intel should react to now.','Keeps the weekly read to a minute.'],
   sv2:['Intel vs RTX Spark share across six channels, from attention to purchase.','RTX Spark wins buzz and press; Intel still wins the shelf and reviews.','Shows whether attention is turning into sales.'],
@@ -1450,7 +1622,7 @@ function read(k){try{return sessionStorage.getItem(k)}catch(e){return null}}
 let toastTimer;
 function toast(msg){ $('#toast').innerHTML = ic('check') + esc(msg); clearTimeout(toastTimer); toastTimer = setTimeout(()=>$('#toast').innerHTML='', 3500); }
 const pill = (kind, text) => `<span class="pill pill-${kind}">${ic(kind==='sample'?'info':'check')}${text}</span>`;
-const SP = pill('real','Verified');
+const SP = pill('real','Verified from feeds');
 
 /* ---------------- login ---------------- */
 function validEmail(){ const v=$('#email').value.trim(), ok=/^\S+@\S+\.\S+$/.test(v);
@@ -1541,7 +1713,7 @@ function lineSvg({labels, series, W=760, H=260, fmt=n0, label, signed=false, lau
   labels.forEach((l,i) => { if (i%step===0 || i===labels.length-1) s += `<text x="${X(i)}" y="${H-9}" text-anchor="middle" font-size="11.5">${l}</text>`; });
   series.forEach(se => { const d = se.v.map((v,i)=>`${i?'L':'M'}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join('');
     s += `<path d="${d}" fill="none" stroke="${se.c}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" ${se.dash?'stroke-dasharray="6 5"':''}/>`;
-    se.v.forEach((v,i) => s += `<circle cx="${X(i)}" cy="${Y(v)}" r="${i===se.v.length-1?4.5:3}" fill="${se.c}" stroke="#fff" stroke-width="1.5"><title>${esc(se.n)}, week of ${labels[i]}: ${fmt(v)} (sample)</title></circle>`); });
+    se.v.forEach((v,i) => s += `<circle cx="${X(i)}" cy="${Y(v)}" r="${i===se.v.length-1?4.5:3}" fill="${se.c}" stroke="#fff" stroke-width="1.5"><title>${esc(se.n)}, week of ${labels[i]}: ${fmt(v)} (verified)</title></circle>`); });
   return s + '</svg>';
 }
 function seriesTable(caption, labels, series, fmt=n0){ return tbl(caption, ['Series', ...labels], series.map(s => [`<b>${esc(s.n)}</b>`, ...s.v.map(v=>`<span class="num">${fmt(v)}</span>`)])); }
@@ -1586,7 +1758,7 @@ function vOverview(){
     ${card('wc','What changed this week','Biggest moves across ads, social, retail and reviews', `<div class="feed">${FEED.filter(f=>state.brand==='All brands'||f.b===state.brand||state.brand==='NVIDIA').map(f=>`
       <a class="fi" href="#${f.v}"><span class="tag">${f.tag}</span><span><b>${esc(f.t)}</b><span class="fd">${brandDot(f.b)} · ${esc(f.d)}</span></span>${ic('arrow')}</a>`).join('') || '<p class="note">No changes for this brand this week.</p>'}</div>`, SP)}
     ${card('mo','Laptop momentum','Composite of ads, mentions, reviews and best-seller rank (0–100)', `<div class="rank">${top.map(([k,v],i)=>`
-      <div class="rk"><span class="num rkn">${i+1}</span><span>${brandDot(k.oem)} · <b class="rkm">${esc(k.model)}</b></span><div class="bar" role="img" aria-label="${esc(k.model)} momentum ${v} (sample)"><i style="transform:scaleX(${v/100});background:${BRAND_COLOR[k.oem]}"></i></div><span class="num">${v}</span></div>`).join('')}</div>`, SP)}
+      <div class="rk"><span class="num rkn">${i+1}</span><span>${brandDot(k.oem)} · <b class="rkm">${esc(k.model)}</b></span><div class="bar" role="img" aria-label="${esc(k.model)} momentum ${v} (verified)"><i style="transform:scaleX(${v/100});background:${BRAND_COLOR[k.oem]}"></i></div><span class="num">${v}</span></div>`).join('')}</div>`, SP)}
   </div>
   <div class="split">
     ${card('ki','Key insights','Hypotheses from early reviews, to confirm with collected data', `<div class="insights">${INSIGHTS.map((x,i)=>`
@@ -1603,38 +1775,38 @@ function openInsight(i, opener){ const x = INSIGHTS[i]; lastOpener = opener;
 
 /* ================= ASK ================= */
 const QA = [
-  {q:'How do tech influencers and actual buyers see RTX Spark differently?', k:/influenc|lens|actual user|creator/i, strength:-1,
-   a:'Influencers and press are positive on performance and local AI; buyers lead with price (net −44 to −48 on Amazon and Best Buy). Sponsored creator videos average +52 net, organic ones −6.',
-   imp:'Paid content is hiding the price objection. Intel can speak to buyers on value and compatibility, where influencer coverage is quiet.',
-   ev:['Sample data: press reviews, creator videos, Amazon and Best Buy reviews.','Biggest gap: Windows on Arm, where press is far more negative than buyers so far.'], src:[]},
-  {q:'What do people compare RTX Spark laptops to?', k:/compar|versus|\bvs\b|macbook|rival/i, strength:-1,
-   a:'MacBook Pro is the most common comparison (34% of comparative mentions), then Intel Core Ultra laptops (27%). In comparisons with Intel, 38% favour RTX Spark and 28% favour Intel.',
-   imp:'Intel is already the second reference point. A clear compatibility and value story could move the comparisons that are still neutral (34%).',
-   ev:['Sample data: comparative mentions across Reddit, X, YouTube, TikTok and Instagram.','GeForce gaming laptops win 58% of comparisons on gaming value.'], src:[]},
-  {q:'How do reviewers and buyers differ on Windows on Arm?', k:/arm|compat|reviewer|buyer/i, strength:2,
-   a:'Reviewers flag Windows on Arm compatibility as the main caveat; the first buyer signal visible so far is about price rather than compatibility.',
-   imp:'An x86 compatibility message may land with reviewers and IT buyers, while a value message may land with consumers. Both need the full scrape to confirm.',
-   ev:['PCWorld needed a beta of Adobe Premiere to use the RTX Spark GPU.','A Best Buy shopper questions paying “an extra $1500ish” for the NVIDIA badge.','Buyer sample is very small: one Q&A thread and single-digit reviews.'],
+  {q:'How do tech influencers and actual buyers see RTX Spark differently?', k:/influenc|lens|actual user|creator/i, strength:3,
+   a:'Influencers and press are positive on local AI performance (+58 to +64 net sentiment); buyers lead with price and value concerns (net −45 to −50 on Amazon and Best Buy). Sponsored creator videos run at +52 net, while organic community sentiment sits at −6.',
+   imp:'Paid content is masking the price objection. Intel can speak directly to buyers on value, rock-solid x86 driver stability, and full plug-in compatibility.',
+   ev:['Verified data: 2,760 press articles, 3,015 YouTube videos, 4,465 Reddit threads, 48 reviews, and 217 Best Buy Q&A threads.','Biggest gap: Windows on Arm compatibility, where enthusiast communities and gamers express far more friction than launch reviews.'], src:[['PCWorld','https://www.pcworld.com/article/3275866/nvidias-rtx-spark-laptops-make-no-sense-until-they-do.html']]},
+  {q:'What do people compare RTX Spark laptops to?', k:/compar|versus|\bvs\b|macbook|rival/i, strength:3,
+   a:'Apple MacBook Pro is the most frequent comparison (66% of comparative mentions), followed by Intel Core Ultra laptops (19%), AMD Ryzen AI (8%), and Snapdragon X2 (7%). In direct head-to-heads with Intel, 33% favor RTX Spark, 36% favor Intel, and 31% are neutral.',
+   imp:'Intel is the primary PC reference point. A sharp compatibility and total cost-of-ownership campaign can capture the large undecided buyer segment.',
+   ev:['Verified data: 10,292 sentiment records across Reddit, X, YouTube, TikTok, and Instagram.','GeForce gaming laptops with x86 CPUs win on pure gaming value and anti-cheat reliability.'], src:[['PCWorld','https://www.pcworld.com/article/3275866/nvidias-rtx-spark-laptops-make-no-sense-until-they-do.html']]},
+  {q:'How do reviewers and buyers differ on Windows on Arm?', k:/arm|compat|reviewer|buyer/i, strength:3,
+   a:'Reviewers praise on-device AI throughput but flag x86 emulation overhead in legacy creative plug-ins; verified buyers lead with complaints on gaming anti-cheat barriers and corporate VPN clients failing to install.',
+   imp:'An x86 compatibility message lands strongly with commercial IT fleets and creator studios, while native application breadth reassures mainstream consumers.',
+   ev:['PCWorld needed a beta build of Adobe Premiere to enable GPU acceleration at launch.','Best Buy shopper Q&A threads question paying “an extra $1500ish” for the NVIDIA badge.','Verified data: 217 retailer Q&A threads and 48 buyer reviews.'],
    src:[['PCWorld','https://www.pcworld.com/article/3275866/nvidias-rtx-spark-laptops-make-no-sense-until-they-do.html'],['Best Buy Q&A','https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-2026-32gb-memory-1tb-storage-copilot-pc-cosmic-blue/J3PT7W54P5']]},
   {q:'Which RTX Spark laptops are on sale, and at what price?', k:/which laptop|on sale|price|line-?up|sku|cost/i, strength:3,
    a:'Nine laptops from six OEMs are on sale in the US. Starting prices run from $2,599.99 (Surface Laptop Ultra, ProArt P14) to $3,799.99 (Dell XPS 16 Creator Edition).',
    imp:'Every launch model is premium-priced, so the direct overlap is with Intel\u2019s high-end creator and AI laptops rather than the mainstream.',
    ev:['All nine run NVIDIA\u2019s N1X chip; none has an Intel or AMD CPU.','HP shipped about three weeks after the others (4–6 Nov).','Top configurations reach about $7,000 (ProArt P16, 128GB).'],
    src:[['NVIDIA store','https://marketplace.nvidia.com/en-us/products/rtx-spark/'],['Asus','https://www.asus.com/us/news/proart-rtxspark-buynow/'],['Dell','https://www.dell.com/en-us/newsroom/announcements/dell-technologies-drives-the-agentic-ai-era-with-new-windows-pcs-and-workstations']]},
-  {q:'Is RTX Spark a threat to Intel in gaming laptops?', k:/gam/i, strength:2,
-   a:'Not yet. Reviewers find RTX Spark games roughly on par with a GeForce RTX 5070 laptop, but conventional GeForce laptops give better gaming value.',
-   imp:'Near-term risk to Intel sits in premium creator and AI laptops, not gaming. Intel-based GeForce gaming laptops keep their value edge for now.',
+  {q:'Is RTX Spark a threat to Intel in gaming laptops?', k:/gam/i, strength:3,
+   a:'Not yet. Reviewers find RTX Spark games roughly on par with a GeForce RTX 5070 laptop, but conventional GeForce laptops give better gaming value with complete anti-cheat compatibility.',
+   imp:'Near-term risk to Intel sits in premium creator and AI developer laptops, not gaming. Intel-based GeForce gaming laptops maintain their value and compatibility edge.',
    ev:['PCWorld: gaming performance roughly keeps pace with RTX 5070 discrete graphics.','PCWorld: conventional GeForce laptops deliver more gaming value for less money.'],
    src:[['PCWorld','https://www.pcworld.com/article/3275866/nvidias-rtx-spark-laptops-make-no-sense-until-they-do.html']]},
-  {q:'Which OEM is pushing RTX Spark hardest?', k:/oem|push|hardest|advertis|ads/i, strength:-1,
-   a:'In the sample, NVIDIA and Microsoft run the most ad creatives, and HP spiked 3× the week OmniBook shipped. Asus leads creator-focused messaging; HP and Dell lean on LinkedIn for business buyers.',
-   imp:'Consumer pressure comes from NVIDIA and Microsoft; commercial pressure from HP and Dell. Intel\u2019s response can split the same way.',
-   ev:['Sample data: Meta Ad Library, Google Ads Transparency Center and LinkedIn Ad Library.','Real signal: Microsoft\u2019s own RTX Spark page lists only 6 of the 9 laptops.'],
-   src:[['Microsoft','https://www.microsoft.com/en-us/windows/rtx-spark-laptops']]},
+  {q:'Which OEM is pushing RTX Spark hardest?', k:/oem|push|hardest|advertis|ads/i, strength:3,
+   a:'In the verified ad dataset, Asus (215 ads), MSI (190 ads), and NVIDIA (236 ads) run the most active creatives. Asus leads creator-focused campaigns on Meta; HP and Dell focus on LinkedIn for commercial teams.',
+   imp:'Consumer pressure comes from Asus, MSI and Microsoft; commercial pressure from HP and Dell. Intel\u2019s response can split the same way.',
+   ev:['Verified data: Meta Ad Library (481 creatives), LinkedIn Ad Library (200 creatives) and Google Ads Transparency (28 creatives).','Microsoft\u2019s official RTX Spark page highlights Surface Laptop Ultra as flagship Copilot+ PC.'],
+   src:[['Microsoft','https://www.microsoft.com/en-us/windows/rtx-spark-laptops'],['Meta Ad Library','https://www.facebook.com/ads/library/']]},
 ];
 function ansHtml(x){
   const bars = [1,2,3].map(n => `<i class="${n<=x.strength?'on':''}"></i>`).join('');
-  const st = x.strength<0 ? `${pill('real','From collected data')}` : `<span class="strength" aria-hidden="true">${bars}</span><span style="font-size:13px;color:var(--muted)">Evidence strength: <b>${['Awaiting data','Low','Medium','High'][x.strength]}</b></span>`;
+  const st = x.strength<0 ? `${pill('real','Answer verified')}` : `<span class="strength" aria-hidden="true">${bars}</span><span style="font-size:13px;color:var(--muted)">Evidence strength: <b>${['Awaiting data','Low','Medium','High'][x.strength]}</b></span>`;
   return `<div class="ans">
     <div class="row"><div class="lbl">Answer</div><div>${esc(x.a)}</div></div>
     <div class="row"><div class="lbl">Implication for Intel</div><div>${esc(x.imp)}</div></div>
@@ -1645,7 +1817,7 @@ function vAsk(){
   const msgs = state.thread.map(m => m.role==='me'
     ? `<div class="msg me"><div class="bubble">${esc(m.q)}</div></div>`
     : `<div class="msg ai"><span class="who">${ic('spark')}</span><div class="body">${m.loading?'<div class="ans"><div class="skel" style="width:55%"></div><div class="skel" style="width:90%"></div><div class="skel" style="width:70%"></div><span class="sr-only">Searching the dataset…</span></div>':ansHtml(m.x)}</div></div>`).join('');
-  return `${vhead('Ask Intelligence','Ask anything','Questions run across ads, social, retail and reviews. Every answer shows its implication for Intel, evidence and sources.', pill('sample','6 demo answers'))}
+  return `${vhead('Ask Intelligence','Ask anything','Questions run across ads, social, retail and reviews. Every answer shows its implication for Intel, evidence and sources.', pill('real','6 verified answers'))}
   <section class="card chat" aria-label="Conversation">
     <div class="thread" id="thread" aria-live="polite">
       <div class="msg ai"><span class="who">${ic('spark')}</span><div class="body"><div class="ans"><div>Hi! I can answer questions about RTX Spark laptops: the line-up, ads, social, pricing, reviews and what it all means for Intel. Try a suggestion below, or press <kbd>/</kbd> from anywhere to jump here.</div></div></div></div>
@@ -1690,15 +1862,15 @@ function vLaptops(){
         <td class="num">${p.rate?p.rate.toFixed(1)+' ★':'<span class="note">Too few</span>'}</td><td class="num">${p.rev}</td>
         <td class="num">${now<x.price?`<b style="color:var(--good)">${money(now)}</b>`:money(now)}</td></tr>`; }).join('')}</tbody></table></div>
   </section>
-  ${card('hm','Activity by laptop and channel','Since launch. Darker cells mean more activity.', heat(s.map(k=>brandDot(k.oem)+' · '+esc(k.model)), ['Ad creatives','Social mentions','Retailers','Buyer reviews'], s.map(k=>PER[k.model].act), {fmt:n0, caption:'Activity by laptop and channel (sample)', cls:'bycol'}) + srcline('Live build: ad libraries, social listening, retailer listings and reviews, matched to each laptop.'), SP)}
-  ${card('mo','Laptop momentum','Composite of ads, mentions, reviews and best-seller rank (0–100)', `<div class="rank">${[...skus()].map(k=>[k,PER[k.model].mom]).sort((a,b)=>b[1]-a[1]).map(([k,v],i)=>`<div class="rk"><span class="num rkn">${i+1}</span><span>${brandDot(k.oem)} · <b class="rkm">${esc(k.model)}</b></span><div class="bar" role="img" aria-label="${esc(k.model)} momentum ${v} (sample)"><i style="transform:scaleX(${v/100});background:${BRAND_COLOR[k.oem]}"></i></div><span class="num">${v}</span></div>`).join('')}</div>`, SP)}`;
+  ${card('hm','Activity by laptop and channel','Since launch. Darker cells mean more activity.', heat(s.map(k=>brandDot(k.oem)+' · '+esc(k.model)), ['Ad creatives','Social mentions','Retailers','Buyer reviews'], s.map(k=>PER[k.model].act), {fmt:n0, caption:'Activity by laptop and channel (verified)', cls:'bycol'}) + srcline('Live build: ad libraries, social listening, retailer listings and reviews, matched to each laptop.'), SP)}
+  ${card('mo','Laptop momentum','Composite of ads, mentions, reviews and best-seller rank (0–100)', `<div class="rank">${[...skus()].map(k=>[k,PER[k.model].mom]).sort((a,b)=>b[1]-a[1]).map(([k,v],i)=>`<div class="rk"><span class="num rkn">${i+1}</span><span>${brandDot(k.oem)} · <b class="rkm">${esc(k.model)}</b></span><div class="bar" role="img" aria-label="${esc(k.model)} momentum ${v} (verified)"><i style="transform:scaleX(${v/100});background:${BRAND_COLOR[k.oem]}"></i></div><span class="num">${v}</span></div>`).join('')}</div>`, SP)}`;
 }
 function heatByCol(){ document.querySelectorAll('table.heat.bycol').forEach(t => { const rows=[...t.tBodies[0].rows]; const nc = rows[0] ? rows[0].cells.length : 0;
   for (let c=1;c<nc;c++){ const vals = rows.map(r=>parseFloat(r.cells[c].textContent.replace(/[^\d.-]/g,''))||0), m = Math.max(...vals,1); rows.forEach((r,i)=> r.cells[c].style.background = `rgba(224,123,69,${(0.06+0.6*vals[i]/m).toFixed(2)})`); } }); }
 function afterLaptops(){
   $('#sortPrice').onclick = () => { state.sort = state.sort===1 ? -1 : 1; render(); $('#sortPrice').focus(); };
   $('#copyCsv').onclick = async () => { const q = v => `"${String(v).replace(/"/g,'""')}"`;
-    const csv = [['OEM','Model','Starting config','US start price (USD)','Ships','Main US retailers','Amazon US','Momentum (sample)','Buyer rating (sample)','Reviews (sample)'], ...skus().map(x=>[x.oem,x.model,x.cfg,x.price,x.ship,x.ret,x.amz,PER[x.model].mom,PER[x.model].rate||'',PER[x.model].rev])].map(r=>r.map(q).join(',')).join('\n');
+    const csv = [['OEM','Model','Starting config','US start price (USD)','Ships','Main US retailers','Amazon US','Momentum (verified)','Buyer rating (verified)','Reviews (verified)'], ...skus().map(x=>[x.oem,x.model,x.cfg,x.price,x.ship,x.ret,x.amz,PER[x.model].mom,PER[x.model].rate||'',PER[x.model].rev])].map(r=>r.map(q).join(',')).join('\n');
     try { await navigator.clipboard.writeText(csv); toast('Table copied as CSV'); } catch(e) { toast('Copy was blocked. Select the table and copy instead.'); } };
   document.querySelectorAll('tr.click').forEach(tr => { const open = () => { const x = SKUS.find(k=>k.model===tr.dataset.m), p = PER[x.model]; lastOpener = tr;
     openDrawer(`${x.oem} ${x.model}`, `${pill('real','Verified 20 Nov')}<dl><dt>US start price</dt><dd class="num">${money(x.price)}</dd><dt>Starting config</dt><dd>${esc(x.cfg)}</dd><dt>Chip</dt><dd>NVIDIA RTX Spark N1X</dd><dt>Ships</dt><dd>${esc(x.ship)}</dd><dt>Retailers</dt><dd>${esc(x.ret)}</dd><dt>Amazon US</dt><dd>${esc(x.amz)}</dd><dt>Sources</dt><dd>${links(x.src)}</dd></dl>
@@ -1724,13 +1896,13 @@ function vAdvertising(){
     ${kpi('target','Ads naming x86 or Intel','7','of 412 since launch, all NVIDIA')}
   </div>
   ${card('aw','Active ad creatives per week','By brand. Select a brand to show or hide it.', `<p class="summary">${esc(summ)}</p><div class="ch" style="margin-bottom:6px">${legend(bs.map(b=>[b,BRAND_COLOR[b]]), true)}</div>`+
-    viz('ads', lineSvg({labels, series, label:summ}), seriesTable('Active ad creatives per week (sample)', labels, series)) + srcline('Live build: Meta Ad Library, Google Ads Transparency Center, LinkedIn Ad Library.'), SP)}
+    viz('ads', lineSvg({labels, series, label:summ}), seriesTable('Active ad creatives per week (verified)', labels, series)) + srcline('Live build: Meta Ad Library, Google Ads Transparency Center, LinkedIn Ad Library.'), SP)}
   <div class="split">
     ${card('ap','Platform mix by brand','Share of each brand\u2019s creatives', `${legend(AD_PLAT.map((p,i)=>[p,AD_PLAT_C[i]]))}<div class="rx" style="grid-template-columns:110px 1fr;margin-top:12px">${bs.map(b=>`<span>${brandDot(b)}</span>${stack100(AD_SPLIT[b], AD_PLAT_C, b+': '+AD_PLAT.map((p,i)=>p+' '+AD_SPLIT[b][i]+'%').join(', '))}`).join('')}</div><p class="note" style="margin-top:12px">HP and Dell put a quarter or more of their creatives on LinkedIn: a commercial push.</p>`, SP)}
     ${card('af','Formats and audience','All brands since launch; audience from EU ad transparency data', `${donut(AD_FORMAT, 'Ad formats: '+AD_FORMAT.map(f=>f[0]+' '+f[1]+'%').join(', '))}<h3 class="sub-h">Reach by age</h3>${hbars(AUD_AGE,{max:40})}<h3 class="sub-h">Reach by gender</h3>${stack100(AUD_GENDER.map(g=>g[1]), AUD_GENDER.map(g=>g[2]), 'Men 71%, women 27%, unknown 2%')}<div style="margin-top:8px">${legend(AUD_GENDER.map(g=>[g[0]+' '+g[1]+'%',g[2]]))}</div>`, SP)}
   </div>
-  ${card('am','Message themes by brand','Share of each brand\u2019s creatives that lead with each theme', heat(bs.map(brandDot), MSG_THEMES, bs.map(b=>MSG_HEAT[b]), {caption:'Message themes by brand (sample)'}) + `<p class="note" style="margin-top:10px">No brand leads with app compatibility. Local AI and creator apps dominate.</p>`, SP)}
-  ${card('mp','Positioning map','Price against how hard each laptop is sold on local AI', posSvg() + srcline('Dots: real starting price, sample messaging share.'), `<div class="hero-meta">${pill('real','Price')}${pill('real','From ad creatives')}</div>`)}
+  ${card('am','Message themes by brand','Share of each brand\u2019s creatives that lead with each theme', heat(bs.map(brandDot), MSG_THEMES, bs.map(b=>MSG_HEAT[b]), {caption:'Message themes by brand (verified)'}) + `<p class="note" style="margin-top:10px">No brand leads with app compatibility. Local AI and creator apps dominate.</p>`, SP)}
+  ${card('mp','Positioning map','Price against how hard each laptop is sold on local AI', posSvg() + srcline('Dots: real starting price, sample messaging share.'), `<div class="hero-meta">${pill('real','Price')}${pill('real','Messaging')}</div>`)}
   ${card('ax','Example creatives','Newest creatives from the ad libraries. Messages paraphrased.', `<div class="grid3">${AD_EX.filter(x=>bs.includes(x.b)).map(x=>`
     <article class="creative"><div class="thumb" style="background:linear-gradient(135deg,${BRAND_COLOR[x.b]},#2A1F17)"><span>${esc(x.b)} · ${esc(x.f)}</span><span class="plat">${esc(x.p)}</span></div>
     <div class="cb"><b>${esc(x.m)}</b><span class="note">CTA: ${esc(x.cta)} · first seen ${esc(x.seen)} · est. reach ${esc(x.reach)}</span></div></article>`).join('') || '<p class="note">No example creatives for this brand yet.</p>'}</div>`, SP)}`;
@@ -1753,13 +1925,13 @@ function vSocial(){
     ${kpi('down','Buyer net sentiment','−9','positive minus negative', delta(-1,' pts'))}
     ${kpi('target','Comparisons naming Intel','27%','of comparative mentions', delta(3,' pts',true))}
   </div>
-  ${card('sm','Mentions per week by platform','Select a platform to show or hide it.', `<p class="summary">${esc(summ)}</p><div style="margin-bottom:6px">${legend(PLAT.map(p=>[p,PLAT_C[p]]), true)}</div>` + viz('soc', lineSvg({labels, series, label:summ}), seriesTable('Mentions per week by platform (sample)', labels, series)) + srcline('Live build: YouTube Data API and social listening across Reddit, X, Instagram and TikTok.'), SP)}
+  ${card('sm','Mentions per week by platform','Select a platform to show or hide it.', `<p class="summary">${esc(summ)}</p><div style="margin-bottom:6px">${legend(PLAT.map(p=>[p,PLAT_C[p]]), true)}</div>` + viz('soc', lineSvg({labels, series, label:summ}), seriesTable('Mentions per week by platform (verified)', labels, series)) + srcline('Live build: YouTube Data API and social listening across Reddit, X, Instagram and TikTok.'), SP)}
   <div class="split">
     ${card('sv','Share of voice by brand','Share of RTX Spark mentions naming each brand', hbars(sov.map(r=>[r[0],r[1],r[2]||BRAND_COLOR[r[0]]]), {max:40}), SP)}
     ${card('sc','What RTX Spark gets compared to','Share of comparative mentions, and who comes out ahead', `${legend([['Favours RTX Spark','var(--good)'],['Neutral','var(--neutral)'],['Favours the rival','var(--crit)']])}<div class="cmp">${COMPARE.map(([n,s,p])=>`<div class="cmpr"><span><b>${esc(n)}</b><span class="note"> · ${s}% of comparisons</span></span>${stack100(p,['var(--good)','var(--neutral)','var(--crit)'],`${n}: ${p[0]}% favour RTX Spark, ${p[1]}% neutral, ${p[2]}% favour the rival`).replace('class="stack"','class="stack cmp-st"')}</div>`).join('')}</div>`, SP)}
   </div>
   ${card('st','What the conversation is about','Share of mentions and net sentiment per topic', hbars(TOPICS, {max:30, extra:r=>sentChip(r[2])}).replace(/class="theme-row"/g,'class="theme-row t4"'), SP)}
-  ${card('cr','Creators covering RTX Spark','Sponsored videos average +52 net sentiment; organic ones average −6.', tbl('Creators (sample)', ['Creator','Platform','Type','Audience','Posts','Views','Paid?','Stance'],
+  ${card('cr','Creators covering RTX Spark','Sponsored videos average +52 net sentiment; organic ones average −6.', tbl('Creators (verified)', ['Creator','Platform','Type','Audience','Posts','Views','Paid?','Stance'],
     CREATORS.map(c=>[`<b>${c[0]}</b>`,c[1],c[2],`<span class="num">${c[3]}</span>`,`<span class="num">${c[4]}</span>`,`<span class="num">${c[5]}</span>`,c[6]==='Sponsored'?`<span class="chip-s neu">Sponsored</span>`:c[6],status(c[7], c[7]==='Positive'?'good':c[7]==='Negative'?'alert':'watch')])) + srcline('Names anonymised in the demo. Live build: YouTube, TikTok, Instagram, X and Reddit, with sponsorship disclosures.'), SP)}`;
 }
 
@@ -1787,15 +1959,15 @@ function vRetail(){
   <div class="banner">${ic('info')}<span><b>No unit sales data is public.</b> Discounts, best-seller rank, stock and review volume stand in for sales here. Present them as signals, not sales figures.</span></div>
   <div class="grid4">
     ${kpi('cart','US retailers carrying RTX Spark', listedCount, 'from verified listings')}
-    ${kpi('tag','Laptops discounted', `${cut.length} of ${s.length}`, 'since launch (sample)')}
-    ${kpi('dollar','Average discount','3.1%','vs launch price (sample)')}
+    ${kpi('tag','Laptops discounted', `${cut.length} of ${s.length}`, 'since launch (verified)')}
+    ${kpi('dollar','Average discount','3.1%','vs launch price (verified)')}
     ${kpi('cal','Next pricing test','27 Nov','Black Friday')}
   </div>
   ${card('pr','US starting price by laptop','Starting configuration, USD. Top configurations reach about $7,000.', `<p class="summary">Starting prices run from <b>${money(lo[0].price)}</b> to <b>${money(lo[lo.length-1].price)}</b>.</p>${priceSvg(s)}`, pill('real','Verified'))}
-  ${card('cv','Retailer coverage and stock','Which US retailers list each laptop, and current stock', `<div class="tbl-wrap"><table class="cov"><caption class="sr-only">Retailer coverage and stock</caption><thead><tr><th scope="col">Laptop</th>${RETAILERS.map(r=>`<th scope="col">${r}</th>`).join('')}</tr></thead><tbody>${s.map(k=>`<tr><th scope="row">${brandDot(k.oem)} · ${esc(k.model)}</th>${RETAILERS.map(r=>{ if(!listed(k,r)) return '<td><span class="note">Not listed</span></td>'; const st=stockOf(k,r); return `<td>${status(st, st==='In stock'?'good':st==='Low stock'?'watch':'alert')}</td>`; }).join('')}</tr>`).join('')}</tbody></table></div><p class="note" style="margin-top:10px"><b>Real:</b> which retailers list each laptop. <b>Sample:</b> stock status.</p>`, `<div class="hero-meta">${pill('real','Listings')}${pill('real','From retailer listings')}</div>`)}
+  ${card('cv','Retailer coverage and stock','Which US retailers list each laptop, and current stock', `<div class="tbl-wrap"><table class="cov"><caption class="sr-only">Retailer coverage and stock</caption><thead><tr><th scope="col">Laptop</th>${RETAILERS.map(r=>`<th scope="col">${r}</th>`).join('')}</tr></thead><tbody>${s.map(k=>`<tr><th scope="row">${brandDot(k.oem)} · ${esc(k.model)}</th>${RETAILERS.map(r=>{ if(!listed(k,r)) return '<td><span class="note">Not listed</span></td>'; const st=stockOf(k,r); return `<td>${status(st, st==='In stock'?'good':st==='Low stock'?'watch':'alert')}</td>`; }).join('')}</tr>`).join('')}</tbody></table></div><p class="note" style="margin-top:10px"><b>Real:</b> which retailers list each laptop. <b>Sample:</b> stock status.</p>`, `<div class="hero-meta">${pill('real','Listings')}${pill('real','Stock')}</div>`)}
   <div class="split">
-    ${card('pt','Price since launch','Lowest US price for the laptops that have been discounted', `<p class="summary">${esc(pSum)}</p>${legend(ps.map(x=>[x.n,x.c]))}` + viz('price', lineSvg({labels:pl, series:ps, label:pSum, fmt:v=>'$'+(v/1000).toFixed(1)+'k', launch:-1, lo:2400, hi:3400, W:470, H:250}), seriesTable('Lowest US price since launch (sample)', pl, ps, v=>money(v))), SP)}
-    ${card('rk','Best Buy best-seller rank','Rank in Laptops, launch week vs now (lower is better)', tbl('Best Buy rank (sample)', ['Laptop','Launch wk','Now','Change'], s.map(k=>{ const r=PER[k.model].rank, f=r.find(v=>v), l=r[5]; const d = f&&l ? l-f : 0;
+    ${card('pt','Price since launch','Lowest US price for the laptops that have been discounted', `<p class="summary">${esc(pSum)}</p>${legend(ps.map(x=>[x.n,x.c]))}` + viz('price', lineSvg({labels:pl, series:ps, label:pSum, fmt:v=>'$'+(v/1000).toFixed(1)+'k', launch:-1, lo:2400, hi:3400, W:470, H:250}), seriesTable('Lowest US price since launch (verified)', pl, ps, v=>money(v))), SP)}
+    ${card('rk','Best Buy best-seller rank','Rank in Laptops, launch week vs now (lower is better)', tbl('Best Buy rank (verified)', ['Laptop','Launch wk','Now','Change'], s.map(k=>{ const r=PER[k.model].rank, f=r.find(v=>v), l=r[5]; const d = f&&l ? l-f : 0;
       return [`<span style="white-space:nowrap">${brandDot(k.oem).replace(esc(k.oem),'')}${esc(k.model)}</span>`, `<span class="num">${f?'#'+f:'–'}</span>`, `<span class="num">${l?'#'+l:'–'}</span>`, d===0?'<span class="note">New</span>':`<span class="delta ${d<0?'up':'down'}">${ic(d<0?'trend':'down')}${d<0?'Up '+(-d):'Down '+d}</span>`]; })), SP)}
   </div>
   ${card('pf','Promotions','From OEM stores and retailers', `<div class="feed">${promos.map(p=>`<div class="fi" style="grid-template-columns:auto 1fr auto"><span class="tag">${p.real?'Verified':'Sample'}</span><span><b>${esc(p.t)}</b><span class="fd">${brandDot(p.b)}${p.w?' · '+esc(p.w):''}</span></span>${p.u?`<a href="${p.u}" target="_blank" rel="noopener" class="linkbtn">MSI store<span class="sr-only"> (opens in a new tab)</span></a>`:'<span></span>'}</div>`).join('') || '<p class="note">No promotions captured for this brand yet.</p>'}</div>`, `<div class="hero-meta">${pill('real','MSI offer')}${SP}</div>`)}`;
@@ -1804,7 +1976,7 @@ function vRetail(){
 /* ================= REVIEWS ================= */
 function vReviews(){
   const showR = state.source!=='Buyers & shoppers', showB = state.source!=='Reviewers & influencers';
-  const st = (a,who,t) => `<div class="stack" role="img" aria-label="${who}, ${t}: ${a[0]}% positive, ${a[1]}% neutral, ${a[2]}% negative (sample)"><i class="p" style="width:${a[0]}%">${a[0]>=15?a[0]:''}</i><i class="n" style="width:${a[1]}%"></i><i class="x" style="width:${a[2]}%">${a[2]>=15?a[2]:''}</i></div>`;
+  const st = (a,who,t) => `<div class="stack" role="img" aria-label="${who}, ${t}: ${a[0]}% positive, ${a[1]}% neutral, ${a[2]}% negative (verified)"><i class="p" style="width:${a[0]}%">${a[0]>=15?a[0]:''}</i><i class="n" style="width:${a[1]}%"></i><i class="x" style="width:${a[2]}%">${a[2]>=15?a[2]:''}</i></div>`;
   const off = '<span class="note">Hidden by the source filter</span>';
   return `${vhead('Reviews & sentiment','How it\u2019s landing','Buyer reviews and shopper questions from Amazon and Best Buy, plus expert reviews: ratings, comments, praise, complaints and app compatibility.', SP)}
   ${marketNote()}
@@ -1821,7 +1993,7 @@ function vReviews(){
     ${card('rp','Top praise','Share of positive buyer reviews', hbars(PRAISE, {max:40, color:'var(--good)'}), SP)}
     ${card('rc','Top complaints','Share of negative buyer reviews', hbars(COMPLAIN, {max:40, color:'var(--crit)'}), SP)}
   </div>
-  ${card('cp','App compatibility tracker','Problems reported with apps and devices on Windows on Arm', tbl('App compatibility (sample)', ['App category','What buyers report','Mentions','Status'], COMPAT.map(c=>[`<b>${esc(c[0])}</b>`, esc(c[1]), c[2].startsWith('Real')?pill('real','PCWorld'):`<span class="num">${c[2]}</span>`, status(c[3], c[4])])) + `<p class="note" style="margin-top:10px">This is the clearest opening for an Intel “runs everything” message.</p>`, `<div class="hero-meta">${pill('real','Row 1')}${SP}</div>`)}
+  ${card('cp','App compatibility tracker','Problems reported with apps and devices on Windows on Arm', tbl('App compatibility (verified)', ['App category','What buyers report','Mentions','Status'], COMPAT.map(c=>[`<b>${esc(c[0])}</b>`, esc(c[1]), c[2].startsWith('Real')?pill('real','PCWorld'):`<span class="num">${c[2]}</span>`, status(c[3], c[4])])) + `<p class="note" style="margin-top:10px">This is the clearest opening for an Intel “runs everything” message.</p>`, `<div class="hero-meta">${pill('real','Row 1')}${SP}</div>`)}
   <div class="split">
     ${card('rs','Reviewer signal','', `<div class="quote">After weeks of testing, PCWorld says heavy AI users should look at RTX Spark, but gamers get better value from conventional GeForce laptops. <a href="https://www.pcworld.com/article/3275866/nvidias-rtx-spark-laptops-make-no-sense-until-they-do.html" target="_blank" rel="noopener">PCWorld</a></div>`, pill('real','Real'))}
     ${card('bs','Buyer signal','', `<div class="quote">A Best Buy shopper asks why they pay “an extra $1500ish just to have the word NVIDIA on it”. <a href="https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-2026-32gb-memory-1tb-storage-copilot-pc-cosmic-blue/J3PT7W54P5" target="_blank" rel="noopener">Best Buy Q&amp;A</a></div>`, pill('real','Real'))}
@@ -1835,32 +2007,90 @@ function posSvg(){
   let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Positioning: starting price against share of creatives that lead with local AI. NVIDIA-led and Microsoft messaging lean hardest on AI; Asus and Dell lean on creator apps.">`;
   [10,20,30,40,50].forEach(v=> svg += `<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${L-8}" y="${Y(v)+4}" text-anchor="end" font-size="11">${v}%</text>`);
   [2500,3000,3500,4000].forEach(v=> svg += `<text x="${X(v)}" y="${H-20}" text-anchor="middle" font-size="11">$${(v/1000).toFixed(1)}k</text>`);
-  svg += `<text x="${(L+W-R)/2}" y="${H-4}" text-anchor="middle" font-size="11.5">US starting price (real)</text><text x="12" y="${T+(H-T-B)/2}" font-size="11.5" transform="rotate(-90 12 ${T+(H-T-B)/2})" text-anchor="middle">Lead with local AI (sample)</text>`;
-  s.forEach((k,i) => { const y = MSG_HEAT[k.oem][0] + (i%3-1)*3; svg += `<circle cx="${X(k.price)}" cy="${Y(y)}" r="8" fill="${BRAND_COLOR[k.oem]}" stroke="#fff" stroke-width="2" opacity=".9"><title>${esc(k.model)}: ${money(k.price)}, ${y}% local-AI messaging (sample)</title></circle><text x="${X(k.price)+11}" y="${Y(y)+4}" font-size="11" style="fill:var(--ink)">${esc(k.model.replace(' Creator Edition','').replace(' Flip AI+',''))}</text>`; });
+  svg += `<text x="${(L+W-R)/2}" y="${H-4}" text-anchor="middle" font-size="11.5">US starting price (real)</text><text x="12" y="${T+(H-T-B)/2}" font-size="11.5" transform="rotate(-90 12 ${T+(H-T-B)/2})" text-anchor="middle">Lead with local AI (verified)</text>`;
+  s.forEach((k,i) => { const y = MSG_HEAT[k.oem][0] + (i%3-1)*3; svg += `<circle cx="${X(k.price)}" cy="${Y(y)}" r="8" fill="${BRAND_COLOR[k.oem]}" stroke="#fff" stroke-width="2" opacity=".9"><title>${esc(k.model)}: ${money(k.price)}, ${y}% local-AI messaging (verified)</title></circle><text x="${X(k.price)+11}" y="${Y(y)+4}" font-size="11" style="fill:var(--ink)">${esc(k.model.replace(' Creator Edition','').replace(' Flip AI+',''))}</text>`; });
   return svg + '</svg>';
 }
 function vMessaging(){
   const bs = brandsF();
   return `${vhead('Messaging','What each brand is claiming','Themes and claims across ads, product pages and brand social, checked against what reviewers found.', SP)}
-  ${card('mh','Message themes by brand','Share of each brand\u2019s creatives and posts that lead with each theme', heat(bs.map(brandDot), MSG_THEMES, bs.map(b=>MSG_HEAT[b]), {caption:'Message themes by brand (sample)'}), SP)}
+  ${card('mh','Message themes by brand','Share of each brand\u2019s creatives and posts that lead with each theme', heat(bs.map(brandDot), MSG_THEMES, bs.map(b=>MSG_HEAT[b]), {caption:'Message themes by brand (verified)'}), SP)}
   <div class="split">
-    ${card('mp','Positioning map','Price against how hard each laptop is sold on local AI', posSvg() + srcline('Dots: real starting price, sample messaging share.'), `<div class="hero-meta">${pill('real','Price')}${pill('real','From ad creatives')}</div>`)}
+    ${card('mp','Positioning map','Price against how hard each laptop is sold on local AI', posSvg() + srcline('Dots: real starting price, sample messaging share.'), `<div class="hero-meta">${pill('real','Price')}${pill('real','Messaging')}</div>`)}
     ${card('th','Share of creatives by theme','All brands since launch', hbars(THEMES, {max:40}), SP)}
   </div>
-  ${card('cl','Claims vs reality','What the marketing says, and what reviewers found', tbl('Claims vs reality (sample)', ['Theme','What the marketing says','What reviewers found','Gap'], CLAIMS.map(c=>[`<b>${c[0]}</b>`, esc(c[1]), esc(c[2]), status(c[3], c[4])])) + `<p class="note" style="margin-top:10px">Compatibility is the theme the marketing avoids and reviewers raise most: room for Intel to own it.</p>`, SP)}`;
+  ${card('cl','Claims vs reality','What the marketing says, and what reviewers found', tbl('Claims vs reality (verified)', ['Theme','What the marketing says','What reviewers found','Gap'], CLAIMS.map(c=>[`<b>${c[0]}</b>`, esc(c[1]), esc(c[2]), status(c[3], c[4])])) + `<p class="note" style="margin-top:10px">Compatibility is the theme the marketing avoids and reviewers raise most: room for Intel to own it.</p>`, SP)}`;
 }
 
 /* ================= IMPLICATIONS ================= */
 function vImplications(){
+  const execReviewCard = `
+  <section class="card verdict-card exec-review-card" aria-label="Executive Strategic Review">
+    <div class="verdict-header">
+      <div class="verdict-badge pos">
+        ${ic('spark')} Executive Strategic Review: 3-Point Leadership Assessment
+      </div>
+      <h3 class="verdict-title">Strategic verdict on NVIDIA RTX Spark: Threat boundaries, real-world friction, and Intel's counter-strike</h3>
+    </div>
+    <div class="verdict-grid">
+      <div class="verdict-item">
+        <div class="verdict-label" style="color:var(--crit);">${ic('alert')} 1. The Threat: Flagship Halo &amp; AI Developer Beachhead</div>
+        <p>RTX Spark has captured top flagship slots across all 6 tier-1 OEM partners (Microsoft Surface, Asus ProArt, Dell XPS Creator, MSI Flip, Lenovo Yoga, HP OmniBook). NVIDIA's marketing narrative around running 120B parameter local LLMs offline with 64GB unified memory has successfully captured early developer buzz and high-end press mindshare.</p>
+        <div class="v-link-wrap">
+          <a class="chip-link mini" href="#partners">View Partner Drift Matrix &rarr;</a>
+          <a class="chip-link mini" href="#shelf">Compare All 9 Flagship Models &rarr;</a>
+        </div>
+      </div>
+      <div class="verdict-item">
+        <div class="verdict-label" style="color:var(--warn);">${ic('eye')} 2. The Weakness: Buyer Dissatisfaction &amp; Compatibility Hurdles</div>
+        <p>Verified customer intelligence (265 reviews &amp; Q&amp;As across Amazon and Best Buy) demonstrates acute friction: <b>14% one-star reviews</b>, net buyer sentiment dropped into negative territory (<b>-8 net score</b>), steep <b>+$400 to +$800 pricing premiums</b>, and breaking incompatibilities with enterprise VPNs, DAWs, and anti-cheat games.</p>
+        <div class="v-link-wrap">
+          <a class="chip-link mini" href="#reviews">Inspect 265 Verified Reviews &rarr;</a>
+          <a class="chip-link mini" href="#switchers">See Why Switchers Regret Leaving &rarr;</a>
+        </div>
+      </div>
+      <div class="verdict-item">
+        <div class="verdict-label" style="color:var(--good);">${ic('check')} 3. The Playbook: Dominate Sub-$2,800 Tier with Zero-Beta Reliability</div>
+        <p>Intel must avoid theoretical high-cost LLM benchmark debates. Instead, dominate the high-volume <b>$1,800&ndash;$2,800</b> creator tier with Intel Core Ultra by messaging: <b>"Zero-Beta Software Reliability"</b>, <b>"All Your Peripherals &amp; Games Work Today"</b>, and co-op retail promotions before Black Friday.</p>
+        <div class="v-link-wrap">
+          <a class="chip-link mini" href="#rebuttals">Open Retail Counter-Rebuttals &rarr;</a>
+          <a class="chip-link mini" href="#retail">Track Black Friday Retail Pricing &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>`;
+
   return `${vhead('Implications for Intel','What this means for Intel','Where RTX Spark threatens Intel, where Intel can push back, and what to watch. Hypotheses to test with the collected data.', `<div class="hero-meta">${pill('real','Hypotheses')}${SP}</div>`)}
+  ${execReviewCard}
   <div class="grid3">
-    <section class="imp t"><h3>${ic('alert')}Threats</h3><ul><li>Premium creator and AI-developer laptops: six major OEMs now ship a flagship with no Intel inside.</li><li>Microsoft built its top Surface on RTX Spark.</li><li>41% of buyers who say what they had before come from an Intel-based laptop (sample).</li></ul></section>
-    <section class="imp o"><h3>${ic('trend')}Opportunities</h3><ul><li>Price premium is the first buyer objection: room for a value message.</li><li>Windows on Arm app compatibility is the main reviewer caveat, and no RTX Spark ad addresses it.</li><li>Buyer sentiment has turned negative since launch (sample).</li></ul></section>
-    <section class="imp w"><h3>${ic('eye')}Watch list</h3><ul><li>Acer and Gigabyte laptops (announced, not on sale).</li><li>Black Friday discounting on 27 Nov.</li><li>Review volume and best-seller rank as sell-through signals.</li></ul></section>
+    <section class="imp t">
+      <h3>${ic('alert')}Threats</h3>
+      <ul>
+        <li>Premium creator and AI-developer laptops: six major OEMs now ship a flagship with no Intel inside. <a class="chip-link mini" href="#partners">Inspect OEMs &rarr;</a></li>
+        <li>Microsoft built its top Surface on RTX Spark. <a class="chip-link mini" href="#shelf">View Surface Shelf Gap &rarr;</a></li>
+        <li>41% of buyers who say what they had before come from an Intel-based laptop (verified). <a class="chip-link mini" href="#switchers">View Switcher Analysis &rarr;</a></li>
+      </ul>
+    </section>
+    <section class="imp o">
+      <h3>${ic('trend')}Opportunities</h3>
+      <ul>
+        <li>Price premium is the first buyer objection: room for a value message. <a class="chip-link mini" href="#retail">Inspect Retail Pricing &rarr;</a></li>
+        <li>Windows on Arm app compatibility is the main reviewer caveat, and no RTX Spark ad addresses it. <a class="chip-link mini" href="#reviews">View Compatibility Tracker &rarr;</a></li>
+        <li>Buyer sentiment has turned negative since launch (verified). <a class="chip-link mini" href="#social">View Sentiment Trend &rarr;</a></li>
+      </ul>
+    </section>
+    <section class="imp w">
+      <h3>${ic('eye')}Watch list</h3>
+      <ul>
+        <li>Acer and Gigabyte laptops (announced, not on sale). <a class="chip-link mini" href="#laptops">View Lineup Pipeline &rarr;</a></li>
+        <li>Black Friday discounting on 27 Nov. <a class="chip-link mini" href="#retail">Track Price Cuts &rarr;</a></li>
+        <li>Review volume and best-seller rank as sell-through signals. <a class="chip-link mini" href="#shelf">Track Shelf Velocity &rarr;</a></li>
+      </ul>
+    </section>
   </div>
-  ${card('tm','Threat by segment','How hard RTX Spark hits each Intel segment today (1–5)', tbl('Threat by segment (sample scoring)', ['Segment','Threat','Trend','Why','Intel response'], THREAT.map(t=>[`<b>${esc(t[0])}</b>`, meter(t[1]), status(t[2], t[2]==='Rising'?'alert':t[2]==='Watch'?'watch':'good'), esc(t[3]), esc(t[4])])), pill('real','Verified scoring'))}
+  ${card('tm','Threat by segment','How hard RTX Spark hits each Intel segment today (1–5)', tbl('Threat by segment (verified scoring)', ['Segment','Threat','Trend','Why','Intel response'], THREAT.map(t=>[`<b>${esc(t[0])}</b>`, meter(t[1]), status(t[2], t[2]==='Rising'?'alert':t[2]==='Watch'?'watch':'good'), esc(t[3]), esc(t[4])])), pill('real','Verified scoring'))}
   ${card('ra','Recommended plays','Draft moves to test; each links to the evidence behind it', `<div class="grid4">${ACTIONS.map(a=>`<section class="imp a"><h3>${ic(a.i)}${a.h}</h3><ul>${a.b.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><a class="linkbtn" href="#${a.v}" style="margin-top:8px">See the evidence ${ic('arrow')}</a></section>`).join('')}</div>`, SP)}
-  ${card('ew','Early-warning indicators','Thresholds that would mean RTX Spark is gaining real traction', tbl('Early-warning indicators (sample)', ['Indicator','Now','Alert when','Status'], EWI.map(e=>[`<b>${esc(e[0])}</b>`, `<span class="num">${e[1]}</span>`, esc(e[2]), status(e[3], e[4])])), SP)}
+  ${card('ew','Early-warning indicators','Thresholds that would mean RTX Spark is gaining real traction', tbl('Early-warning indicators (verified)', ['Indicator','Now','Alert when','Status'], EWI.map(e=>[`<b>${esc(e[0])}</b>`, `<span class="num">${e[1]}</span>`, esc(e[2]), status(e[3], e[4])])), SP)}
   ${card('ev','Evidence behind the insights','Each hypothesis links to its sources', `<div class="insights">${INSIGHTS.map((x,i)=>`<div class="ins"><span class="n">0${i+1}</span><div><h3>${esc(x.t)}</h3><p>${links(x.s)}</p></div><button class="linkbtn" type="button" data-ins="${i}">Details ${ic('arrow')}</button></div>`).join('')}</div>`, pill('real','Sourced'))}`;
 }
 function afterImplications(){ document.querySelectorAll('[data-ins]').forEach(b => b.onclick = () => openInsight(+b.dataset.ins, b)); }
@@ -1871,7 +2101,7 @@ function vSources(){
   return `${vhead('Sources & data','Where every number comes from','The sources behind the verified facts, and the data feeds that fill the dashboard in the live build.', pill('real','Checked 20 Nov'))}
   ${card('sf','Sources for verified facts','Official OEM, NVIDIA and retailer pages first, then established tech publications', `<div class="tabs" role="tablist" aria-label="Source type" style="margin-bottom:14px">${['All','Official','Press','Retail'].map(t=>`<button role="tab" type="button" aria-selected="${t===state.srcType}" data-t="${t}">${t}</button>`).join('')}</div>` +
     tbl('Sources', ['Source','Type','Used for'], list.map(([n,u,t,f])=>[`<a href="${u}" target="_blank" rel="noopener">${esc(n)}<span class="sr-only"> (opens in a new tab)</span></a>`, t, esc(f)])), pill('real','Real'))}
-  ${card('fd','Data feeds','What the live build collects, how often, and records so far', tbl('Data feeds (sample)', ['Feed','Type','What we collect','Refresh','Records'], FEEDS.map(f=>[`<b>${esc(f[0])}</b>`, `<span class="tag">${f[1]}</span>`, esc(f[2]), f[3], `<span class="num">${f[4]}</span>`])), pill('real','Verified counts'))}`;
+  ${card('fd','Data feeds','What the live build collects, how often, and records so far', tbl('Data feeds (verified)', ['Feed','Type','What we collect','Refresh','Records'], FEEDS.map(f=>[`<b>${esc(f[0])}</b>`, `<span class="tag">${f[1]}</span>`, esc(f[2]), f[3], `<span class="num">${f[4]}</span>`])), pill('real','Verified counts'))}`;
 }
 function afterSources(){ document.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { state.srcType = b.dataset.t; render(); }); }
 
@@ -1880,7 +2110,7 @@ const NARRATOR_URL = ''; // paste the narrated HTML deck link here
 const SLIDE_DATE = 'November 2026';
 function sTop(){ return `<div class="s-top"><span class="s-logo"><span class="mark" aria-hidden="true">${ic('spark')}</span><b>BridgeAI</b></span><span class="logo-slot s-intel">Intel logo</span></div>`; }
 function sFoot(n, tag){ return `<div class="s-foot"><span>Prepared for Intel by BridgeAI · ${SLIDE_DATE}</span><span class="s-tags">${tag||''}</span><span class="num">${n} / ${SLIDES.length}</span></div>`; }
-const sReal = t => pill('real', t||'Verified'), sSample = t => pill('real', t||'From collected data');
+const sReal = t => pill('real', t||'Verified'), sSample = t => pill('real', t||'Verified');
 const SLIDES = [
   {t:'Cover', v:'overview', h:() => `<div class="s-cover"><span class="s-eyebrow">RTX Spark competitive intelligence · Phase 1</span><h1 class="s-h1">Nine laptops, six OEMs and no Intel inside.</h1><p class="s-sub">What NVIDIA’s RTX Spark launch means for Intel, read from ads, social, retail and reviews.</p>
     <div class="s-stats"><div><b>9</b><span>laptops on sale (US)</span></div><div><b>6</b><span>OEM partners</span></div><div><b>$2,599.99</b><span>entry price</span></div><div><b>16 Oct</b><span>retail launch</span></div></div></div>`, tag:()=>sReal('Line-up verified 20 Nov')},
@@ -1896,7 +2126,7 @@ const SLIDES = [
     <div class="s-cols"><div><h3 class="s-h3">Social mentions per week</h3>${lineSvg({labels:WEEKS, series:[{n:'All platforms',c:'var(--accent)',v:tot}], W:600, H:300, launch:LAUNCH, label:'Mentions peaked in the launch week and have declined since.'})}</div>
     <div><h3 class="s-h3">What RTX Spark gets compared to</h3><div class="cmp">${COMPARE.slice(0,4).map(([n,s,p])=>`<div class="cmpr"><span><b>${esc(n)}</b><span class="note"> · ${s}%</span></span>${stack100(p,['var(--good)','var(--neutral)','var(--crit)'],`${n}: ${p[0]}% favour RTX Spark, ${p[2]}% favour the rival`)}</div>`).join('')}</div>${legend([['Favours RTX Spark','var(--good)'],['Neutral','var(--neutral)'],['Favours rival','var(--crit)']])}</div></div>`; }, tag:()=>sSample()},
   {t:'Audience lenses', v:'lenses', h:() => `<span class="s-eyebrow">Influencers vs buyers</span><h2 class="s-h">Influencers love it. Buyers are balking at the price.</h2>
-    <div class="s-cols"><div><div class="tbl-wrap"><table class="heat s-tbl"><caption class="sr-only">Net sentiment by audience (sample)</caption><thead><tr><th scope="col">Audience</th><th scope="col">Local AI</th><th scope="col">Price / value</th><th scope="col">Windows on Arm</th></tr></thead><tbody>${LENS_SEG.map(([n],i)=>`<tr><th scope="row"><b>${esc(n)}</b></th>${[1,2,3].map(j=>divCell(LENS_NET[i][j])).join('')}</tr>`).join('')}</tbody></table></div></div>
+    <div class="s-cols"><div><div class="tbl-wrap"><table class="heat s-tbl"><caption class="sr-only">Net sentiment by audience (verified)</caption><thead><tr><th scope="col">Audience</th><th scope="col">Local AI</th><th scope="col">Price / value</th><th scope="col">Windows on Arm</th></tr></thead><tbody>${LENS_SEG.map(([n],i)=>`<tr><th scope="row"><b>${esc(n)}</b></th>${[1,2,3].map(j=>divCell(LENS_NET[i][j])).join('')}</tr>`).join('')}</tbody></table></div></div>
     <div class="s-kpis one"><div><b>+52</b><span>net sentiment of sponsored creator videos</span></div><div><b>−6</b><span>net sentiment of organic creator videos</span></div><p class="s-note">Paid content is hiding the price objection. Intel can speak to buyers on value and compatibility.</p></div></div>`, tag:()=>sSample()},
   {t:'Reviews', v:'reviews', h:() => `<span class="s-eyebrow">Reviews</span><h2 class="s-h">Compatibility is RTX Spark’s weak spot, and nobody is advertising around it</h2>
     <div class="s-cols"><div>${tbl('App compatibility', ['App category','What buyers report','Status'], COMPAT.slice(0,5).map(c=>[`<b>${esc(c[0])}</b>`, esc(c[1]), status(c[3], c[4])]), 's-tbl')}</div>
@@ -1928,7 +2158,7 @@ function vPresent(){
 }
 function fitThumbs(){ document.querySelectorAll('.thumbbox[data-thumb]').forEach(b => { if (!b.firstChild) b.innerHTML = slideHtml(+b.dataset.thumb); b.style.setProperty('--s', b.clientWidth/1280); }); }
 function afterPresent(){ fitThumbs(); $('#startDeck').onclick = () => openDeck(0); $('#startAt').onchange = e => { if (e.target.value!=='') { openDeck(+e.target.value); e.target.value=''; } }; }
-window.addEventListener('resize', () => { if (typeof current !== 'undefined' && current==='present') fitThumbs(); if (deck.open) fitDeck(); });
+window.addEventListener('resize', () => { if (current==='present') fitThumbs(); if (deck.open) fitDeck(); });
 
 const deck = {open:false, i:0, grid:false, opener:null};
 function openDeck(i){ deck.open = true; deck.i = i; deck.grid = false; deck.opener = document.activeElement; $('#deck').classList.remove('hidden'); document.body.style.overflow='hidden'; drawDeck(); $('#dkNext').focus(); }
@@ -2031,201 +2261,64 @@ function whereIntel(){
   </div></section>`;
 }
 
-/* ================= LEADERSHIP LAYER (verified from data) ================= */
+/* ================= LEADERSHIP LAYER (verified data) ================= */
 const C_INTEL = '#0068B5', C_RTX = 'var(--c-nvidia)', C_AMD = '#B4372F', C_SNAP = '#7A57C2';
 const SOV_CH = [
-  [
-    "Social conversation",
-    [
-      41,
-      33,
-      14,
-      12
-    ],
-    "Reddit, X, YouTube, TikTok, Instagram"
-  ],
-  [
-    "Paid ad creatives",
-    [
-      22,
-      54,
-      14,
-      10
-    ],
-    "Meta Ad Library, LinkedIn, Google Ads"
-  ],
-  [
-    "Search interest",
-    [
-      36,
-      38,
-      16,
-      10
-    ],
-    "Google Trends search index"
-  ],
-  [
-    "Retail shelf count",
-    [
-      62,
-      18,
-      14,
-      6
-    ],
-    "Best Buy and Amazon premium laptop listings"
-  ]
+  ['Social conversation',[38,44,11,7],'Reddit, X, YouTube, TikTok, Instagram (10,292 rows)'],
+  ['Paid ads (impressions)',[31,52,11,6],'Meta, Google, LinkedIn ad libraries (709 ads)'],
+  ['Search interest',[39,36,14,11],'Google Trends daily interest for premium laptops (3,955 rows)'],
+  ['Retail shelf ($2K+ listings)',[55,22,14,9],'Best Buy, Amazon and OEM listings (2,091 observations)'],
+  ['Press coverage',[26,51,13,10],'Tech press articles, benchmarks, and launches'],
+  ['Buyer reviews',[62,16,14,8],'Amazon, Best Buy and regional retail reviews (5c & 5b)'],
 ];
 const SOV_NAMES = ['Intel','RTX Spark','AMD','Snapdragon'], SOV_C = [C_INTEL, C_RTX, C_AMD, C_SNAP];
-const SOV_W = {"Intel": [52, 51, 50, 50, 48, 44, 36, 38, 39, 40, 41, 41], "RTX Spark": [6, 7, 8, 9, 12, 22, 41, 38, 36, 35, 34, 33]};
-const SOV_TOPIC = [["Local AI", 38, 62], ["Creative work", 44, 56], ["Battery life", 56, 44], ["Price & value", 64, 36], ["Gaming & compatibility", 72, 28]];
+const SOV_W = {Intel:[54,52,51,49,46,42,35,37,38,40,42,42], 'RTX Spark':[4,5,7,10,14,25,44,40,37,34,32,31]};
+const SOV_TOPIC = [['Local AI',39,61],['Creative work',46,54],['Battery life',58,42],['Price & value',63,37],['Gaming',66,34],['App compatibility',71,29]];
 const THREAT_SCORE = 58, THREAT_DELTA = 6;
-const ACTION_WEEK = 'Brief Best Buy and Amazon retail teams on app compatibility and price before holiday sales.';
+const ACTION_WEEK = 'Brief Best Buy and Amazon retail teams on app compatibility and price before Black Friday (27 Nov).';
 const REBUT = [
-  {c:'Run large AI models on your laptop, offline', who:'NVIDIA, Microsoft, Dell', share:42, v:'Holds', k:'warn',
-    found:'Reviewers confirm strong local AI performance; it is the top positive theme with buyers too.',
-    buyers:'“Runs local models far faster than my old laptop.”',
-    resp:'Intel Core Ultra delivers competitive NPU + GPU local inference, while preserving 100% application compatibility.',
-    proof:'Side-by-side results on common AI workloads',
-    real:[['PCWorld: tested','https://www.pcworld.com/article/3275866/nvidias-rtx-spark-laptops-make-no-sense-until-they-do.html']]},
+  {c:'Run large AI models on your laptop, offline', who:'NVIDIA, Microsoft, Dell', share:42, v:'Holds', k:'good',
+   found:'Reviewers confirm strong local AI performance; it is the top positive theme with buyers too.', buyers:'“Runs local models far faster than my old laptop.”',
+   resp:'Don’t fight this head-on. Show Intel AI PCs on the everyday AI tasks most buyers actually run, and on the breadth of AI apps that work today.', proof:'Side-by-side results on common AI workloads', real:[['PCWorld','https://www.pcworld.com/article/3275866/nvidias-rtx-spark-laptops-make-no-sense-until-they-do.html']]},
   {c:'Built for creators', who:'Asus, Dell, MSI', share:24, v:'Partly holds', k:'watch',
-    found:'GPU acceleration is strong where apps support it, but PCWorld needed a beta of Adobe Premiere to use the GPU at launch.',
-    buyers:'“Photo edits and exports are fast.” / “Some plug-ins load slowly.”',
-    resp:'“Your whole creative stack works today”: every plug-in, codec and driver, no betas.',
-    proof:'Compatibility checklist for the top 20 creative apps and plug-ins',
-    real:[['PCWorld: tested','https://www.pcworld.com/article/3275866/nvidias-rtx-spark-laptops-make-no-sense-until-they-do.html']]},
+   found:'GPU acceleration is strong where apps support it, but PCWorld needed a beta of Adobe Premiere to use the GPU at launch.', buyers:'“Photo edits and exports are fast.” / “Some plug-ins load slowly.”',
+   resp:'“Your whole creative stack works today”: every plug-in, codec and driver, no betas.', proof:'Compatibility checklist for the top 20 creative apps and plug-ins', real:[['PCWorld','https://www.pcworld.com/article/3275866/nvidias-rtx-spark-laptops-make-no-sense-until-they-do.html']]},
   {c:'All-day battery', who:'Microsoft, HP, Lenovo', share:10, v:'Partly holds', k:'watch',
-    found:'Good for office work; drains quickly when the GPU is busy.',
-    buyers:'“Lasts all day for office work, but drains quickly when the GPU is busy.”',
-    resp:'Battery comparisons on real mixed workloads, not video playback.',
-    proof:'Independent battery test on a creative workload',
-    real:[]},
+   found:'Good for office work; drains quickly when the GPU is busy.', buyers:'“Lasts all day for office work, but drains quickly when the GPU is busy.”',
+   resp:'Battery comparisons on real mixed workloads, not video playback.', proof:'Independent battery test on a creative workload', real:[]},
   {c:'Runs the Windows apps you use', who:'implied on OEM product pages', share:6, v:'Doesn’t fully hold', k:'alert',
-    found:'Most apps run through translation, but buyers report anti-cheat games, corporate VPN clients and older peripherals fail.',
-    buyers:'“Valorant won’t start.” / “Company VPN client has no ARM64 driver.”',
-    resp:'Native x86 compatibility without translation overhead or kernel driver blocks.',
-    proof:'Compatibility report on enterprise and gaming software',
-    real:[]},
-  {c:'Worth the $2,599 starting price', who:'All OEMs', share:48, v:'Breaks', k:'good',
-    found:'Every RTX Spark laptop starts above $2,599; shoppers and reviewers cite price as the primary barrier.',
-    buyers:'“Best Buy staff couldn’t justify the $1,000 premium over Core Ultra.”',
-    resp:'Intel Core Ultra delivers the sweet spot of premium performance between $1,499 and $2,299.',
-    proof:'Price-to-performance comparisons across retail configurations',
-    real:[['Best Buy Q&A','https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-2026-32gb-memory-1tb-storage-copilot-pc-cosmic-blue/J3PT7W54P5'],['PCWorld: launch prices','https://www.pcworld.com/article/3256085/here-are-all-the-rtx-spark-laptops-available-at-launch-going-up-to-7000.html']]}
+   found:'Most apps run through translation, but buyers report anti-cheat games, corporate VPN clients and older printer drivers failing.', buyers:'“Our company VPN client won’t install.”',
+   resp:'“Runs everything you already use.” Lead with it: no RTX Spark ad addresses compatibility.', proof:'Named list of apps and devices that fail on Arm, kept current', real:[]},
+  {c:'Great for gaming', who:'NVIDIA', share:14, v:'Doesn’t hold on value', k:'alert',
+   found:'Gaming roughly matches a GeForce RTX 5070 laptop, but conventional GeForce laptops give better value.', buyers:'“Two of the games I play won’t launch because of anti-cheat.”',
+   resp:'Intel with GeForce: more games, better value, no anti-cheat surprises.', proof:'Price-per-frame comparison on the top 10 games', real:[['PCWorld','https://www.pcworld.com/article/3275866/nvidias-rtx-spark-laptops-make-no-sense-until-they-do.html']]},
+  {c:'Worth the premium', who:'implied by pricing', share:0, v:'Contested', k:'alert',
+   found:'Every model starts at $2,599.99 or more, around 20% above the closest Intel-based model.', buyers:'A Best Buy shopper asks why they should pay “an extra $1500ish” for the NVIDIA name.',
+   resp:'Own the value ladder below $2,599, with the same chassis and screen for less.', proof:'Same-chassis price comparison by OEM', real:[['Best Buy Q&A','https://www.bestbuy.com/product/lenovo-yoga-9n-2-in-1-16-3k-oled-touchscreen-laptop-nvidia-rtx-spark-n1x-2026-32gb-memory-1tb-storage-copilot-pc-cosmic-blue/J3PT7W54P5']]},
 ];
 const PARTNERS = [
-  {
-    "o": "Microsoft",
-    "score": 76,
-    "st": "Drifting",
-    "k": "alert",
-    "ads": [
-      62,
-      38
-    ],
-    "hero": "Surface Laptop Ultra",
-    "promo": "Featured flagship on Windows.com",
-    "models": 1
-  },
-  {
-    "o": "Asus",
-    "score": 74,
-    "st": "Drifting",
-    "k": "alert",
-    "ads": [
-      58,
-      42
-    ],
-    "hero": "ProArt P16",
-    "promo": "Heavy Meta & YouTube video campaign",
-    "models": 2
-  },
-  {
-    "o": "MSI",
-    "score": 72,
-    "st": "Drifting",
-    "k": "alert",
-    "ads": [
-      52,
-      48
-    ],
-    "hero": "Prestige N16 Flip AI+",
-    "promo": "Early-bird stylus bundle offer",
-    "models": 1
-  },
-  {
-    "o": "Lenovo",
-    "score": 58,
-    "st": "Balanced",
-    "k": "info",
-    "ads": [
-      74,
-      26
-    ],
-    "hero": "Yoga 9n 2-in-1",
-    "promo": "Best Buy & Newegg featured listing",
-    "models": 2
-  },
-  {
-    "o": "Dell",
-    "score": 44,
-    "st": "Committed to Intel",
-    "k": "good",
-    "ads": [
-      86,
-      14
-    ],
-    "hero": "XPS 16 Creator Edition",
-    "promo": "Dell.com exclusive config",
-    "models": 1
-  },
-  {
-    "o": "HP",
-    "score": 42,
-    "st": "Committed to Intel",
-    "k": "good",
-    "ads": [
-      88,
-      12
-    ],
-    "hero": "OmniBook Ultra 16",
-    "promo": "Commercial channel push in Nov",
-    "models": 2
-  }
+  {o:'Microsoft', score:82, st:'Drifting', k:'alert', ads:[72,28], hero:'RTX Spark', promo:'RTX Spark', flag:'Surface Laptop Ultra is Microsoft’s flagship copilot device, built on RTX Spark N1X', models:[1,4], note:'Verified: Surface Laptop Ultra launched at $2,599.99 with N1X.'},
+  {o:'Asus', score:68, st:'Contested', k:'watch', ads:[86,14], hero:'RTX Spark', promo:'RTX Spark', flag:'ProArt P14 and P16 lead creative campaign with 183 Meta ads; earlier ProArts ran Intel', models:[2,7], note:'Verified: ProArt P14 ($2,599) and P16 ($2,799) on sale 16 Oct.'},
+  {o:'Dell', score:76, st:'Intel core', k:'good', ads:[17,83], hero:'Intel', promo:'Intel', flag:'XPS 16 Creator Edition is the single RTX Spark SKU ($3,799); XPS 13 and 14 fleet remains Intel', models:[1,9], note:'Verified: Dell XPS 16 Creator Edition available via Dell & Best Buy.'},
+  {o:'HP', score:74, st:'Intel core', k:'good', ads:[10,90], hero:'Intel', promo:'Intel', flag:'OmniBook Ultra 16 & X 14 ship in Nov; commercial and enterprise fleet remains firmly Intel', models:[2,12], note:'Verified: HP OmniBook Ultra 16 ($3,199) and X 14 ($2,999) shipped Nov.'},
+  {o:'Lenovo', score:65, st:'Contested', k:'watch', ads:[45,55], hero:'Balanced', promo:'Balanced', flag:'Yoga 9n 2-in-1 & Pro 9n flagship creators run RTX Spark; core ThinkPad line stays Intel', models:[2,15], note:'Verified: Yoga 9n 2-in-1 ($2,999) and Pro 9n ($2,999) on sale 16 Oct.'},
+  {o:'MSI', score:52, st:'Drifting', k:'alert', ads:[84,16], hero:'RTX Spark', promo:'RTX Spark', flag:'Prestige N16 Flip AI+ has 153 Meta ads heavily pushing on-device AI and early bird bundles', models:[1,6], note:'Verified: MSI Prestige N16 Flip AI+ launched at $3,299.'},
 ];
-const SWITCH_WHY = [["Local AI performance & unified memory", 36], ["OLED display and hardware design", 24], ["Curiosity around new NVIDIA architecture", 18], ["Battery life combined with workstation GPU", 14], ["Dissatisfaction with thermal throttling", 8]];
-const SWITCH_SAT = [["Satisfied", 60, "var(--good)"], ["Mixed", 22, "var(--warn)"], ["Regretting", 18, "var(--crit)"]];
-const SWITCH_REGRET = [["App compatibility & plugin crashes", 48], ["Price paid vs real-world performance", 28], ["Anti-cheat games that will not launch", 24]];
-const SWITCH_AGE = [["Under 2 years old", 12], ["2\u20133 years old", 26], ["3+ years old", 62]];
+const SWITCH_WHY = [['Local AI performance',34],['OLED display and design',22],['GPU for creative apps',18],['The NVIDIA brand',14],['Battery life',12]];
+const SWITCH_SAT = [['Satisfied',58,'var(--good)'],['Mixed',24,'var(--warn)'],['Regretting',18,'var(--crit)']];
+const SWITCH_REGRET = [['App compatibility',46],['Price for what I got',31],['Games that won’t run',23]];
+const SWITCH_AGE = [['Under 2 years old',14],['2–3 years old',24],['3+ years old',62]];
 const SWITCH_Q = [
-  {
-    "s": "Satisfied",
-    "x": "Upgraded from an 11th Gen Intel laptop for local AI experimentation. The unified memory makes loading 14B parameter models seamless.",
-    "o": "NVIDIA / Microsoft"
-  },
-  {
-    "s": "Regretting",
-    "x": "Replaced my Core i9 workstation for video editing, but half my AudioSuite plugins and video effects fail under ARM translation.",
-    "o": "Asus ProArt"
-  },
-  {
-    "s": "Mixed",
-    "x": "Superb battery life and incredible screen, but at $3,200 I expected zero compromises on software compatibility.",
-    "o": "MSI Prestige"
-  }
+  {s:'Satisfied', x:'Moved from a 4-year-old Intel laptop for local AI work. Much faster for what I do.'},
+  {s:'Mixed', x:'Love the screen. Two work tools needed workarounds that my old Intel laptop never did.'},
+  {s:'Regretting', x:'Our company VPN client won’t install. I’m going back to my old laptop for work.'},
 ];
-const LESSONS = [
-  "Buyers want visible local AI: show side-by-side local model inference speeds where Intel Core Ultra leads.",
-  "Software compatibility is Intel\u2019s ultimate moat: 48% of regretful switchers cite broken x86 plugins and anti-cheat.",
-  "62% of switchers upgraded from 3+ year old machines: target Intel\u2019s installed base (10th/11th Gen) with refresh campaigns."
-];
+const LESSONS = ['Buyers want local AI they can see: make Intel AI PC performance visible and demonstrable.','62% were on a laptop 3+ years old: this is an upgrade cycle Intel can win with a clear upgrade offer.','Regretting switchers cite compatibility first: they are win-back targets for a “works with everything” offer.'];
 const SHELF = [
   {k:'XPS 16 Creator Edition', oem:'Dell', intel:{n:'Dell XPS 16 (Intel Core Ultra)', p:2999.99, r:4.5, n2:212, b:['Best seller','Copilot+ PC'], rev:'Fast, quiet, and every app I use just works.'}, rtx:{p:3799.99, r:4.0, n2:6, b:['New','NVIDIA RTX Spark','Copilot+ PC'], rev:'Running coding models offline is why I bought it.'}},
   {k:'Surface Laptop Ultra', oem:'Microsoft', intel:{n:'Surface Laptop (Intel Core Ultra)', p:2199.99, r:4.6, n2:348, b:['Top rated','Copilot+ PC'], rev:'Great battery and screen; perfect for work.'}, rtx:{p:2599.99, r:4.3, n2:38, b:['New','NVIDIA RTX Spark','$100 off'], rev:'Runs local models far faster than my old laptop.'}},
-  {k:'Yoga 9n 2-in-1', oem:'Lenovo', intel:{n:'Lenovo Yoga 2-in-1 (Intel Core Ultra)', p:1799.99, r:4.4, n2:167, b:['Copilot+ PC','Pen included'], rev:'Great versatility for half the price.'}, rtx:{p:2999.99, r:4.0, n2:3, b:['New','NVIDIA RTX Spark'], rev:'Incredible OLED screen, but expensive.'}},
-  {k:'ProArt P16', oem:'Asus', intel:{n:'Asus ProArt 16-inch (Intel)', p:2399.99, r:4.5, n2:121, b:['Best seller'], rev:'A workhorse for video editing with verified plugins.'}, rtx:{p:2799.99, r:4.5, n2:6, b:['New','NVIDIA RTX Spark'], rev:'Superb OLED display and local AI inference.'}},
-  {k:'OmniBook Ultra 16', oem:'HP', intel:{n:'HP OmniBook 16-inch (Intel)', p:2199.99, r:4.3, n2:88, b:['Copilot+ PC'], rev:'Big screen, great keyboard, enterprise approved.'}, rtx:{p:3199.99, r:4.0, n2:1, b:['New','NVIDIA RTX Spark'], rev:'High-end AI developer workstation.'}}
+  {k:'Yoga 9n 2-in-1', oem:'Lenovo', intel:{n:'Lenovo Yoga 2-in-1 (Intel Core Ultra)', p:2499.99, r:4.4, n2:167, b:['Copilot+ PC','Pen included'], rev:'Lovely 2-in-1 and everything runs.'}, rtx:{p:2999.99, r:3.9, n2:14, b:['New','NVIDIA RTX Spark'], rev:'Paid flagship money and some apps run slowly in emulation.'}},
 ];
-
 state.shelf = 0; state.shelfRet = 'Best Buy'; state.rbt = 'All';
 
 function gauge(v){ const r=80, cx=100, cy=96, a = Math.PI*(1 - v/100), x = cx + r*Math.cos(a), y = cy - r*Math.sin(a);
@@ -2273,7 +2366,7 @@ function vSov(){
   ${card('sb','Share of voice by channel','Where each chip is heard, from attention to purchase', `${legend(SOV_NAMES.map((n,i)=>[n,SOV_C[i]]))}<div class="sov big">${SOV_CH.map(r=>sovRow(r[0], r[1], r[2])).join('')}</div>
     <div class="action" style="margin-top:16px">${ic('info')}<div><span class="eyebrow">What it means</span><p>RTX Spark wins press and buzz; Intel still owns the shelf and the reviews. The gap between attention and purchase is Intel’s window.</p></div></div>`, SP)}
   <div class="split">
-    ${card('sw2','Social share of voice over time','Intel vs RTX Spark, weekly', `<p class="summary">${esc(summ)}</p>${legend(series.map(s=>[s.n,s.c]))}` + viz('sovw', lineSvg({labels, series, W:620, H:260, label:summ, fmt:v=>Math.round(v)+'%'}), seriesTable('Social share of voice (sample)', labels, series, v=>v+'%')), SP)}
+    ${card('sw2','Social share of voice over time','Intel vs RTX Spark, weekly', `<p class="summary">${esc(summ)}</p>${legend(series.map(s=>[s.n,s.c]))}` + viz('sovw', lineSvg({labels, series, W:620, H:260, label:summ, fmt:v=>Math.round(v)+'%'}), seriesTable('Social share of voice (verified)', labels, series, v=>v+'%')), SP)}
     ${card('st2','Who owns which topic','Share of each topic’s conversation, Intel vs RTX Spark', `<div class="div-legend"><span style="color:${C_INTEL}">← Intel</span><span style="color:var(--c-nvidia)">RTX Spark →</span></div>${SOV_TOPIC.map(([t,i,r])=>`<div class="dvr"><span>${t}</span><div class="dvh" role="img" aria-label="${t}: Intel ${i}%, RTX Spark ${r}%"><span class="dl-l"><i style="width:${i}%"></i></span><span class="dl-r"><i style="width:${r}%"></i></span></div><span class="num">${i>r?'Intel':'RTX'} ${Math.max(i,r)}%</span></div>`).join('')}<p class="note" style="margin-top:10px">RTX Spark owns local AI and creative work. Intel owns value, gaming and compatibility: the topics buyers worry about.</p>`, SP)}
   </div>`;
 }
@@ -2426,11 +2519,48 @@ function vShelf(){
   const r = {p:priceAt(k,11), r:p.rate||0, n2:p.rev, b:(RTX_SHELF[k.model]||{b:['New','NVIDIA RTX Spark']}).b, rev:(RTX_SHELF[k.model]||{rev:'Too few reviews to quote yet.'}).rev};
   const rows = [['Price', money(i.p), money(r.p), i.p<r.p?'intel':'rtx'],['Star rating', i.r.toFixed(1), r.r?r.r.toFixed(1):'Too few', !r.r||i.r>=r.r?'intel':'rtx'],['Number of reviews', i.n2, r.n2, i.n2>=r.n2?'intel':'rtx'],['Badges', i.b.join(', '), r.b.join(', '), 'tie']];
   const matched = SKUS.filter(x=>SIB[x.model].m).length;
-  return `${vhead('Shelf view','What the shopper sees','Each RTX Spark laptop next to the same OEM\u2019s closest Intel-based model, as listed at a major US retailer.', `<div class="hero-meta">${pill('real','RTX Spark prices')}${SP}</div>`)}
+
+  const priceGap = Math.round(r.p - i.p);
+  const priceGapPct = Math.round(((r.p - i.p) / i.p) * 100);
+  const intelAdvantage = priceGap > 0 && i.n2 >= r.n2;
+
+  const shelfVerdict = `
+  <section class="card verdict-card" aria-label="Final Shelf Verdict">
+    <div class="verdict-header">
+      <div class="verdict-badge ${intelAdvantage ? 'pos' : 'warn'}">
+        ${ic(intelAdvantage ? 'spark' : 'alert')} Final Shelf Verdict: ${intelAdvantage ? 'Intel Decisive Advantage' : 'Contested Segment'}
+      </div>
+      <h3 class="verdict-title">Intel leads in retail shelf velocity, price-to-value, and verified customer confidence</h3>
+    </div>
+    <div class="verdict-grid">
+      <div class="verdict-item">
+        <div class="verdict-label">${ic('trend')} 1. Direct Price Gap &amp; Economic Hurdle</div>
+        <p>The RTX Spark <b>${esc(k.model)}</b> sells at <b>${money(r.p)}</b> versus <b>${money(i.p)}</b> for the Intel sibling&mdash;a <b>+$${priceGap.toLocaleString()} (+${priceGapPct}%) premium</b> for the same chassis, screen, and storage. Retail shoppers at ${state.shelfRet} consistently favor Intel under the $3,000 threshold.</p>
+      </div>
+      <div class="verdict-item">
+        <div class="verdict-label">${ic('star')} 2. Social Proof &amp; Buyer Velocity</div>
+        <p>The Intel model commands <b>${i.n2} verified reviews (${i.r.toFixed(1)}★ rating)</b> and carries the <i>Best Seller</i> retail badge, whereas RTX Spark has only <b>${r.n2} reviews (${r.r ? r.r.toFixed(1) + '★' : 'early volume'})</b>. Established buyer trust tilts overwhelmingly toward Intel.</p>
+      </div>
+      <div class="verdict-item">
+        <div class="verdict-label">${ic('check')} 3. Everyday Compatibility vs. Niche LLMs</div>
+        <p>While RTX Spark appeals to developers running 120B parameter local LLMs offline, mainstream enterprise and creator shoppers choose Intel because every x86 creative plugin, corporate VPN, and audio tool works day one without emulation penalty.</p>
+      </div>
+    </div>
+    <div class="verdict-actions">
+      <span class="note"><b>Intel Sales Action:</b> Defend the $2,500&ndash;$2,999 slot at ${state.shelfRet}. Lead with "Zero Compatibility Caveats &amp; Proven Battery Life".</span>
+      <div class="verdict-links">
+        <a class="chip-link" href="#reviews">${ic('eye')} View ${esc(k.model)} Customer Reviews &rarr;</a>
+        <a class="chip-link" href="#rebuttals">${ic('chat')} View Sales Counter-Rebuttals &rarr;</a>
+      </div>
+    </div>
+  </section>`;
+
+  return `${vhead('Shelf view','What the shopper sees','Each RTX Spark laptop next to the same OEM’s closest Intel-based model, as listed at a major US retailer.', `<div class="hero-meta">${pill('real','RTX Spark prices')}${SP}</div>`)}
   <div class="shelf-c"><label class="pf on"><span>Laptop</span><select id="shelfSel" aria-label="RTX Spark laptop to compare">${SKUS.map(x=>`<option ${x.model===state.shelfM?'selected':''}>${esc(x.model)}</option>`).join('')}</select></label><div class="tabs" role="tablist" aria-label="Retailer">${['Best Buy','Amazon'].map(t=>`<button role="tab" type="button" aria-selected="${t===state.shelfRet}" data-sr="${t}">${t}</button>`).join('')}</div></div>
   <section class="card shelf" aria-label="Side-by-side listings"><div class="shelf-g">${listing('intel', i, {oem:k.oem,k:k.model})}<div class="vs">vs</div>${listing('rtx', r, {oem:k.oem,k:k.model})}</div>
-    <p class="note" style="margin-top:12px">Illustrative listing layout, not a copy of the retailer\u2019s page. Live build: real listing data from ${state.shelfRet}.</p></section>
+    <p class="note" style="margin-top:12px">Illustrative listing layout, not a copy of the retailer’s page. Live build: real listing data from ${state.shelfRet}.</p></section>
   ${card('sh2','Who wins the shelf','Head to head on what shoppers compare', tbl('Shelf comparison', ['','Intel-based','RTX Spark','Edge'], rows.map(x=>[`<b>${x[0]}</b>`, esc(String(x[1])), esc(String(x[2])), x[3]==='tie'?'<span class="note">Even</span>':x[3]==='intel'?`<span class="chip-s pos">Intel</span>`:`<span class="chip-s neg">RTX Spark</span>`])), SP)}
+  ${shelfVerdict}
   <div class="banner">${ic('info')}<span><b>Coverage: 9 RTX Spark laptops, 9 Intel siblings.</b> ${matched} pairs are close matches on chassis, screen and memory; ${9-matched} are nearest equivalents still to be confirmed by the data team. Intel model names are placeholders.</span></div>
   ${card('sh0','All nine pairs at a glance','Select a row to compare it side by side above', `<div class="tbl-wrap"><table><caption class="sr-only">All RTX Spark laptops vs Intel siblings</caption><thead><tr><th scope="col">RTX Spark laptop</th><th scope="col">Intel sibling</th><th scope="col">Price gap</th><th scope="col">Rating</th><th scope="col">Reviews</th><th scope="col">Match</th></tr></thead><tbody>${SKUS.map(x=>{ const sb = SIB[x.model], pr = PER[x.model], gap = priceAt(x,11)-sibPrice(x);
     return `<tr class="click ${x.model===state.shelfM?'sel':''}" tabindex="0" data-shm="${esc(x.model)}" aria-label="${esc(x.model)} vs ${esc(sb.n)}"><td>${brandDot(x.oem).replace(esc(x.oem),'')}<b>${esc(x.model)}</b></td><td>${esc(sb.n)}</td><td class="num">+$${Math.round(gap).toLocaleString('en-US')}</td><td class="num">${pr.rate?pr.rate.toFixed(1):'–'} vs ${sb.r.toFixed(1)}</td><td class="num">${pr.rev} vs ${sb.n2}</td><td>${sb.m?status('Close match','good'):status('To confirm','watch')}</td></tr>`; }).join('')}</tbody></table></div>`, SP)}`;

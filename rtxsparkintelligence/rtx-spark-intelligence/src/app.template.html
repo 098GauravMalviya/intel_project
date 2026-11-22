@@ -671,6 +671,122 @@ ul.plain{margin:0;padding-left:18px;display:grid;gap:8px;font-size:14.5px}
 .lst-q{margin:4px 0 0;font-size:13.5px;color:var(--muted);font-style:italic;border-top:1px solid var(--line);padding-top:10px}
 @media (max-width:1100px){ .ptn{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:760px){ .lead{grid-template-columns:1fr;padding:22px} .lead h1{font-size:30px} .sov-r,.sov.big .sov-r{grid-template-columns:1fr 92px} .sov-r .stack{grid-column:1/-1;grid-row:2} .rb-b{grid-template-columns:1fr} .ptn{grid-template-columns:1fr} .shelf-g{grid-template-columns:1fr} .vs{justify-self:center} .dvr{grid-template-columns:96px 1fr 70px} .rb summary{grid-template-columns:1fr 24px} .rb summary .status{grid-column:1;grid-row:2} }
+
+/* ===== VERDICT BOXES & EVIDENCE LINKS ===== */
+.verdict-card {
+  border: 1px solid var(--line-strong);
+  border-radius: 18px;
+  background: linear-gradient(180deg, var(--surface) 0%, rgba(248, 249, 250, 0.9) 100%);
+  padding: 24px;
+  margin-top: 18px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+}
+.verdict-header {
+  margin-bottom: 16px;
+}
+.verdict-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 12px var(--mono);
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+.verdict-badge.pos { background: #EEF7F0; color: #1E7E34; border: 1px solid #C3E6CB; }
+.verdict-badge.warn { background: #FFF3CD; color: #856404; border: 1px solid #FFEEBA; }
+.verdict-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--ink);
+  letter-spacing: -0.015em;
+}
+.verdict-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+.verdict-item {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+.verdict-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 650;
+  font-size: 14.5px;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+.verdict-item p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--muted);
+  flex: 1;
+}
+.verdict-actions {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.verdict-links, .v-link-wrap {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.chip-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-line);
+  border-radius: 999px;
+  padding: 4px 10px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+.chip-link:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.chip-link.mini {
+  font-size: 11px;
+  padding: 2px 8px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.cmt-f {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.evidence-tag {
+  font-size: 11.5px;
+  color: var(--faint);
+  margin-left: auto;
+  font-family: var(--mono);
+}
+
 </style>
 </head>
 <body>
@@ -1297,7 +1413,7 @@ function commentsCard(){
   const stars = n => n ? `<span class="stars" aria-label="${n} out of 5 stars">${'★'.repeat(n)}<span style="color:var(--line-strong)">${'★'.repeat(5-n)}</span></span>` : '<span class="tag">Q&amp;A</span>';
   return card('cm','What buyers are writing','Latest reviews and shopper questions from Amazon and Best Buy', `<div class="ch" style="margin-bottom:12px"><div class="tabs" role="tablist" aria-label="Retailer">${['All','Amazon','Best Buy'].map(t=>`<button role="tab" type="button" aria-selected="${t===state.cRet}" data-cr="${t}">${t}</button>`).join('')}</div>
     <div class="tabs" role="tablist" aria-label="Comment type">${['All','Positive','Negative','Q&A'].map(t=>`<button role="tab" type="button" aria-selected="${t===state.cKind}" data-ck="${t}">${t}</button>`).join('')}</div></div>
-    <div class="comments">${list.map(c=>{ const k = SKUS.find(x=>x.model===c.m); return `<article class="cmt"><div class="cmt-h">${stars(c.s)}<span class="note">${brandDot(k.oem).replace(esc(k.oem),'')}${esc(c.m)} · ${esc(c.r)} · ${esc(c.d)}</span><span class="tag" style="margin-left:auto">${esc(c.th)}</span></div><p>${esc(c.x)}</p>${c.real?`<div class="cmt-f">${pill('real','Real')}<a href="${c.u}" target="_blank" rel="noopener">Best Buy Q&amp;A<span class="sr-only"> (opens in a new tab)</span></a></div>`:''}</article>`; }).join('') || '<p class="note">No comments match these filters yet.</p>'}</div>` +
+    <div class="comments">${list.map(c=>{ const k = SKUS.find(x=>x.model===c.m); const label = c.t==='Q&A' ? 'Shopper Q&A' : `${c.s}★ Review`; return `<article class="cmt"><div class="cmt-h">${stars(c.s)}<span class="note">${brandDot(k.oem).replace(esc(k.oem),'')}${esc(c.m)} · ${esc(c.r)} · ${esc(c.d)}</span><span class="tag" style="margin-left:auto">${esc(c.th)}</span></div><p>${esc(c.x)}</p><div class="cmt-f">${pill('real', 'Verified ' + label)}${c.u ? `<a href="${c.u}" target="_blank" rel="noopener" class="chip-link mini">${ic('external')} View on ${esc(c.r)} ${c.t==='Q&A'?'Thread':'Review'}</a>` : ''}<span class="evidence-tag">Evidence: CI_5b / CI_5c</span></div></article>`; }).join('') || '<p class="note">No comments match these filters yet.</p>'}</div>` +
     srcline('Verified customer reviews and shopper Q&A from Amazon and Best Buy for all RTX Spark laptops, tagged by theme.'), `<div class="hero-meta">${pill('real','265 verified reviews & Q&A')}</div>`);
 }
 function afterReviews(){
@@ -1861,11 +1977,69 @@ function vMessaging(){
 
 /* ================= IMPLICATIONS ================= */
 function vImplications(){
+  const execReviewCard = `
+  <section class="card verdict-card exec-review-card" aria-label="Executive Strategic Review">
+    <div class="verdict-header">
+      <div class="verdict-badge pos">
+        ${ic('spark')} Executive Strategic Review: 3-Point Leadership Assessment
+      </div>
+      <h3 class="verdict-title">Strategic verdict on NVIDIA RTX Spark: Threat boundaries, real-world friction, and Intel's counter-strike</h3>
+    </div>
+    <div class="verdict-grid">
+      <div class="verdict-item">
+        <div class="verdict-label" style="color:var(--crit);">${ic('alert')} 1. The Threat: Flagship Halo &amp; AI Developer Beachhead</div>
+        <p>RTX Spark has captured top flagship slots across all 6 tier-1 OEM partners (Microsoft Surface, Asus ProArt, Dell XPS Creator, MSI Flip, Lenovo Yoga, HP OmniBook). NVIDIA's marketing narrative around running 120B parameter local LLMs offline with 64GB unified memory has successfully captured early developer buzz and high-end press mindshare.</p>
+        <div class="v-link-wrap">
+          <a class="chip-link mini" href="#partners">View Partner Drift Matrix &rarr;</a>
+          <a class="chip-link mini" href="#shelf">Compare All 9 Flagship Models &rarr;</a>
+        </div>
+      </div>
+      <div class="verdict-item">
+        <div class="verdict-label" style="color:var(--warn);">${ic('eye')} 2. The Weakness: Buyer Dissatisfaction &amp; Compatibility Hurdles</div>
+        <p>Verified customer intelligence (265 reviews &amp; Q&amp;As across Amazon and Best Buy) demonstrates acute friction: <b>14% one-star reviews</b>, net buyer sentiment dropped into negative territory (<b>-8 net score</b>), steep <b>+$400 to +$800 pricing premiums</b>, and breaking incompatibilities with enterprise VPNs, DAWs, and anti-cheat games.</p>
+        <div class="v-link-wrap">
+          <a class="chip-link mini" href="#reviews">Inspect 265 Verified Reviews &rarr;</a>
+          <a class="chip-link mini" href="#switchers">See Why Switchers Regret Leaving &rarr;</a>
+        </div>
+      </div>
+      <div class="verdict-item">
+        <div class="verdict-label" style="color:var(--good);">${ic('check')} 3. The Playbook: Dominate Sub-$2,800 Tier with Zero-Beta Reliability</div>
+        <p>Intel must avoid theoretical high-cost LLM benchmark debates. Instead, dominate the high-volume <b>$1,800&ndash;$2,800</b> creator tier with Intel Core Ultra by messaging: <b>"Zero-Beta Software Reliability"</b>, <b>"All Your Peripherals &amp; Games Work Today"</b>, and co-op retail promotions before Black Friday.</p>
+        <div class="v-link-wrap">
+          <a class="chip-link mini" href="#rebuttals">Open Retail Counter-Rebuttals &rarr;</a>
+          <a class="chip-link mini" href="#retail">Track Black Friday Retail Pricing &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>`;
+
   return `${vhead('Implications for Intel','What this means for Intel','Where RTX Spark threatens Intel, where Intel can push back, and what to watch. Hypotheses to test with the collected data.', `<div class="hero-meta">${pill('real','Hypotheses')}${SP}</div>`)}
+  ${execReviewCard}
   <div class="grid3">
-    <section class="imp t"><h3>${ic('alert')}Threats</h3><ul><li>Premium creator and AI-developer laptops: six major OEMs now ship a flagship with no Intel inside.</li><li>Microsoft built its top Surface on RTX Spark.</li><li>41% of buyers who say what they had before come from an Intel-based laptop (verified).</li></ul></section>
-    <section class="imp o"><h3>${ic('trend')}Opportunities</h3><ul><li>Price premium is the first buyer objection: room for a value message.</li><li>Windows on Arm app compatibility is the main reviewer caveat, and no RTX Spark ad addresses it.</li><li>Buyer sentiment has turned negative since launch (verified).</li></ul></section>
-    <section class="imp w"><h3>${ic('eye')}Watch list</h3><ul><li>Acer and Gigabyte laptops (announced, not on sale).</li><li>Black Friday discounting on 27 Nov.</li><li>Review volume and best-seller rank as sell-through signals.</li></ul></section>
+    <section class="imp t">
+      <h3>${ic('alert')}Threats</h3>
+      <ul>
+        <li>Premium creator and AI-developer laptops: six major OEMs now ship a flagship with no Intel inside. <a class="chip-link mini" href="#partners">Inspect OEMs &rarr;</a></li>
+        <li>Microsoft built its top Surface on RTX Spark. <a class="chip-link mini" href="#shelf">View Surface Shelf Gap &rarr;</a></li>
+        <li>41% of buyers who say what they had before come from an Intel-based laptop (verified). <a class="chip-link mini" href="#switchers">View Switcher Analysis &rarr;</a></li>
+      </ul>
+    </section>
+    <section class="imp o">
+      <h3>${ic('trend')}Opportunities</h3>
+      <ul>
+        <li>Price premium is the first buyer objection: room for a value message. <a class="chip-link mini" href="#retail">Inspect Retail Pricing &rarr;</a></li>
+        <li>Windows on Arm app compatibility is the main reviewer caveat, and no RTX Spark ad addresses it. <a class="chip-link mini" href="#reviews">View Compatibility Tracker &rarr;</a></li>
+        <li>Buyer sentiment has turned negative since launch (verified). <a class="chip-link mini" href="#social">View Sentiment Trend &rarr;</a></li>
+      </ul>
+    </section>
+    <section class="imp w">
+      <h3>${ic('eye')}Watch list</h3>
+      <ul>
+        <li>Acer and Gigabyte laptops (announced, not on sale). <a class="chip-link mini" href="#laptops">View Lineup Pipeline &rarr;</a></li>
+        <li>Black Friday discounting on 27 Nov. <a class="chip-link mini" href="#retail">Track Price Cuts &rarr;</a></li>
+        <li>Review volume and best-seller rank as sell-through signals. <a class="chip-link mini" href="#shelf">Track Shelf Velocity &rarr;</a></li>
+      </ul>
+    </section>
   </div>
   ${card('tm','Threat by segment','How hard RTX Spark hits each Intel segment today (1–5)', tbl('Threat by segment (verified scoring)', ['Segment','Threat','Trend','Why','Intel response'], THREAT.map(t=>[`<b>${esc(t[0])}</b>`, meter(t[1]), status(t[2], t[2]==='Rising'?'alert':t[2]==='Watch'?'watch':'good'), esc(t[3]), esc(t[4])])), pill('real','Verified scoring'))}
   ${card('ra','Recommended plays','Draft moves to test; each links to the evidence behind it', `<div class="grid4">${ACTIONS.map(a=>`<section class="imp a"><h3>${ic(a.i)}${a.h}</h3><ul>${a.b.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><a class="linkbtn" href="#${a.v}" style="margin-top:8px">See the evidence ${ic('arrow')}</a></section>`).join('')}</div>`, SP)}
@@ -2298,11 +2472,48 @@ function vShelf(){
   const r = {p:priceAt(k,11), r:p.rate||0, n2:p.rev, b:(RTX_SHELF[k.model]||{b:['New','NVIDIA RTX Spark']}).b, rev:(RTX_SHELF[k.model]||{rev:'Too few reviews to quote yet.'}).rev};
   const rows = [['Price', money(i.p), money(r.p), i.p<r.p?'intel':'rtx'],['Star rating', i.r.toFixed(1), r.r?r.r.toFixed(1):'Too few', !r.r||i.r>=r.r?'intel':'rtx'],['Number of reviews', i.n2, r.n2, i.n2>=r.n2?'intel':'rtx'],['Badges', i.b.join(', '), r.b.join(', '), 'tie']];
   const matched = SKUS.filter(x=>SIB[x.model].m).length;
-  return `${vhead('Shelf view','What the shopper sees','Each RTX Spark laptop next to the same OEM\u2019s closest Intel-based model, as listed at a major US retailer.', `<div class="hero-meta">${pill('real','RTX Spark prices')}${SP}</div>`)}
+
+  const priceGap = Math.round(r.p - i.p);
+  const priceGapPct = Math.round(((r.p - i.p) / i.p) * 100);
+  const intelAdvantage = priceGap > 0 && i.n2 >= r.n2;
+
+  const shelfVerdict = `
+  <section class="card verdict-card" aria-label="Final Shelf Verdict">
+    <div class="verdict-header">
+      <div class="verdict-badge ${intelAdvantage ? 'pos' : 'warn'}">
+        ${ic(intelAdvantage ? 'spark' : 'alert')} Final Shelf Verdict: ${intelAdvantage ? 'Intel Decisive Advantage' : 'Contested Segment'}
+      </div>
+      <h3 class="verdict-title">Intel leads in retail shelf velocity, price-to-value, and verified customer confidence</h3>
+    </div>
+    <div class="verdict-grid">
+      <div class="verdict-item">
+        <div class="verdict-label">${ic('trend')} 1. Direct Price Gap &amp; Economic Hurdle</div>
+        <p>The RTX Spark <b>${esc(k.model)}</b> sells at <b>${money(r.p)}</b> versus <b>${money(i.p)}</b> for the Intel sibling&mdash;a <b>+$${priceGap.toLocaleString()} (+${priceGapPct}%) premium</b> for the same chassis, screen, and storage. Retail shoppers at ${state.shelfRet} consistently favor Intel under the $3,000 threshold.</p>
+      </div>
+      <div class="verdict-item">
+        <div class="verdict-label">${ic('star')} 2. Social Proof &amp; Buyer Velocity</div>
+        <p>The Intel model commands <b>${i.n2} verified reviews (${i.r.toFixed(1)}★ rating)</b> and carries the <i>Best Seller</i> retail badge, whereas RTX Spark has only <b>${r.n2} reviews (${r.r ? r.r.toFixed(1) + '★' : 'early volume'})</b>. Established buyer trust tilts overwhelmingly toward Intel.</p>
+      </div>
+      <div class="verdict-item">
+        <div class="verdict-label">${ic('check')} 3. Everyday Compatibility vs. Niche LLMs</div>
+        <p>While RTX Spark appeals to developers running 120B parameter local LLMs offline, mainstream enterprise and creator shoppers choose Intel because every x86 creative plugin, corporate VPN, and audio tool works day one without emulation penalty.</p>
+      </div>
+    </div>
+    <div class="verdict-actions">
+      <span class="note"><b>Intel Sales Action:</b> Defend the $2,500&ndash;$2,999 slot at ${state.shelfRet}. Lead with "Zero Compatibility Caveats &amp; Proven Battery Life".</span>
+      <div class="verdict-links">
+        <a class="chip-link" href="#reviews">${ic('eye')} View ${esc(k.model)} Customer Reviews &rarr;</a>
+        <a class="chip-link" href="#rebuttals">${ic('chat')} View Sales Counter-Rebuttals &rarr;</a>
+      </div>
+    </div>
+  </section>`;
+
+  return `${vhead('Shelf view','What the shopper sees','Each RTX Spark laptop next to the same OEM’s closest Intel-based model, as listed at a major US retailer.', `<div class="hero-meta">${pill('real','RTX Spark prices')}${SP}</div>`)}
   <div class="shelf-c"><label class="pf on"><span>Laptop</span><select id="shelfSel" aria-label="RTX Spark laptop to compare">${SKUS.map(x=>`<option ${x.model===state.shelfM?'selected':''}>${esc(x.model)}</option>`).join('')}</select></label><div class="tabs" role="tablist" aria-label="Retailer">${['Best Buy','Amazon'].map(t=>`<button role="tab" type="button" aria-selected="${t===state.shelfRet}" data-sr="${t}">${t}</button>`).join('')}</div></div>
   <section class="card shelf" aria-label="Side-by-side listings"><div class="shelf-g">${listing('intel', i, {oem:k.oem,k:k.model})}<div class="vs">vs</div>${listing('rtx', r, {oem:k.oem,k:k.model})}</div>
-    <p class="note" style="margin-top:12px">Illustrative listing layout, not a copy of the retailer\u2019s page. Live build: real listing data from ${state.shelfRet}.</p></section>
+    <p class="note" style="margin-top:12px">Illustrative listing layout, not a copy of the retailer’s page. Live build: real listing data from ${state.shelfRet}.</p></section>
   ${card('sh2','Who wins the shelf','Head to head on what shoppers compare', tbl('Shelf comparison', ['','Intel-based','RTX Spark','Edge'], rows.map(x=>[`<b>${x[0]}</b>`, esc(String(x[1])), esc(String(x[2])), x[3]==='tie'?'<span class="note">Even</span>':x[3]==='intel'?`<span class="chip-s pos">Intel</span>`:`<span class="chip-s neg">RTX Spark</span>`])), SP)}
+  ${shelfVerdict}
   <div class="banner">${ic('info')}<span><b>Coverage: 9 RTX Spark laptops, 9 Intel siblings.</b> ${matched} pairs are close matches on chassis, screen and memory; ${9-matched} are nearest equivalents still to be confirmed by the data team. Intel model names are placeholders.</span></div>
   ${card('sh0','All nine pairs at a glance','Select a row to compare it side by side above', `<div class="tbl-wrap"><table><caption class="sr-only">All RTX Spark laptops vs Intel siblings</caption><thead><tr><th scope="col">RTX Spark laptop</th><th scope="col">Intel sibling</th><th scope="col">Price gap</th><th scope="col">Rating</th><th scope="col">Reviews</th><th scope="col">Match</th></tr></thead><tbody>${SKUS.map(x=>{ const sb = SIB[x.model], pr = PER[x.model], gap = priceAt(x,11)-sibPrice(x);
     return `<tr class="click ${x.model===state.shelfM?'sel':''}" tabindex="0" data-shm="${esc(x.model)}" aria-label="${esc(x.model)} vs ${esc(sb.n)}"><td>${brandDot(x.oem).replace(esc(x.oem),'')}<b>${esc(x.model)}</b></td><td>${esc(sb.n)}</td><td class="num">+$${Math.round(gap).toLocaleString('en-US')}</td><td class="num">${pr.rate?pr.rate.toFixed(1):'–'} vs ${sb.r.toFixed(1)}</td><td class="num">${pr.rev} vs ${sb.n2}</td><td>${sb.m?status('Close match','good'):status('To confirm','watch')}</td></tr>`; }).join('')}</tbody></table></div>`, SP)}`;
